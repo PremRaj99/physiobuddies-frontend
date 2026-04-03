@@ -100,13 +100,13 @@ const Header = () => {
                   <Stethoscope className="mr-2 h-4 w-4" /> Physio Network
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-100 gap-2 p-1 md:w-125 md:grid-cols-1 lg:w-50">
+                  <ul className="bg-background/70 grid w-100 gap-2 p-1 backdrop-blur-md md:w-125 md:grid-cols-1 lg:w-50">
                     {networkItems.map((item) => (
                       <li key={item.title}>
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.href}
-                            className="hover:bg-secondary hover:text-primary-foreground focus:bg-accent block w-full space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none"
+                            className="hover:bg-secondary bg-background/70 hover:text-primary-foreground focus:bg-accent block w-full space-y-1 rounded-md p-3 leading-none no-underline backdrop-blur-md transition-colors outline-none select-none"
                           >
                             <div className="flex items-center gap-4 text-sm leading-none font-medium">
                               {item.icon} {item.title}
