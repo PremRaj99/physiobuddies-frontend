@@ -9,11 +9,10 @@ import { Toaster } from '@/components/ui/sonner';
 
 export default function RootLayout() {
   return (
-    <div className="bg-background text-foreground relative min-h-screen w-full overflow-hidden pb-20 md:pb-0">
+    <div className="bg-background text-foreground relative h-screen min-h-screen w-full overflow-hidden pb-20 md:pb-0">
       <Providers>
-        <Header />
-
-        <div className="relative z-10">
+        <div className="relative z-10 h-screen overflow-y-auto">
+          <Header />
           <Outlet />
         </div>
         <Toaster />

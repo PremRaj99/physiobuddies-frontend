@@ -16,7 +16,7 @@ const LoginPage = () => {
   } as const;
 
   return (
-    <div className="bg-background flex min-h-[calc(100vh-80px)] w-full items-center justify-center md:p-4">
+    <div className="bg-background min-h-body flex w-full items-center justify-center md:p-4">
       <div className="md:border-border flex w-full max-w-5xl overflow-hidden bg-white md:rounded-2xl md:border md:shadow-lg">
         {/* Left Side: Decorative & Trust Building (Hidden on Mobile) */}
         <div className="bg-secondary relative hidden w-1/2 flex-col justify-between overflow-hidden p-12 lg:flex">

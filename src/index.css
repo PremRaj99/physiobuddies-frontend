@@ -1,101 +1,103 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/inter';
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    /* Background: #ffffff (White) */
-    --background: oklch(1 0 0);
-    /* Foreground/Text: #012a4a (Deepest Navy Blue) */
-    --foreground: oklch(0.26 0.06 250.7);
+  /* Background: #ffffff (White) */
+  --background: oklch(1 0 0);
+  /* Foreground/Text: #012a4a (Deepest Navy Blue) */
+  --foreground: oklch(0.26 0.06 250.7);
 
-    /* Card & Popover */
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.26 0.06 250.7);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.26 0.06 250.7);
+  /* Card & Popover */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.26 0.06 250.7);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.26 0.06 250.7);
 
-    /* Primary: #014f86 (Primary Medical Blue) */
-    --primary: oklch(0.44 0.12 240.2);
-    --primary-foreground: oklch(1 0 0);
+  /* Primary: #014f86 (Primary Medical Blue) */
+  --primary: oklch(0.44 0.12 240.2);
+  --primary-foreground: oklch(1 0 0);
 
-    /* Secondary: #a9d6e5 (Soft Light Blue) */
-    --secondary: oklch(0.86 0.05 220.5);
-    --secondary-foreground: oklch(0.26 0.06 250.7);
+  /* Secondary: #a9d6e5 (Soft Light Blue) */
+  --secondary: oklch(0.86 0.05 220.5);
+  --secondary-foreground: oklch(0.26 0.06 250.7);
 
-    /* Muted: Subtler version of Secondary */
-    --muted: oklch(0.94 0.02 220);
-    --muted-foreground: oklch(0.45 0.08 240);
+  /* Muted: Subtler version of Secondary */
+  --muted: oklch(0.94 0.02 220);
+  --muted-foreground: oklch(0.45 0.08 240);
 
-    /* Accent: #013a63 (Dark Blue) for hover states */
-    --accent: oklch(0.35 0.09 245.3);
-    --accent-foreground: oklch(1 0 0);
+  /* Accent: #013a63 (Dark Blue) for hover states */
+  --accent: oklch(0.35 0.09 245.3);
+  --accent-foreground: oklch(1 0 0);
 
-    /* Semantic Status Colors */
-    --success: oklch(0.65 0.18 155);
-    --success-foreground: oklch(1 0 0);
-    --warning: oklch(0.82 0.14 85);
-    --warning-foreground: oklch(0.25 0.05 85);
-    --destructive: oklch(0.55 0.22 25);
-    --destructive-foreground: oklch(1 0 0);
+  /* Semantic Status Colors */
+  --success: oklch(0.65 0.18 155);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.82 0.14 85);
+  --warning-foreground: oklch(0.25 0.05 85);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
 
-    /* Borders & Inputs */
-    --border: oklch(0.88 0.03 220);
-    --input: oklch(0.88 0.03 220);
-    --ring: oklch(0.44 0.12 240.2);
+  /* Borders & Inputs */
+  --border: oklch(0.88 0.03 220);
+  --input: oklch(0.88 0.03 220);
+  --ring: oklch(0.44 0.12 240.2);
 
-    --radius: 0.75rem;
+  --radius: 0.75rem;
 }
 
 .dark {
-    /* Deep Navy Background for Dark Mode */
-    --background: oklch(0.18 0.04 250);
-    --foreground: oklch(0.95 0.02 220);
+  /* Deep Navy Background for Dark Mode */
+  --background: oklch(0.18 0.04 250);
+  --foreground: oklch(0.95 0.02 220);
 
-    --card: oklch(0.22 0.05 250);
-    --card-foreground: oklch(0.95 0.02 220);
+  --card: oklch(0.22 0.05 250);
+  --card-foreground: oklch(0.95 0.02 220);
 
-    --primary: oklch(0.75 0.08 220);
-    --primary-foreground: oklch(0.18 0.04 250);
+  --primary: oklch(0.75 0.08 220);
+  --primary-foreground: oklch(0.18 0.04 250);
 
-    --secondary: oklch(0.28 0.06 250);
-    --secondary-foreground: oklch(0.95 0.02 220);
-    
-    --border: oklch(0.35 0.05 250);
+  --secondary: oklch(0.28 0.06 250);
+  --secondary-foreground: oklch(0.95 0.02 220);
+
+  --border: oklch(0.35 0.05 250);
 }
 
 @theme inline {
-    --font-sans: 'Inter Variable', ui-sans-serif, system-ui;
-    
-    /* Font Size Adjustments for Clinical Readability */
-    --font-size-xs: 0.75rem;     /* 12px - Labels */
-    --font-size-sm: 0.875rem;    /* 14px - Body Text Small */
-    --font-size-base: 1rem;      /* 16px - Standard Body */
-    --font-size-lg: 1.125rem;    /* 18px - Subheaders */
-    --font-size-xl: 1.25rem;     /* 20px - Section Headers */
-    --font-size-2xl: 1.75rem;    /* 28px - Card Titles */
-    --font-size-3xl: 2.5rem;     /* 40px - Page Titles */
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui;
 
-    /* Map UI Colors */
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-success: var(--success);
-    --color-success-foreground: var(--success-foreground);
-    --color-warning: var(--warning);
-    --color-warning-foreground: var(--warning-foreground);
-    --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
+  /* Font Size Adjustments for Clinical Readability */
+  --font-size-xs: 0.75rem; /* 12px - Labels */
+  --font-size-sm: 0.875rem; /* 14px - Body Text Small */
+  --font-size-base: 1rem; /* 16px - Standard Body */
+  --font-size-lg: 1.125rem; /* 18px - Subheaders */
+  --font-size-xl: 1.25rem; /* 20px - Section Headers */
+  --font-size-2xl: 1.75rem; /* 28px - Card Titles */
+  --font-size-3xl: 2.5rem; /* 40px - Page Titles */
+
+  /* Map UI Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --height-body: calc(100vh - 81px);
 }

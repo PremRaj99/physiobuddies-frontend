@@ -4,6 +4,8 @@ import RootLayout from '@/layouts/rootLayout';
 import Home from '@/pages/Home';
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
+import ForgotPassword from '@/pages/Forgot-Password';
+import NotFound from '@/pages/Not-Found';
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +15,8 @@ export const router = createBrowserRouter([
 
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <Signup /> },
+      { path: '/forgot-password', element: <ForgotPassword /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ]);

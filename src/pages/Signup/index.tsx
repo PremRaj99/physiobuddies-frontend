@@ -77,7 +77,7 @@ const SignupPage = () => {
   } as const;
 
   return (
-    <div className="bg-background flex min-h-[calc(100vh-80px)] w-full items-center justify-center px-4 py-4">
+    <div className="bg-background min-h-body flex w-full items-center justify-center px-4 py-4">
       <div className="border-border flex w-full max-w-5xl overflow-hidden bg-white md:rounded-2xl md:border md:shadow-lg">
         {/* Left Side: Decorative Panel */}
         <div className="bg-secondary relative hidden w-5/12 flex-col justify-between overflow-hidden p-8 lg:flex">
