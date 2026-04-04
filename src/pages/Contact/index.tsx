@@ -27,6 +27,7 @@ import {
 import physio from '@/assets/contact-images/Physio.gif';
 import Footer from '@/components/custom/footer/footer';
 import PageHeader from '@/components/custom/page-header/page-header';
+import AuraMedicalCTA from '@/components/custom/cta/cta';
 
 export default function ContactUs() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -279,7 +280,7 @@ export default function ContactUs() {
           </motion.div>
         </motion.div>
       </div>
-
+      <AuraMedicalCTA />
       <Footer />
     </div>
   );

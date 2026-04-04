@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/carousel';
 import PageHeader from '@/components/custom/page-header/page-header';
 import AuraMedicalCTA from '@/components/custom/cta/cta';
+import Footer from '@/components/custom/footer/footer';
 
 export default function About() {
   const images = [
@@ -420,6 +421,7 @@ export default function About() {
         </motion.div>
       </div>
       <AuraMedicalCTA />
+      <Footer />
     </div>
   );
 }
