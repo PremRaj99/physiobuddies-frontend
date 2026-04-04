@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ArrowRight, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ const AuraMedicalCTA = () => {
       setIndex((prev) => (prev + 1) % messages.length);
     }, 3000);
     return () => clearInterval(timer);
-  }, []);
+  }, [messages.length]);
 
   return (
     <section className="relative w-full overflow-hidden bg-white px-6 py-24">

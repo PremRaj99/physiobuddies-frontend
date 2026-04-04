@@ -11,18 +11,16 @@ export default function PageHeader({
   subheading,
   className = '',
 }: {
-  heading: string;
+  heading: React.ReactNode;
   subheading: string;
   className?: string;
 }) {
   return (
     <div
-      className={cn(
-        '"relative md:py-16" w-full overflow-hidden bg-[#013a63] px-4 py-12',
-        className,
-      )}
+      className={cn('relative w-full overflow-hidden bg-[#013a63] px-4 py-12 md:py-16', className)}
     >
       <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 translate-x-1/3 -translate-y-1/2 rounded-full bg-[#014f86] opacity-30 blur-[100px]" />
+      <div className="pointer-events-none absolute top-0 left-0 h-96 w-96 translate-x-1/3 -translate-y-1/2 rounded-full bg-[#014f86] opacity-30 blur-[100px]" />
 
       <motion.div
         initial="hidden"

@@ -7,6 +7,7 @@ import Login from '@/pages/Login';
 import ForgotPassword from '@/pages/Forgot-Password';
 import NotFound from '@/pages/Not-Found';
 import Contact from '@/pages/Contact';
+import About from '@/pages/About';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: '/signup', element: <Signup /> },
       { path: '/forgot-password', element: <ForgotPassword /> },
       { path: '/contact', element: <Contact /> },
+      { path: '/about', element: <About /> },
       { path: '*', element: <NotFound /> },
     ],
   },
