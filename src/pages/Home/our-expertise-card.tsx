@@ -105,12 +105,12 @@ export default function OurExpertiseCard({ condition }: ConditionProps) {
       </DialogTrigger>
 
       {/* Elegant Modal Content (Remains Spacious & Detailed) */}
-      <DialogContent className="border-border max-w-md overflow-hidden rounded-[24px] bg-white p-0 shadow-2xl">
+      <DialogContent className="border-border max-w-md overflow-hidden rounded-3xl bg-white p-0 shadow-2xl">
         <div className="flex max-h-[85vh] flex-col">
           {/* Header Area */}
           <div className="relative h-48 w-full shrink-0">
             <img src={image} alt={name} className="h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-white via-white/20 to-transparent" />
 
             <div className="absolute bottom-4 left-6">
               <div className="flex items-center gap-2">
@@ -123,7 +123,7 @@ export default function OurExpertiseCard({ condition }: ConditionProps) {
           </div>
 
           {/* Treatment List Section */}
-          <div className="custom-scrollbar flex-grow overflow-y-auto p-6">
+          <div className="custom-scrollbar grow overflow-y-auto p-6">
             <p className="mb-4 text-[11px] font-bold tracking-widest text-[#012a4a]/60 uppercase">
               Clinical Conditions Treated
             </p>
