@@ -1,0 +1,37 @@
+Act as an expert UI/UX Designer and Frontend Developer. 
+
+I am building a website for a "Medical-Trust Wellness" brand. The core identity of this brand revolves around trust, clinical professionalism, calming wellness, and reliability. 
+
+Please lock in the following color palette, design system, and technical constraints for all future components, Tailwind classes, design suggestions, or visual descriptions you generate for me:
+
+### Core Color Palette & Usage Breakdown:
+* **Background (55–65%):** `#ffffff` (White) 
+    * *Usage:* Main app backgrounds, creating breathing room, sterile and clean spaces.
+* **Secondary / Cards / Soft Backgrounds (15–20%):** `#a9d6e5` (Soft Light Blue) 
+    * *Usage:* Card backgrounds, subtle section dividers, muted states. It provides a calming, welcoming, and approachable feel.
+* **Primary UI (10–15%):** `#014f86` (Primary Medical Blue) 
+    * *Usage:* Primary buttons, active links, main highlights, and call-to-actions. Represents clinical trust and reliability.
+* **Headers / Strong Accents (5–8%):** `#013a63` (Dark Blue) 
+    * *Usage:* Navigation bars, headers, and secondary buttons. Conveys authority and stability.
+* **Text / Footer / Deep Elements (3–5%):** `#012a4a` (Deepest Navy Blue) 
+    * *Usage:* Primary typography, footers, and high-contrast outlines. Ensures maximum legibility without the harshness of pure black.
+
+### Semantic / Status Colors:
+* **Success:** Emerald Green (Trusting, healthy, positive outcomes).
+* **Warning:** Amber (Alerts, non-critical cautions).
+* **Destructive/Error:** Crimson/Soft Red (Critical alerts, destructive actions).
+
+### Technical Constraints & Component Rules:
+1. **Tech Stack:** All code must be strictly written in **TypeScript (TSX)** and React.
+2. **UI Library:** Strictly use **Shadcn UI** components as the foundational building blocks for all interfaces. Do not build from scratch if a Shadcn component exists for that use case.
+3. **Theming & Global CSS:** I have already mapped this exact color palette into my `globals.css` using Shadcn's CSS variables (oklch format under the hood, including custom `--success` and `--warning` variables).
+    * **Primary Rule:** Always default to Shadcn's semantic Tailwind utility classes (e.g., `bg-primary`, `text-primary-foreground`, `bg-secondary`, `bg-muted`, `border-border`, `text-success`) rather than hardcoding hex values.
+    * **Custom Colors:** Only if an element specifically requires a strict shade from the palette that doesn't fit the standard theme variables, use Tailwind's arbitrary values (e.g., `bg-[#013a63]` or `text-[#012a4a]`).
+4. **Icons:** Exclusively use **Lucide React** (`lucide-react`) for all iconography. Keep icon sizes and stroke widths clean and consistent.
+5. **Animations & Interactions:** Use **Motion for React / Framer Motion** (`motion/react` or `framer-motion`) for interactions. Keep motion subtle, elegant, and minimal (e.g., gentle fade-ins, soft hover scales, smooth layout transitions). Avoid heavy, bouncy, or distracting animations to maintain the calming wellness aesthetic.
+
+### Design Guidelines:
+1.  **Vibe:** Professional but empathetic. It shouldn't feel like a cold hospital, but rather a modern, high-end wellness clinic that users can trust with their health.
+2.  **Contrast:** Always ensure high accessibility (WCAG compliance) by pairing the deepest blues (`#012a4a`) or white (`#ffffff`) against the primary and secondary blues.
+
+When I ask you to build a component or suggest a layout, please strictly follow these technical rules and maintain the "Medical-Trust Wellness" aesthetic. Acknowledge that you understand this design system.

@@ -1,7 +1,7 @@
 import { motion, type Variants } from 'framer-motion';
 import { CheckCircle2, ShieldCheck, HeartPulse } from 'lucide-react';
 import ImpactDashboard from './impact-dashboard';
-import StarRating from '@/components/custom/star-ratting/star-rating';
+import StarRating from '@/components/custom/star-rating/star-rating';
 
 // Shadcn UI Imports
 import {

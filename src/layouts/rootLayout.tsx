@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Header from '@/components/custom/header/header';
 import { Providers } from '@/provider';
 import { Toaster } from '@/components/ui/sonner';
-import ScrollToTop from '@/components/custom/scrol-to-top/scroll-to-top';
+import ScrollToTop from '@/components/custom/scroll-to-top/scroll-to-top';
 // import FloatingMenu from "@/components/Footer/FloatingMenu";
 // import FloatingWhatsapp from "@/components/Footer/FloatingWhatsapp";
 
