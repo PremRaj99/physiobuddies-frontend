@@ -15,6 +15,7 @@ import ClinicNetwork from '@/pages/Clinic-Network';
 import PhysioDetail from '@/pages/Physio/[id]';
 import Blog from '@/pages/Blog';
 import BlogDetail from '@/pages/Blog/[slug]';
+import BookingDetails from '@/pages/Booking/[id]';
 
 export const router = createBrowserRouter([
   {
@@ -34,7 +35,7 @@ export const router = createBrowserRouter([
       { path: '/network/clinic', element: <ClinicNetwork /> },
       { path: '/blog', element: <Blog /> },
       { path: '/blog/:slug', element: <BlogDetail /> },
-      { path: '/booking', element: <div>Booking Page</div> },
+      { path: '/booking/:id', element: <BookingDetails /> },
       { path: '*', element: <NotFound /> },
     ],
   },

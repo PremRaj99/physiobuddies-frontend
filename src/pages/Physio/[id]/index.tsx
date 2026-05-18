@@ -30,6 +30,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 // --- Types based on your schema ---
 interface TimeSlot {
@@ -221,14 +223,27 @@ export default function PhysioPage() {
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [expandedArticles, setExpandedArticles] = useState<Record<string, boolean>>({});
+  const navigate = useNavigate();
 
   const toggleArticle = (id: string) => {
     setExpandedArticles((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleBook = () => {
+  const handleBook = async () => {
     if (!selectedTime) return;
-    alert(`Routing to /booking/${selectedSlot?.id}/${MOCK_PHYSIO.id}/${selectedDate}`);
+    if (!selectedSlot) return;
+    const sessionId = await startSession(selectedSlot.id, MOCK_PHYSIO.id);
+    navigate(`/booking/${sessionId}`);
+  };
+
+  const startSession = async (slotId: string, physioId: string) => {
+    // Mock API call to start session
+    if (!slotId || !physioId) {
+      toast.error('Invalid slot or physiotherapist selection.');
+      return;
+    }
+    const sessionId = await new Promise((resolve) => setTimeout(resolve, 1000));
+    return sessionId;
   };
 
   const discountPercentage = Math.round(

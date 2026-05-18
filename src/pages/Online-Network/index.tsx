@@ -1,29 +1,28 @@
-import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import {
-  Laptop,
-  Globe2,
-  Clock,
-  ShieldCheck,
-  Video,
-  Wallet,
-  Headset,
-  CalendarRange,
+  Activity,
   ArrowRight,
+  CalendarRange,
+  Clock,
+  Globe2,
+  Headset,
+  Laptop,
+  ShieldCheck,
   Star,
   UserPlus,
-  Activity,
+  Video,
+  Wallet,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import Footer from '@/components/custom/footer/footer';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import Footer from '@/components/custom/footer/footer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 // --- Animation Variants ---
 const fadeUpVariant: Variants = {
@@ -122,8 +121,8 @@ export default function OnlineNetwork() {
       {/* --- HERO SECTION --- */}
       <section className="relative overflow-hidden bg-[#013a63] px-4 py-20 md:py-28 lg:px-8">
         {/* Calming deep background orbs */}
-        <div className="pointer-events-none absolute top-0 right-0 h-[600px] w-[600px] translate-x-1/3 -translate-y-1/3 rounded-full bg-[#014f86] opacity-50 blur-[130px]" />
-        <div className="bg-secondary pointer-events-none absolute bottom-0 left-0 h-[400px] w-[400px] -translate-x-1/3 translate-y-1/3 rounded-full opacity-20 blur-[100px]" />
+        <div className="pointer-events-none absolute top-0 right-0 h-150 w-150 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#014f86] opacity-50 blur-[130px]" />
+        <div className="bg-secondary pointer-events-none absolute bottom-0 left-0 h-100 w-100 -translate-x-1/3 translate-y-1/3 rounded-full opacity-20 blur-[100px]" />
 
         <motion.div
           initial="hidden"
@@ -285,7 +284,7 @@ export default function OnlineNetwork() {
                       'https://images.unsplash.com/photo-1576091160550-2173ff9e5ee5?auto=format&fit=crop&q=80&w=800')
                   }
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#012a4a]/80 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-[#012a4a]/80 to-transparent" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <p className="text-lg font-bold">Dr. Sameer Verma</p>
                   <p className="text-secondary text-xs font-medium">
