@@ -24,6 +24,11 @@ import PatientMyBookings from '@/pages/Patient/My-Booking';
 import TherapistProfile from '@/pages/Therapist/Profile';
 import TherapistMyBookings from '@/pages/Therapist/My-Booking';
 import PatientBookingDetail from '@/pages/Patient/My-Booking/[id]';
+import SettingsPage from '@/pages/Setting';
+import RefundPolicy from '@/pages/Refund-Policy';
+import PrivacyPolicy from '@/pages/Privacy-Policy';
+import TermsConditions from '@/pages/Terms';
+import Issue from '@/pages/Issue';
 
 export const router = createBrowserRouter([
   {
@@ -42,11 +47,14 @@ export const router = createBrowserRouter([
       { path: '/network/clinic', element: <ClinicNetwork /> },
       { path: '/blog', element: <Blog /> },
       { path: '/blog/:slug', element: <BlogDetail /> },
+      { path: '/refund-policy', element: <RefundPolicy /> },
+      { path: '/privacy-policy', element: <PrivacyPolicy /> },
+      { path: '/terms', element: <TermsConditions /> },
       {
         element: <ProtectedLayout />,
         children: [
-          { path: '/settings', element: <div>Settings</div> },
-          { path: '/my-issues', element: <div>My Issues</div> },
+          { path: '/settings', element: <SettingsPage /> },
+          { path: '/my-issues', element: <Issue /> },
           {
             element: <PatientLayout />,
             children: [

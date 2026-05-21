@@ -80,7 +80,11 @@ export default function ContactUs() {
     <div className="bg-background min-h-body flex flex-col font-sans">
       {/* Hero Header - Compacted */}
       <PageHeader
-        heading="Contact Our Clinical Team"
+        heading={
+          <>
+            <span className="text-[#a9d6e5]">Contact</span> Our Clinical Team
+          </>
+        }
         subheading="Support for your journey to recovery."
       />
 

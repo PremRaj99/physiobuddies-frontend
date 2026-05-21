@@ -139,7 +139,7 @@ export default function Footer() {
                   { name: 'Contact Us', path: '/contact' },
                   { name: 'Refund Policy', path: '/refund-policy' },
                   { name: 'Privacy Policy', path: '/privacy-policy' },
-                  { name: 'Terms & Conditions', path: '/termsandconditions' },
+                  { name: 'Terms & Conditions', path: '/terms' },
                 ].map((link, idx) => (
                   <li key={idx}>
                     <Link to={link.path}>

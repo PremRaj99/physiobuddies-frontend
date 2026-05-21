@@ -191,7 +191,11 @@ export default function PatientBookingListPage() {
     <div className="bg-background min-h-screen pb-24 font-sans">
       {/* Header & Decorator */}
       <PageHeader
-        heading="My Treatment Sessions"
+        heading={
+          <>
+            My Treatment <span className="text-[#a9d6e5]">Sessions</span>
+          </>
+        }
         subheading="View and manage your upcoming appointments, or review past therapy sessions."
       />
 
