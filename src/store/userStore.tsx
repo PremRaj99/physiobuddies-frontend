@@ -12,11 +12,11 @@ export const useCurrUser = create(
   persist(
     (set) => ({
       user: {
-        id: null,
-        name: null,
-        role: null,
-        email: null,
-        mobile: null,
+        id: '4598743',
+        name: 'Prem Raj',
+        role: 'patient',
+        email: 'prem.raj@example.com',
+        mobile: '9876543210',
       },
       setUser: (user: User) => set({ user }),
       removeUser: () =>

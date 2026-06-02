@@ -19,7 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -39,9 +39,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
+import { useCurrUser } from '@/hooks/isLoggedIn';
+import { toast } from 'sonner';
+import { useCurrUser as useUser } from '@/store/userStore';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const user = useCurrUser();
+  const removeUser = useUser((state: unknown) => (state as { removeUser: () => void }).removeUser);
 
   const navigationItems = [
     { name: 'Home', href: '/', icon: <Home className="h-4 w-4" /> },
@@ -65,6 +71,31 @@ const Header = () => {
       href: '/network/online',
     },
   ];
+
+  const handleProfileView = () => {
+    if (user.role === 'therapist') {
+      navigate('/therapist/profile');
+    } else if (user.role === 'patient') {
+      navigate('/patient/profile');
+    } else {
+      toast.error('Unknown user role. Please log in again.');
+    }
+  };
+  const handleTherapyPlans = () => {
+    if (user.role === 'therapist') {
+      navigate('/therapist/my-bookings');
+    } else if (user.role === 'patient') {
+      navigate('/patient/my-bookings');
+    } else {
+      toast.error('Unknown user role. Please log in again.');
+    }
+  };
+
+  const handleLogout = () => {
+    removeUser();
+    toast.success('Logged out successfully!');
+    navigate('/login');
+  };
 
   return (
     <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
@@ -147,34 +178,34 @@ const Header = () => {
                 <User className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuContent className="w-56 bg-white" align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleProfileView}>
                   <User className="mr-2 h-4 w-4" /> Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleTherapyPlans}>
                   <Activity className="mr-2 h-4 w-4" /> Your Therapy Plans
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate('/my-issues')}>
                   <FileText className="mr-2 h-4 w-4" /> Issues
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate('/settings')}>
                   <Settings className="mr-2 h-4 w-4" /> Settings
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate('/terms')}>
                   <FileText className="mr-2 h-4 w-4" /> Terms of Service
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate('/privacy-policy')}>
                   <Shield className="mr-2 h-4 w-4" /> Privacy Policy
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem onSelect={handleLogout} className="text-destructive">
                 <LogOut className="mr-2 h-4 w-4" /> Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
