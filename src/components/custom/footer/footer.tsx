@@ -39,7 +39,7 @@ export default function Footer() {
   };
 
   return (
-    <div className="relative flex flex-col pt-12">
+    <div className="relative flex w-full flex-col overflow-hidden pt-12">
       {/* Banner */}
       <Corousel
         text="✦ Your Recovery, Our Mission"

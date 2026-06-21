@@ -29,6 +29,7 @@ import RefundPolicy from '@/pages/Refund-Policy';
 import PrivacyPolicy from '@/pages/Privacy-Policy';
 import TermsConditions from '@/pages/Terms';
 import Issue from '@/pages/Issue';
+import TherapistBookingDetailPage from '@/pages/Therapist/My-Booking/[id]';
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
             children: [
               { path: '/therapist/profile', element: <TherapistProfile /> },
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
+              { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
             ],
           },
         ],

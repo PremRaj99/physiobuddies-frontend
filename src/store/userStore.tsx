@@ -14,7 +14,7 @@ export const useCurrUser = create(
       user: {
         id: '4598743',
         name: 'Prem Raj',
-        role: 'patient',
+        role: 'therapist',
         email: 'prem.raj@example.com',
         mobile: '9876543210',
       },
