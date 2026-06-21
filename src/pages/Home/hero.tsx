@@ -29,10 +29,11 @@ export default function Hero() {
               <motion.div
                 className="flex flex-col gap-3 lg:gap-4"
                 animate={{
-                  y: column % 2 === 0 ? [0, -1000] : [-1000, 0],
+                  // Changed from fixed pixels (-1000) to precise percentages (-50%)
+                  y: column % 2 === 0 ? ['0%', '-50%'] : ['-50%', '0%'],
                 }}
                 transition={{
-                  duration: 25 + column * 5, // Varied speeds for organic feel
+                  duration: 25 + column * 5,
                   repeat: Infinity,
                   ease: 'linear',
                 }}
