@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-12">
         {/* --- AUTO-SCROLL GALLERY SECTION --- */}
         {/* Removed 'order' classes so it defaults to top on mobile. Used 'vh' to restrict height on mobile. */}
-        <div className="mask-fade-edges flex h-[42vh] w-full justify-center gap-3 overflow-hidden md:h-[45vh] lg:h-128 lg:justify-start">
+        <div className="flex h-[42vh] w-full justify-center gap-3 overflow-hidden mask-y-from-90% md:h-[45vh] lg:h-128 lg:justify-start">
           {[0, 1, 2].map((column) => (
             <div key={column} className="relative w-20 shrink-0 md:w-24 lg:w-28">
               <motion.div

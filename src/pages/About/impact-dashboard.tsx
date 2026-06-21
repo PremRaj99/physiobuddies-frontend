@@ -66,16 +66,18 @@ export default function ImpactDashboard({
     <div className="w-full">
       {/* Mobile View: Dropdown to select chart */}
       <div className="mb-6 md:hidden">
-        <Select value={selectedChart} onValueChange={setSelectedChart}>
-          <SelectTrigger className="focus:ring-primary border-border h-12 w-full rounded-xl bg-white shadow-sm">
-            <SelectValue placeholder="Select Data View" />
-          </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="bar">Key Metrics</SelectItem>
-            <SelectItem value="pie">Patient Feedback</SelectItem>
-            <SelectItem value="line">Coverage Metrics</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="mb-6 w-full">
+          <Select value={selectedChart} onValueChange={setSelectedChart}>
+            <SelectTrigger className="focus:ring-primary border-border h-12 w-full rounded-xl bg-white shadow-sm">
+              <SelectValue placeholder="Select Data View" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              <SelectItem value="bar">Key Metrics</SelectItem>
+              <SelectItem value="pie">Patient Feedback</SelectItem>
+              <SelectItem value="line">Coverage Metrics</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
