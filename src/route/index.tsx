@@ -30,6 +30,8 @@ import PrivacyPolicy from '@/pages/Privacy-Policy';
 import TermsConditions from '@/pages/Terms';
 import Issue from '@/pages/Issue';
 import TherapistBookingDetailPage from '@/pages/Therapist/My-Booking/[id]';
+import SlotManagement from '@/pages/Therapist/Slot-Management';
+import CommissionHistory from '@/pages/Therapist/Commission-History';
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +73,8 @@ export const router = createBrowserRouter([
               { path: '/therapist/profile', element: <TherapistProfile /> },
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
               { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
+              { path: '/therapist/slot-management', element: <SlotManagement /> },
+              { path: '/therapist/commission-history', element: <CommissionHistory /> },
             ],
           },
         ],

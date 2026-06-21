@@ -16,6 +16,7 @@ import {
   Shield,
   Stethoscope,
   User,
+  Wallet,
   X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -188,6 +189,19 @@ const Header = () => {
                 <DropdownMenuItem onSelect={handleTherapyPlans}>
                   <Activity className="mr-2 h-4 w-4" /> Your Therapy Plans
                 </DropdownMenuItem>
+                {user.role === 'therapist' && (
+                  <DropdownMenuItem onSelect={() => navigate('/therapist/slot-management')}>
+                    <Stethoscope className="mr-2 h-4 w-4" /> Slot Management
+                  </DropdownMenuItem>
+                )}
+                {user.role === 'therapist' && (
+                  <DropdownMenuItem onSelect={() => navigate('/therapist/commission-history')}>
+                    <Wallet className="mr-2 h-4 w-4" /> Commission History
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
                 <DropdownMenuItem onSelect={() => navigate('/my-issues')}>
                   <FileText className="mr-2 h-4 w-4" /> Issues
                 </DropdownMenuItem>
