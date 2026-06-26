@@ -194,9 +194,9 @@ export default function TherapistBookingListPage() {
       {/* Header & Decorator */}
       <PageHeader
         heading={
-          <>
+          <span>
             Treatment Session <span className="text-[#a9d6e5]">Manager</span>
-          </>
+          </span>
         }
         subheading="Track patient sessions, monitor progress, or review past therapy sessions."
       />

@@ -34,6 +34,7 @@ import SlotManagement from '@/pages/Therapist/Slot-Management';
 import CommissionHistory from '@/pages/Therapist/Commission-History';
 import TherapistOnboardingPage from '@/pages/Therapist/Onboarding';
 import TherapistFinalOnboarding from '@/pages/Therapist/FinalOnboarding';
+import Subscription from '@/pages/Therapist/Subscription';
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +79,7 @@ export const router = createBrowserRouter([
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
               { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
               { path: '/therapist/slot-management', element: <SlotManagement /> },
+              { path: '/therapist/subscriptions', element: <Subscription /> },
               { path: '/therapist/commission-history', element: <CommissionHistory /> },
             ],
           },

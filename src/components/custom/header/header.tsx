@@ -14,6 +14,7 @@ import {
   Search,
   Settings,
   Shield,
+  ShieldCheck,
   Stethoscope,
   User,
   Wallet,
@@ -197,6 +198,11 @@ const Header = () => {
                 {user.role === 'therapist' && (
                   <DropdownMenuItem onSelect={() => navigate('/therapist/commission-history')}>
                     <Wallet className="mr-2 h-4 w-4" /> Commission History
+                  </DropdownMenuItem>
+                )}
+                {user.role === 'therapist' && (
+                  <DropdownMenuItem onSelect={() => navigate('/therapist/subscriptions')}>
+                    <ShieldCheck className="mr-2 h-4 w-4" /> Subscription Plans
                   </DropdownMenuItem>
                 )}
               </DropdownMenuGroup>
