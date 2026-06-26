@@ -109,12 +109,33 @@ export default function TherapistSubscriptionPage() {
         subheading="Choose a plan that fits your practice."
       />
       <main className="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
+        <Card className="border-border mb-4 overflow-hidden bg-white py-0 shadow-sm">
+          <div className="border-border bg-secondary/20 flex items-center justify-between border-b px-6 py-4">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-[#012a4a]">
+              <ShieldCheck className="h-5 w-5 text-[#014f86]" /> Current Subscription
+            </h2>
+            <Badge className="bg-success hover:bg-success text-white">Active</Badge>
+          </div>
+          <CardContent className="flex flex-col items-start justify-between gap-4 p-6 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-muted-foreground mb-1 text-sm">Plan Name</p>
+              <h3 className="text-2xl font-bold text-[#014f86]">Half-Yearly Plan</h3>
+            </div>
+            <div className="sm:text-right">
+              <p className="text-muted-foreground mb-1 text-sm">Valid Until</p>
+              <p className="flex items-center gap-2 text-lg font-bold text-[#012a4a]">
+                December 27, 2026
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Pricing Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="flex snap-x snap-mandatory items-center gap-6 overflow-x-auto p-8 pb-8 [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto p-4 pb-8 [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
         >
           {PLANS.map((plan) => {
             const isPopular = plan.popular;
@@ -123,13 +144,13 @@ export default function TherapistSubscriptionPage() {
               <motion.div
                 key={plan.id}
                 variants={cardVariants}
-                className="h-full w-[85vw] shrink-0 snap-center sm:w-72 md:w-auto md:shrink"
+                className="h-full w-[90%] shrink-0 snap-center sm:w-72 md:w-auto md:shrink"
               >
                 <Card
                   className={`relative flex h-full flex-col gap-0 overflow-visible py-0 transition-all duration-300 ${
                     isPopular
-                      ? 'z-10 scale-100 border-2 border-[#014f86] bg-white shadow-2xl md:scale-105'
-                      : 'border-border bg-white/95 shadow-lg hover:bg-white'
+                      ? 'z-10 scale-100 border-2 border-[#014f86] bg-white shadow-xl md:scale-105 md:shadow-2xl'
+                      : 'border-border bg-white/95 shadow-md hover:bg-white'
                   }`}
                 >
                   {isPopular && (
