@@ -32,6 +32,7 @@ import Issue from '@/pages/Issue';
 import TherapistBookingDetailPage from '@/pages/Therapist/My-Booking/[id]';
 import SlotManagement from '@/pages/Therapist/Slot-Management';
 import CommissionHistory from '@/pages/Therapist/Commission-History';
+import TherapistOnboardingPage from '@/pages/Therapist/Onboarding';
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
           {
             element: <TherapistLayout />,
             children: [
+              { path: '/therapist/onboarding', element: <TherapistOnboardingPage /> },
               { path: '/therapist/profile', element: <TherapistProfile /> },
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
               { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
