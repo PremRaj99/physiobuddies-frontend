@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Briefcase,
-  CheckCircle2,
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
   FileText,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import AnimatedSuccess from '@/components/custom/animated-success/AnimatedSuccess';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -140,9 +141,9 @@ export default function TherapistOnboardingPage() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          <Card className="border-border bg-white px-6 pt-12 text-center shadow-xl shadow-[#012a4a]/5">
+          <Card className="border-border gap-0 bg-white px-6 pt-12 text-center shadow-xl shadow-[#012a4a]/5">
             <div className="bg-success/10 mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
-              <CheckCircle2 className="text-success h-10 w-10" />
+              <AnimatedSuccess />
             </div>
             <h1 className="mb-4 text-3xl font-bold text-[#012a4a]">Application Submitted!</h1>
             <p className="mb-8 leading-relaxed text-[#013a63]">
@@ -181,22 +182,26 @@ export default function TherapistOnboardingPage() {
                 return (
                   <div key={s.id} className="flex flex-col items-center px-2">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors ${
+                      className={cn(
+                        `flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors`,
                         isActive
                           ? 'border-[#014f86] bg-[#014f86] text-white'
                           : isPassed
-                            ? 'border-[#014f86] bg-[#a9d6e5] text-[#013a63]'
-                            : 'border-border text-muted-foreground bg-gray-50'
-                      }`}
+                            ? 'text-success border-transparent bg-[#ffffff]'
+                            : 'border-border text-muted-foreground bg-gray-50',
+                      )}
                     >
                       {isPassed ? (
-                        <CheckCircle2 className="h-5 w-5" />
+                        <CheckCircle className="h-6 w-6" />
                       ) : (
                         <s.icon className="h-5 w-5" />
                       )}
                     </div>
                     <span
-                      className={`mt-2 hidden text-xs font-bold sm:block ${isActive || isPassed ? 'text-[#012a4a]' : 'text-muted-foreground'}`}
+                      className={cn(
+                        `mt-2 hidden text-xs font-bold sm:block`,
+                        isActive || isPassed ? 'text-[#012a4a]' : 'text-muted-foreground',
+                      )}
                     >
                       {s.title}
                     </span>
