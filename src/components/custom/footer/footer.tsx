@@ -53,15 +53,15 @@ export default function Footer() {
           <div className="bg-secondary/30 pointer-events-none absolute top-0 right-0 h-64 w-64 translate-x-1/3 -translate-y-1/2 rounded-full blur-3xl" />
 
           <div className="relative z-10 flex flex-1 flex-col items-center gap-4 text-center lg:items-start lg:text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-[#012a4a] md:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-[#012a4a] md:text-3xl">
               Ready to start your recovery?
             </h2>
-            <p className="text-muted-foreground max-w-lg text-sm leading-relaxed">
+            <p className="text-muted-foreground max-w-lg text-xs leading-relaxed lg:text-sm">
               Whether you have questions about our services, want to book an appointment, or just
               need some clinical advice, our expert team is here to help.
             </p>
             <Link to="/contact" className="mt-2 w-full md:w-auto">
-              <Button className="bg-primary group h-10 w-full rounded-full px-6 text-white shadow-md transition-all hover:bg-[#013a63] md:w-auto">
+              <Button className="bg-primary group h-10 w-full px-6 text-white shadow-md transition-all hover:bg-[#013a63] md:w-auto">
                 Contact Us
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -84,7 +84,7 @@ export default function Footer() {
 
       {/* Main Deep Navy Footer */}
       <footer className="mt-2 rounded-t-[40px] bg-[#012a4a] px-6 pt-36 pb-8 md:px-12 lg:px-24">
-        <div className="mx-auto flex max-w-7xl flex-col flex-wrap justify-between gap-12 md:flex-row lg:gap-8">
+        <div className="mx-auto flex max-w-6xl flex-col flex-wrap justify-between gap-12 md:flex-row lg:gap-8">
           {/* Logo and Description Area */}
           <div className="flex max-w-sm flex-col gap-6">
             <div className="w-fit rounded-xl bg-white/10 p-4 backdrop-blur-sm">
@@ -94,7 +94,7 @@ export default function Footer() {
                 className="h-10 w-auto brightness-0 invert" // Ensures logo is white if it has a dark version
               />
             </div>
-            <p className="text-justify text-sm leading-relaxed text-white/70 md:text-left">
+            <p className="text-justify text-xs leading-relaxed text-white/70 md:text-left lg:text-sm">
               At Physiobuddies, we are committed to providing personalized physiotherapy care that
               empowers you to overcome pain, restore mobility, and enhance your quality of life
               through expert clinical guidance.
@@ -147,7 +147,7 @@ export default function Footer() {
                         variants={linkVariants}
                         initial="initial"
                         whileHover="hover"
-                        className="block text-sm"
+                        className="block text-xs lg:text-sm"
                       >
                         {link.name}
                       </motion.span>
@@ -171,7 +171,7 @@ export default function Footer() {
                         variants={linkVariants}
                         initial="initial"
                         whileHover="hover"
-                        className="block text-sm"
+                        className="block text-xs lg:text-sm"
                       >
                         {link.name}
                       </motion.span>
@@ -193,7 +193,7 @@ export default function Footer() {
                     <div className="group-hover:bg-primary rounded-lg bg-white/10 p-2 transition-colors">
                       <Mail className="h-4 w-4" />
                     </div>
-                    <span className="text-sm break-all">support@physiobuddies.in</span>
+                    <span className="text-xs break-all lg:text-sm">support@physiobuddies.in</span>
                   </a>
                 </li>
                 <li>
@@ -204,7 +204,7 @@ export default function Footer() {
                     <div className="group-hover:bg-primary rounded-lg bg-white/10 p-2 transition-colors">
                       <Phone className="h-4 w-4" />
                     </div>
-                    <span className="text-sm">+91 88822 86214</span>
+                    <span className="text-xs lg:text-sm">+91 88822 86214</span>
                   </a>
                 </li>
               </ul>
@@ -213,11 +213,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mx-auto mt-16 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-center md:flex-row">
-          <p className="text-xs text-white/50 md:text-sm">
+        <div className="mx-auto mt-16 flex max-w-6xl flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-center md:flex-row">
+          <p className="text-[11px] text-white/50 md:text-xs">
             Copyright © {new Date().getFullYear()} by Physiobuddies. All Rights Reserved.
           </p>
-          <div className="text-xs text-white/50">Designed for Clinical Excellence</div>
+          <div className="text-[11px] text-white/50 md:text-xs">
+            Designed for Clinical Excellence
+          </div>
         </div>
       </footer>
     </div>

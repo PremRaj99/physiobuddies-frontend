@@ -26,7 +26,7 @@ export default function OurExpertise() {
   };
 
   return (
-    <section className="bg-secondary/20 min-h-screen px-4 py-20">
+    <section className="bg-secondary/20 min-h-body px-4 py-12 md:py-20">
       <div className="mx-auto max-w-6xl">
         {/* Header Section */}
         <motion.div
@@ -34,16 +34,16 @@ export default function OurExpertise() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           variants={headerVariants}
-          className="mb-16 space-y-4 text-center"
+          className="mb-8 space-y-4 text-center lg:mb-16"
         >
-          <div className="text-primary flex items-center justify-center gap-2 text-sm font-semibold tracking-wide uppercase">
+          <div className="text-primary flex items-center justify-center gap-2 text-xs font-semibold tracking-wide uppercase lg:text-sm">
             <Activity className="h-4 w-4" />
             Clinical Excellence
           </div>
-          <h2 className="text-4xl font-bold text-[#012a4a] md:text-5xl">
-            Our <span className="text-primary italic">Expertise</span>
+          <h2 className="text-3xl font-bold tracking-tight text-[#012a4a] md:text-4xl">
+            Our <span className="text-primary">Expertise</span>
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-[#012a4a]/70">
+          <p className="mx-auto max-w-2xl text-xs font-medium text-[#012a4a]/70 lg:text-sm">
             Comprehensive care for more than{' '}
             <span className="text-success font-bold underline decoration-2 underline-offset-4">
               300+
@@ -83,9 +83,9 @@ export default function OurExpertise() {
           {injuriesAndConditions.length > 6 && (
             <Button
               variant="outline"
-              size="lg"
+              size="sm"
               onClick={() => setShowAll(!showAll)}
-              className="border-primary text-primary hover:bg-primary h-12 rounded-full px-8 transition-all duration-300 hover:text-white"
+              className="border-primary text-primary hover:bg-primary transition-all duration-300 hover:text-white"
             >
               {showAll ? (
                 <>

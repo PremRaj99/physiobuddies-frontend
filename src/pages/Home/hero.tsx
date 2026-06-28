@@ -61,7 +61,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-secondary/40 border-secondary hidden w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium text-[#013a63] lg:inline-flex lg:px-4 lg:py-2 lg:text-sm"
+            className="bg-secondary/40 border-secondary hidden w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs text-[#013a63] lg:inline-flex lg:px-4 lg:py-2 lg:text-sm"
           >
             <Activity className="text-primary h-3 w-3 animate-pulse lg:h-4 lg:w-4" />
             Trust-Based Clinical Recovery
@@ -78,7 +78,7 @@ export default function Hero() {
               Restore Movement, <br />
               <span className="text-primary italic">Revive Your Life</span>
             </h1>
-            <p className="hidden max-w-[45ch] text-sm text-[#012a4a]/70 lg:block lg:text-base">
+            <p className="hidden max-w-[45ch] text-sm leading-relaxed text-[#012a4a]/70 lg:block lg:text-base">
               Specialized physiotherapy treatments designed to help you regain strength,
               flexibility, and freedom through clinical expertise.
             </p>
@@ -93,7 +93,7 @@ export default function Hero() {
             <Button
               asChild
               size="lg"
-              className="bg-primary shadow-primary/20 group h-12 rounded-full px-6 text-white shadow-lg transition-all hover:bg-[#013a63] lg:h-14 lg:px-8"
+              className="bg-primary shadow-primary/20 group px-6 text-white shadow-lg transition-all hover:bg-[#013a63] lg:h-14 lg:px-8"
             >
               <Link to="/search" className="flex items-center justify-center gap-2 font-semibold">
                 Book Appointment
@@ -107,7 +107,7 @@ export default function Hero() {
               asChild
               variant="outline"
               size="lg"
-              className="hover:bg-secondary/30 flex h-12 items-center justify-center rounded-full border-[#013a63] px-6 text-[#013a63] transition-all lg:h-14 lg:px-8"
+              className="hover:bg-secondary/30 flex items-center justify-center border-[#013a63] px-6 text-[#013a63] transition-all lg:h-14 lg:px-8"
             >
               <Link to="/network/online">Join Our Network</Link>
             </Button>

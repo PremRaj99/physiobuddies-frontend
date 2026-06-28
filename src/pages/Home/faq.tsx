@@ -37,14 +37,14 @@ export default function FAQ() {
   };
 
   return (
-    <section className="bg-background px-4 py-16 md:px-8">
+    <section className="bg-background min-h-body px-4 py-8 md:px-8 md:py-16">
       <div className="mx-auto flex max-w-3xl flex-col items-center">
         {/* Header Area */}
-        <div className="mb-10 space-y-3 text-center">
-          <h2 className="text-4xl font-bold tracking-tight text-[#012a4a] md:text-5xl">
+        <div className="mb-8 space-y-4 text-center lg:mb-16">
+          <h2 className="text-3xl font-bold tracking-tight text-[#012a4a] md:text-4xl">
             Frequently Asked <span className="text-primary">Questions</span>
           </h2>
-          <p className="mx-auto max-w-xl text-lg text-[#012a4a]/70">
+          <p className="mx-auto max-w-xl text-xs font-medium text-[#012a4a]/70 lg:text-sm">
             Find answers to common questions about our clinical services, consultations, and
             personalized care plans.
           </p>
@@ -67,10 +67,10 @@ export default function FAQ() {
                   // Removing the default bottom border to style it as a floating card
                   className="border-border overflow-hidden rounded-2xl border border-b bg-white px-6 shadow-sm"
                 >
-                  <AccordionTrigger className="hover:text-primary py-5 text-left text-sm font-semibold text-[#012a4a] transition-colors hover:no-underline md:text-base [&[data-state=open]>svg]:rotate-180">
+                  <AccordionTrigger className="hover:text-primary py-5 text-left text-sm font-medium text-[#012a4a] transition-colors hover:no-underline md:text-base [&[data-state=open]>svg]:rotate-180">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pr-6 pb-5 text-sm leading-relaxed">
+                  <AccordionContent className="text-muted-foreground pr-6 pb-5 text-xs leading-relaxed">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -85,7 +85,7 @@ export default function FAQ() {
             <Button
               variant="outline"
               onClick={() => setShowAll(!showAll)}
-              className="border-primary/20 hover:bg-secondary/30 hover:text-primary h-11 w-40 rounded-full text-[#014f86] shadow-sm transition-all"
+              className="border-primary/20 hover:bg-secondary/30 hover:text-primary text-[#014f86] shadow-sm transition-all"
             >
               {showAll ? 'Show Less' : 'Read More FAQs'}
               <ChevronDown

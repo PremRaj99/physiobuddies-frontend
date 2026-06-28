@@ -25,7 +25,7 @@ export default function Services() {
   };
 
   return (
-    <section className="bg-background px-4 py-8 md:px-8">
+    <section className="bg-background min-h-body px-4 py-8 md:py-16">
       <div className="mx-auto w-full max-w-6xl">
         {/* Header Section */}
         <motion.div
@@ -33,12 +33,12 @@ export default function Services() {
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           variants={headerVariants}
-          className="mx-auto mb-8 max-w-3xl space-y-4 text-center"
+          className="mx-auto mb-4 max-w-3xl space-y-4 text-center"
         >
-          <h1 className="text-4xl font-bold tracking-tight text-[#012a4a] md:text-5xl">
+          <h1 className="text-3xl font-bold tracking-tight text-[#012a4a] md:text-4xl">
             Our <span className="text-primary">Services</span>
           </h1>
-          <p className="text-lg text-[#012a4a]/70">
+          <p className="text-xs font-medium text-[#012a4a]/70 lg:text-sm">
             Your Complete Physiotherapy Solution, All in One Platform.
           </p>
           <div className="bg-primary/20 mx-auto mt-6 h-1 w-20 rounded-full" />

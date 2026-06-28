@@ -14,7 +14,7 @@ export default function OfferedServiceCard({ title, subheading, img, p }: Offere
   return (
     <motion.div
       whileHover={{ y: -3 }}
-      className="group border-border/50 grid items-center gap-10 border-b py-10 md:grid-cols-[1.1fr_1fr]"
+      className="group border-border/50 grid items-center gap-5 border-b py-10 md:grid-cols-[1.1fr_1fr] lg:gap-10"
     >
       {/* Image */}
       <div className="relative h-56 w-full overflow-hidden rounded-xl md:h-64">
@@ -28,29 +28,27 @@ export default function OfferedServiceCard({ title, subheading, img, p }: Offere
       {/* Content */}
       <div className="flex h-full flex-col justify-between">
         {/* Top Content */}
-        <div>
-          {/* Accent + Label Row */}
-          <div className="mb-4 flex items-center gap-3">
-            <div className="bg-primary h-0.5 w-8" />
-            <span className="text-primary/70 text-[11px] font-semibold tracking-widest uppercase">
-              Service
-            </span>
-          </div>
-
-          {/* Title */}
-          <h2 className="mb-2 text-[22px] leading-snug font-semibold text-[#012a4a] md:text-2xl">
-            {title}
-          </h2>
-
-          {/* Subheading */}
-          <p className="mb-4 text-sm font-medium text-[#014f86]">{subheading}</p>
-
-          {/* Description */}
-          <p className="text-muted-foreground max-w-md text-sm leading-relaxed">{p}</p>
+        {/* Accent + Label Row */}
+        <div className="mb-4 flex items-center gap-3">
+          <div className="bg-primary h-0.5 w-8" />
+          <span className="text-primary/70 text-[11px] font-semibold tracking-widest uppercase">
+            Service
+          </span>
         </div>
 
+        {/* Title */}
+        <h2 className="mb-2 text-xl leading-snug font-semibold text-[#012a4a] md:text-2xl">
+          {title}
+        </h2>
+
+        {/* Subheading */}
+        <p className="mb-4 text-xs font-medium text-[#014f86] lg:text-sm">{subheading}</p>
+
+        {/* Description */}
+        <p className="text-muted-foreground max-w-md text-xs leading-relaxed lg:text-sm">{p}</p>
+
         {/* CTA */}
-        <div className="mt-6">
+        <div className="mt-4 lg:mt-6">
           <Link to="/physio">
             <Button
               variant="outline"
