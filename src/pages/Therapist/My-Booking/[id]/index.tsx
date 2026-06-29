@@ -1,4 +1,5 @@
 import {
+  Activity,
   ArrowLeft,
   Building2,
   CalendarClock,
@@ -87,6 +88,11 @@ const MOCK_BOOKING = {
     image:
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
   },
+  condition: {
+    title: 'Post Surgical',
+  },
+  problemDescription:
+    'Experiencing severe stiffness and limited range of motion in the left knee after ACL reconstruction surgery 3 weeks ago.',
   location: {
     address: 'Apt 4B, Wellness Heights, Sector 62',
     landmark: 'Opposite Metro Pillar 12',
@@ -133,7 +139,17 @@ const isSessionStartable = (dateStr: string, timeRange: string) => {
 
 // --- Sub-Components ---
 
-const PatientHeader = ({ patient, mode }: { patient: Patient; mode: TreatmentMode }) => (
+const PatientHeader = ({
+  patient,
+  mode,
+  condition,
+  problemDescription,
+}: {
+  patient: Patient;
+  mode: TreatmentMode;
+  condition?: { title: string };
+  problemDescription?: string;
+}) => (
   <Card className="border-border mb-8 overflow-hidden bg-white py-0 shadow-sm">
     <div className="bg-secondary/30 border-border flex items-center justify-between border-b px-6 py-6">
       <h3 className="flex items-center gap-2 font-semibold text-[#013a63]">
@@ -193,6 +209,31 @@ const PatientHeader = ({ patient, mode }: { patient: Patient; mode: TreatmentMod
           </div>
         </div>
       </div>
+      {(condition || problemDescription) && (
+        <>
+          <Separator className="my-6" />
+          <div>
+            <p className="text-muted-foreground mb-3 flex items-center gap-1.5 text-xs font-bold uppercase opacity-60">
+              <Activity className="h-4 w-4 text-[#014f86]" /> Primary Condition & Notes
+            </p>
+            <div className="flex flex-col gap-4">
+              {condition && (
+                <Badge className="shrink-0 border-none bg-[#a9d6e5]/30 px-4 py-2 text-sm whitespace-nowrap text-[#013a63] hover:bg-[#a9d6e5]/40">
+                  {condition.title}
+                </Badge>
+              )}
+              {problemDescription && (
+                <div className="border-border relative flex-1 rounded-lg border bg-gray-50 p-4">
+                  <div className="absolute top-0 left-0 h-full w-1 rounded-l-lg bg-[#014f86]" />
+                  <p className="pl-2 text-sm leading-relaxed text-[#012a4a] italic">
+                    "{problemDescription}"
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </CardContent>
   </Card>
 );
@@ -232,7 +273,12 @@ export default function TherapistBookingDetailPage() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* LEFT: Session Tracking */}
           <div className="space-y-8 lg:col-span-2">
-            <PatientHeader patient={MOCK_BOOKING.patient} mode={MOCK_BOOKING.mode} />
+            <PatientHeader
+              patient={MOCK_BOOKING.patient}
+              mode={MOCK_BOOKING.mode}
+              condition={MOCK_BOOKING.condition}
+              problemDescription={MOCK_BOOKING.problemDescription}
+            />
 
             <Card className="border-border gap-0 py-0 shadow-sm">
               <CardHeader className="border-border flex flex-row items-center justify-between rounded-t-xl border-b bg-white pt-4">
@@ -289,6 +335,11 @@ export default function TherapistBookingDetailPage() {
                             <DialogTrigger asChild>
                               <Button
                                 variant="outline"
+                                onClick={() =>
+                                  navigate(
+                                    `/therapist/my-booking/${MOCK_BOOKING.id}/create-assessment`,
+                                  )
+                                }
                                 className="hover:bg-secondary/20 h-10 border-[#014f86] text-[#014f86]"
                               >
                                 <FilePlus className="mr-2 h-4 w-4" /> Prepare Docs

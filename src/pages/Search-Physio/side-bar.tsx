@@ -42,11 +42,15 @@ export default function Sidebar({ filters, onFilterChange, onResetFilters }: Sid
   const isMobile = useIsMobile();
 
   const specialities = [
+    'General Physio',
     'Sports Physio',
     'Neuro Physio',
     'Ortho Physio',
-    'Elderly Care',
+    'Cardio Physio',
+    'Geriatric Physio',
     'Post Surgery',
+    "Women's Health Physio",
+    'Ergonomics & Workplace Physio',
     'Pediatric Physio',
   ];
 

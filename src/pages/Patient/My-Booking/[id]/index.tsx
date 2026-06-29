@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import {
+  Activity,
   AlertCircle,
   ArrowLeft,
   Building2,
@@ -98,6 +99,8 @@ interface BookingDetails {
   patient: Patient;
   location: Location;
   sessions: TreatmentSession[];
+  condition: { title: string };
+  problemDescription: string;
   documents: Document[];
 }
 
@@ -119,6 +122,11 @@ const MOCK_DATA: BookingDetails = {
     gender: 'MALE',
     phone: '+1 (555) 123-4567',
   },
+  condition: {
+    title: 'Post Surgical',
+  },
+  problemDescription:
+    'Experiencing severe stiffness and limited range of motion in the left knee after ACL reconstruction surgery 3 weeks ago.',
   location: {
     address: '123 Wellness Ave, Apt 4B',
     landmark: 'Near Central Park',
@@ -236,7 +244,7 @@ const getSessionStatusBadge = (status: SessionStatus) => {
 // --- Sub-Components ---
 
 const TherapistCard = ({ therapist }: { therapist: Therapist }) => (
-  <Card className="border-border overflow-hidden bg-white py-0 shadow-sm">
+  <Card className="border-border gap-0 overflow-hidden bg-white py-0 shadow-sm">
     <div className="bg-secondary/30 border-border flex items-center justify-between border-b px-6 py-4">
       <h3 className="flex items-center gap-2 font-semibold text-[#013a63]">
         <Stethoscope className="h-4 w-4 text-[#014f86]" /> Primary Therapist
@@ -272,9 +280,17 @@ const TherapistCard = ({ therapist }: { therapist: Therapist }) => (
   </Card>
 );
 
-const PatientInfoCard = ({ patient }: { patient: Patient }) => (
-  <Card className="border-border pt-0 shadow-sm">
-    <CardHeader className="bg-secondary/20 py-4">
+const PatientInfoCard = ({
+  patient,
+  condition,
+  problemDescription,
+}: {
+  patient: Patient;
+  condition?: { title: string };
+  problemDescription?: string;
+}) => (
+  <Card className="border-border gap-0 bg-white pt-0 shadow-sm">
+    <CardHeader className="bg-secondary/30 border-border flex items-center justify-between border-b px-6 py-4">
       <CardTitle className="flex items-center gap-2 text-lg text-[#013a63]">
         <User className="h-5 w-5" /> Patient Details
       </CardTitle>
@@ -300,6 +316,31 @@ const PatientInfoCard = ({ patient }: { patient: Patient }) => (
           <Phone className="h-4 w-4 text-[#014f86]" /> {patient.phone}
         </div>
       </div>
+      {(condition || problemDescription) && (
+        <>
+          <Separator className="my-6" />
+          <div>
+            <p className="text-muted-foreground mb-3 flex items-center gap-1.5 text-xs font-bold uppercase opacity-60">
+              <Activity className="h-4 w-4 text-[#014f86]" /> Primary Condition & Notes
+            </p>
+            <div className="flex flex-col gap-4">
+              {condition && (
+                <Badge className="shrink-0 border-none bg-[#a9d6e5]/30 px-4 py-2 text-sm whitespace-nowrap text-[#013a63] hover:bg-[#a9d6e5]/40">
+                  {condition.title}
+                </Badge>
+              )}
+              {problemDescription && (
+                <div className="border-border relative flex-1 rounded-lg border bg-gray-50 p-4">
+                  <div className="absolute top-0 left-0 h-full w-1 rounded-l-lg bg-[#014f86]" />
+                  <p className="pl-2 text-sm leading-relaxed text-[#012a4a] italic">
+                    "{problemDescription}"
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </CardContent>
   </Card>
 );
@@ -308,7 +349,7 @@ const LocationCard = ({ location, mode }: { location: Location; mode: TreatmentM
   if (mode === 'online') return null; // No location needed for purely online
 
   return (
-    <Card className="border-border pt-0 shadow-sm">
+    <Card className="border-border gap-0 pt-0 shadow-sm">
       <CardHeader className="bg-secondary/20 py-4">
         <CardTitle className="flex items-center gap-2 text-lg text-[#013a63]">
           {mode === 'home_visit' ? <Home className="h-5 w-5" /> : <Building2 className="h-5 w-5" />}
@@ -403,7 +444,7 @@ export default function BookingDetailPage() {
 
             {/* Treatment Sessions Timeline */}
             <motion.div variants={itemVariants}>
-              <Card className="border-border py-0 shadow-sm">
+              <Card className="border-border gap-0 py-0 shadow-sm">
                 <CardHeader className="border-border rounded-t-xl border-b bg-white py-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -487,7 +528,7 @@ export default function BookingDetailPage() {
 
             {/* Documents & Assessments */}
             <motion.div variants={itemVariants}>
-              <Card className="border-border py-0 shadow-sm">
+              <Card className="border-border gap-0 py-0 shadow-sm">
                 <CardHeader className="border-border rounded-t-xl border-b bg-white py-4">
                   <CardTitle className="flex items-center gap-2 text-xl text-[#012a4a]">
                     <FileCheck className="h-5 w-5 text-[#014f86]" /> Medical Documents
@@ -550,7 +591,11 @@ export default function BookingDetailPage() {
             className="space-y-8"
           >
             <motion.div variants={itemVariants}>
-              <PatientInfoCard patient={data.patient} />
+              <PatientInfoCard
+                patient={data.patient}
+                condition={data.condition}
+                problemDescription={data.problemDescription}
+              />
             </motion.div>
 
             <motion.div variants={itemVariants}>

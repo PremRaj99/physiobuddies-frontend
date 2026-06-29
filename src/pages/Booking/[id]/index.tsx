@@ -16,6 +16,8 @@ import {
   Stethoscope,
   Home,
   Tag,
+  Activity,
+  CheckCircle,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -26,8 +28,9 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 // --- Types ---
 type Gender = 'MALE' | 'FEMALE' | 'OTHER';
@@ -38,6 +41,8 @@ interface Patient {
   dob: string;
   gender: Gender;
   phone: string;
+  heightCm: number;
+  weightKg: number;
   updatedAt: string;
 }
 
@@ -86,6 +91,8 @@ const INITIAL_PATIENTS: Patient[] = [
     dob: '1990-05-15',
     gender: 'MALE',
     phone: '+91 9876543210',
+    heightCm: 175,
+    weightKg: 70,
     updatedAt: '2026-05-10',
   },
   {
@@ -94,6 +101,8 @@ const INITIAL_PATIENTS: Patient[] = [
     dob: '1992-08-22',
     gender: 'FEMALE',
     phone: '+91 9876543211',
+    heightCm: 160,
+    weightKg: 62,
     updatedAt: '2026-05-12',
   },
 ];
@@ -109,6 +118,79 @@ const INITIAL_LOCATIONS: Location[] = [
     postalCode: '110001',
     location: { lat: 28.6139, lng: 77.209 },
     updatedAt: '2026-05-01',
+  },
+];
+
+const CONDITIONS = [
+  {
+    id: 'ortho',
+    title: 'Ortho',
+    desc: 'Joint, bone, or muscle pain',
+    image:
+      'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'neuro',
+    title: 'Neuro',
+    desc: 'Nerve issues, stroke rehab',
+    image:
+      'https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'sport',
+    title: 'Sport',
+    desc: 'Athletic recovery & injury',
+    image:
+      'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'post_surgical',
+    title: 'Post Surgical',
+    desc: 'Recovery after operations',
+    image:
+      'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'cardio',
+    title: 'Cardio',
+    desc: 'Heart & lung rehabilitation',
+    image:
+      'https://images.unsplash.com/photo-1505506874110-6a7a6c9924cb?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'geriatric',
+    title: 'Geriatric',
+    desc: 'Elderly care & mobility',
+    image:
+      'https://images.unsplash.com/photo-1516801968815-534d3d4b6849?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'pediatric',
+    title: 'Pediatric',
+    desc: 'Child physical development',
+    image:
+      'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'womens_health',
+    title: "Women's Health",
+    desc: 'Pregnancy & postpartum',
+    image:
+      'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'ergonomics',
+    title: 'Ergonomics',
+    desc: 'Posture & workplace pain',
+    image:
+      'https://images.unsplash.com/photo-1497215848590-50d44b58e727?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    id: 'general',
+    title: 'General',
+    desc: 'Routine checkups & wellness',
+    image:
+      'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=300',
   },
 ];
 
@@ -138,29 +220,30 @@ const TimerHeader = ({ timeLeft, currentStep }: { timeLeft: number; currentStep:
   const steps = [
     { num: 1, label: 'Patient', icon: User },
     { num: 2, label: 'Location', icon: MapPin },
-    { num: 3, label: 'Checkout', icon: CreditCard },
+    { num: 3, label: 'Condition', icon: Activity },
+    { num: 4, label: 'Checkout', icon: CreditCard },
   ];
 
   return (
     <div className="border-border sticky top-0 z-50 mb-8 border-b bg-white/80 py-4 backdrop-blur-md">
-      <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
         {/* Stepper */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex w-full items-center gap-1 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-3 md:w-auto md:pb-0 [&::-webkit-scrollbar]:hidden">
           {steps.map((step, idx) => {
             const isActive = currentStep === step.num;
             const isPast = currentStep > step.num;
             return (
-              <div key={step.num} className="flex items-center">
+              <div key={step.num} className="flex shrink-0 items-center">
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors ${
                     isActive
                       ? 'bg-[#014f86] text-white'
                       : isPast
-                        ? 'bg-[#a9d6e5] text-[#013a63]'
+                        ? 'text-success border-transparent bg-[#ffffff]'
                         : 'bg-secondary text-muted-foreground'
                   }`}
                 >
-                  {isPast ? <CheckCircle2 className="h-5 w-5" /> : step.num}
+                  {isPast ? <CheckCircle className="h-6 w-6" /> : step.num}
                 </div>
                 <span
                   className={`ml-2 hidden text-sm font-semibold sm:block ${
@@ -171,7 +254,7 @@ const TimerHeader = ({ timeLeft, currentStep }: { timeLeft: number; currentStep:
                 </span>
                 {idx < steps.length - 1 && (
                   <div
-                    className={`mx-2 h-1 w-8 rounded-full sm:mx-4 sm:w-12 ${isPast ? 'bg-[#a9d6e5]' : 'bg-secondary'}`}
+                    className={`mx-2 h-1 w-6 rounded-full sm:mx-3 sm:w-10 ${isPast ? 'bg-[#a9d6e5]' : 'bg-secondary'}`}
                   />
                 )}
               </div>
@@ -181,7 +264,7 @@ const TimerHeader = ({ timeLeft, currentStep }: { timeLeft: number; currentStep:
 
         {/* Timer */}
         <div
-          className={`flex items-center gap-2 rounded-full px-4 py-2 font-bold tracking-widest ${
+          className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 font-bold tracking-widest ${
             isUrgent
               ? 'border border-red-200 bg-red-50 text-red-600'
               : 'bg-[#a9d6e5]/30 text-[#013a63]'
@@ -207,6 +290,13 @@ const PatientStep = ({
   onNext: () => void;
 }) => {
   const [showNewForm, setShowNewForm] = useState(false);
+
+  // Calculate BMI if height and weight exist
+  const getBmiLabel = (height: number, weight: number) => {
+    const heightM = height / 100;
+    const bmi = (weight / (heightM * heightM)).toFixed(1);
+    return `BMI: ${bmi}`;
+  };
 
   return (
     <motion.div
@@ -264,6 +354,14 @@ const PatientStep = ({
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input id="phone" placeholder="+91 XXXXX XXXXX" />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="height">Height (cm)</Label>
+                <Input id="height" type="number" placeholder="e.g. 170" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="weight">Weight (kg)</Label>
+                <Input id="weight" type="number" placeholder="e.g. 65" />
+              </div>
             </div>
             <div className="mt-4 flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setShowNewForm(false)}>
@@ -292,12 +390,27 @@ const PatientStep = ({
                 </div>
                 <div>
                   <h4 className="font-bold text-[#012a4a]">{p.name}</h4>
-                  <p className="text-muted-foreground text-sm">
-                    {p.gender} • {p.dob}
-                  </p>
-                  <p className="text-muted-foreground text-sm">{p.phone}</p>
+                  <div className="text-muted-foreground mt-0.5 flex flex-wrap items-center gap-1.5 text-sm">
+                    <span className="capitalize">{p.gender.toLowerCase()}</span>
+                    <span>•</span>
+                    <span>{p.dob}</span>
+                    {(p.heightCm || p.weightKg) && (
+                      <>
+                        <span>•</span>
+                        <Badge
+                          variant="secondary"
+                          className="bg-[#a9d6e5]/20 py-0 text-[10px] text-[#013a63] hover:bg-[#a9d6e5]/20"
+                        >
+                          {getBmiLabel(p.heightCm, p.weightKg) || 'Vitals saved'}
+                        </Badge>
+                      </>
+                    )}
+                  </div>
+                  <p className="text-muted-foreground mt-1 text-sm">{p.phone}</p>
                 </div>
-                {selectedId === p.id && <CheckCircle2 className="ml-auto h-5 w-5 text-[#014f86]" />}
+                {selectedId === p.id && (
+                  <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-[#014f86]" />
+                )}
               </CardContent>
             </Card>
           ))}
@@ -432,6 +545,106 @@ const LocationStep = ({
           disabled={!selectedId || showNewForm}
           onClick={onNext}
         >
+          Condition Details <ChevronRight className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    </motion.div>
+  );
+};
+
+const ConditionStep = ({
+  selectedConditionId,
+  onSelectCondition,
+  problemDesc,
+  onChangeDesc,
+  onNext,
+  onBack,
+}: {
+  selectedConditionId: string | null;
+  onSelectCondition: (id: string) => void;
+  problemDesc: string;
+  onChangeDesc: (desc: string) => void;
+  onNext: () => void;
+  onBack: () => void;
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+    >
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-[#012a4a]">Primary Condition</h2>
+        <p className="text-muted-foreground">
+          Select the category that best describes your needs to help the therapist prepare.
+        </p>
+      </div>
+
+      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        {CONDITIONS.map((cond) => {
+          const isSelected = selectedConditionId === cond.id;
+          return (
+            <Card
+              key={cond.id}
+              onClick={() => onSelectCondition(cond.id)}
+              className={cn(
+                `cursor-pointer overflow-hidden transition-all duration-300`,
+                isSelected
+                  ? 'border-[#014f86] bg-blue-50/50 shadow-md ring-2 ring-[#014f86]'
+                  : 'bg-white hover:border-[#a9d6e5] hover:shadow-sm',
+              )}
+            >
+              <div className="bg-secondary relative h-24 w-full overflow-hidden">
+                <img
+                  src={cond.image}
+                  alt={cond.title}
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                <h4 className="absolute right-2 bottom-2 left-2 text-sm font-bold text-white">
+                  {cond.title}
+                </h4>
+              </div>
+              <CardContent className="p-3">
+                <p className="text-muted-foreground text-xs leading-tight">{cond.desc}</p>
+                {isSelected && (
+                  <div className="mt-2 flex justify-end">
+                    <CheckCircle2 className="h-4 w-4 text-[#014f86]" />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      <div className="mb-8">
+        <Label htmlFor="problem-desc" className="mb-2 block text-lg font-bold text-[#012a4a]">
+          Describe your problem{' '}
+          <span className="text-muted-foreground text-sm font-normal">(Optional)</span>
+        </Label>
+        <Textarea
+          id="problem-desc"
+          placeholder="Briefly describe your pain, recent surgeries, or specific areas of concern..."
+          className="min-h-30 focus-visible:ring-[#014f86]"
+          value={problemDesc}
+          onChange={(e) => onChangeDesc(e.target.value)}
+        />
+        <p className="text-muted-foreground mt-2 text-xs">
+          This helps the therapist bring the right equipment and tailor the session to you.
+        </p>
+      </div>
+
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onBack}>
+          <ChevronLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
+        <Button
+          size="lg"
+          className="bg-[#014f86] hover:bg-[#013a63]"
+          disabled={!selectedConditionId}
+          onClick={onNext}
+        >
           Review & Checkout <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
@@ -443,12 +656,16 @@ const CheckoutStep = ({
   session,
   patient,
   location,
+  conditionId,
+  problemDesc,
   onBack,
   onComplete,
 }: {
   session: BookingSession;
   patient: Patient;
   location: Location;
+  conditionId: string | null;
+  problemDesc: string;
   onBack: () => void;
   onComplete: () => void;
 }) => {
@@ -474,6 +691,8 @@ const CheckoutStep = ({
       setDiscountApplied(0);
     }
   };
+
+  const selectedCondition = CONDITIONS.find((c) => c.id === conditionId);
 
   return (
     <motion.div
@@ -512,7 +731,8 @@ const CheckoutStep = ({
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+
+              <div className="border-border mb-6 grid grid-cols-2 gap-4 border-b pb-6 text-sm">
                 <div>
                   <p className="text-muted-foreground mb-1">Date & Time</p>
                   <p className="font-semibold text-[#012a4a]">{session.date}</p>
@@ -523,6 +743,26 @@ const CheckoutStep = ({
                   <p className="font-semibold text-[#012a4a]">{patient.name}</p>
                   <p className="text-muted-foreground">{patient.phone}</p>
                 </div>
+              </div>
+
+              {/* Display Condition Details */}
+              <div className="text-sm">
+                <p className="text-muted-foreground mb-2 flex items-center gap-2">
+                  <Activity className="h-4 w-4" /> Primary Condition
+                </p>
+                {selectedCondition ? (
+                  <Badge className="mb-3 border-none bg-[#a9d6e5]/30 text-[#013a63] hover:bg-[#a9d6e5]/40">
+                    {selectedCondition.title}
+                  </Badge>
+                ) : (
+                  <span className="text-muted-foreground">Not specified</span>
+                )}
+
+                {problemDesc && (
+                  <div className="border-border rounded-md border bg-gray-50 p-3">
+                    <p className="text-xs leading-relaxed text-[#012a4a] italic">"{problemDesc}"</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -643,7 +883,7 @@ const CheckoutStep = ({
                 Pay ₹{finalTotal} & Book
               </Button>
               <Button variant="ghost" className="text-muted-foreground w-full" onClick={onBack}>
-                <ChevronLeft className="mr-2 h-4 w-4" /> Back to Location
+                <ChevronLeft className="mr-2 h-4 w-4" /> Back to Condition
               </Button>
             </CardFooter>
           </Card>
@@ -665,6 +905,9 @@ export default function BookingProcessPage() {
 
   const [locations] = useState<Location[]>(INITIAL_LOCATIONS);
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+
+  const [selectedConditionId, setSelectedConditionId] = useState<string | null>(null);
+  const [problemDescription, setProblemDescription] = useState<string>('');
 
   // Timer Effect
   useEffect(() => {
@@ -714,13 +957,27 @@ export default function BookingProcessPage() {
             />
           )}
 
-          {currentStep === 3 && selectedPatientId && selectedLocationId && (
-            <CheckoutStep
+          {currentStep === 3 && (
+            <ConditionStep
               key="step3"
+              selectedConditionId={selectedConditionId}
+              onSelectCondition={setSelectedConditionId}
+              problemDesc={problemDescription}
+              onChangeDesc={setProblemDescription}
+              onBack={() => setCurrentStep(2)}
+              onNext={() => setCurrentStep(4)}
+            />
+          )}
+
+          {currentStep === 4 && selectedPatientId && selectedLocationId && (
+            <CheckoutStep
+              key="step4"
               session={MOCK_SESSION}
               patient={patients.find((p) => p.id === selectedPatientId)!}
               location={locations.find((l) => l.id === selectedLocationId)!}
-              onBack={() => setCurrentStep(2)}
+              conditionId={selectedConditionId}
+              problemDesc={problemDescription}
+              onBack={() => setCurrentStep(3)}
               onComplete={handleFinalCheckout}
             />
           )}

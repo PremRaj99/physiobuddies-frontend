@@ -35,6 +35,7 @@ import CommissionHistory from '@/pages/Therapist/Commission-History';
 import TherapistOnboardingPage from '@/pages/Therapist/Onboarding';
 import TherapistFinalOnboarding from '@/pages/Therapist/FinalOnboarding';
 import Subscription from '@/pages/Therapist/Subscription';
+import CreateAssessment from '@/pages/Therapist/My-Booking/[id]/Create-Assessment';
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ export const router = createBrowserRouter([
               { path: '/therapist/profile', element: <TherapistProfile /> },
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
               { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
+              {
+                path: '/therapist/my-booking/:id/create-assessment',
+                element: <CreateAssessment />,
+              },
               { path: '/therapist/slot-management', element: <SlotManagement /> },
               { path: '/therapist/subscriptions', element: <Subscription /> },
               { path: '/therapist/commission-history', element: <CommissionHistory /> },
