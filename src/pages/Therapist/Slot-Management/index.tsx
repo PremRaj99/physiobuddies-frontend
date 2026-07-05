@@ -14,7 +14,6 @@ import {
   Settings2,
   ShieldCheck,
   Sun,
-  Sunrise,
   Sunset,
   User,
   Video,
@@ -35,12 +34,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 const TIME_PERIODS = [
-  { id: 'early_morning', label: 'Early Morning', icon: Sunrise, range: [6, 8] },
-  { id: 'morning', label: 'Morning', icon: Sun, range: [9, 11] },
-  { id: 'noon', label: 'Noon', icon: Sun, range: [12, 14] },
-  { id: 'evening', label: 'Evening', icon: Sunset, range: [15, 18] },
-  { id: 'night', label: 'Night', icon: Moon, range: [19, 21] },
-  { id: 'late_night', label: 'Late Night', icon: MoonStar, range: [22, 23] },
+  { id: 'morning', label: 'Morning', icon: Sun, range: [6, 11] },
+  { id: 'evening', label: 'Evening', icon: Sunset, range: [12, 17] },
+  { id: 'night', label: 'Night', icon: Moon, range: [18, 23] },
 ];
 
 interface DaySchedule {
@@ -65,13 +61,11 @@ interface UpcomingBooking {
 const generateSlotsForPeriod = (startHour: number, endHour: number) => {
   const slots = [];
   for (let h = startHour; h <= endHour; h++) {
-    for (const m of [0, 30]) {
-      const isPM = h >= 12;
-      const displayH = h % 12 === 0 ? 12 : h % 12;
-      const displayM = m === 0 ? '00' : '30';
-      const ampm = isPM ? 'PM' : 'AM';
-      slots.push(`${String(displayH).padStart(2, '0')}:${displayM} ${ampm}`);
-    }
+    const isPM = h >= 12;
+    const displayH = h % 12 === 0 ? 12 : h % 12;
+    const ampm = isPM ? 'PM' : 'AM';
+    const displayHStr = String(displayH).padStart(2, '0');
+    slots.push(`${displayHStr}:00 ${ampm} - ${displayHStr}:40 ${ampm}`);
   }
   return slots;
 };
@@ -96,28 +90,28 @@ const MOCK_BOOKINGS: UpcomingBooking[] = [
     id: 'BKG-01',
     patientName: 'Robert Fox',
     date: 'Jun 22, 2026',
-    time: '09:00 AM',
+    time: '09:00 AM - 09:40 AM',
     mode: 'online',
   },
   {
     id: 'BKG-02',
     patientName: 'Eleanor Pena',
     date: 'Jun 22, 2026',
-    time: '11:30 AM',
+    time: '11:00 AM - 11:40 AM',
     mode: 'clinic',
   },
   {
     id: 'BKG-03',
     patientName: 'Albert Flores',
     date: 'Jun 23, 2026',
-    time: '04:00 PM',
+    time: '04:00 PM - 04:40 PM',
     mode: 'home_visit',
   },
   {
     id: 'BKG-04',
     patientName: 'Jane Cooper',
     date: 'Jun 24, 2026',
-    time: '10:00 AM',
+    time: '10:00 AM - 10:40 AM',
     mode: 'online',
   },
 ];
@@ -140,7 +134,7 @@ export default function TherapistSlotManagementPage() {
   const [overrideDate, setOverrideDate] = useState('');
   const [overrides, setOverrides] = useState<Record<string, DateOverride>>({
     '2026-06-25': { isOff: true, blockedSlots: [] },
-    '2026-06-26': { isOff: false, blockedSlots: ['09:00 AM', '09:30 AM'] },
+    '2026-06-26': { isOff: false, blockedSlots: ['09:00 AM - 09:40 AM', '10:00 AM - 10:40 AM'] },
   });
 
   const [isSaving, setIsSaving] = useState(false);

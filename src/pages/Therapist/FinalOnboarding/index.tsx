@@ -14,8 +14,8 @@ import {
   MapPin,
   Navigation,
   ShieldCheck,
+  Moon,
   Sun,
-  Sunrise,
   Sunset,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -49,9 +49,9 @@ const SUBSCRIPTION_PLANS = [
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const PERIODS = [
-  { id: 'morning', label: 'Morning', icon: Sunrise },
-  { id: 'noon', label: 'Noon', icon: Sun },
+  { id: 'morning', label: 'Morning', icon: Sun },
   { id: 'evening', label: 'Evening', icon: Sunset },
+  { id: 'night', label: 'Night', icon: Moon },
 ];
 
 type FormData = {
@@ -486,8 +486,8 @@ export default function TherapistFinalOnboarding() {
                     <div className="grid grid-cols-4 bg-[#012a4a] p-4 text-sm font-bold text-white">
                       <div>Day</div>
                       <div className="text-center">Morning</div>
-                      <div className="text-center">Afternoon</div>
                       <div className="text-center">Evening</div>
+                      <div className="text-center">Night</div>
                     </div>
                     <div className="divide-border divide-y">
                       {DAYS.map((day) => (

@@ -111,17 +111,19 @@ const MOCK_PHYSIO = {
 
 const MOCK_SLOTS: PeriodData = {
   morning: [
-    { id: 's1', time: '09:00 AM', available: false },
-    { id: 's2', time: '10:00 AM', available: true },
-    { id: 's3', time: '11:00 AM', available: true },
-  ],
-  noon: [
-    { id: 's4', time: '12:00 PM', available: true },
-    { id: 's5', time: '01:00 PM', available: false },
+    { id: 's1', time: '09:00 AM - 09:40 AM', available: false },
+    { id: 's2', time: '10:00 AM - 10:40 AM', available: true },
+    { id: 's3', time: '11:00 AM - 11:40 AM', available: true },
   ],
   evening: [
-    { id: 's6', time: '04:00 PM', available: true },
-    { id: 's7', time: '05:00 PM', available: true },
+    { id: 's4', time: '12:00 PM - 12:40 PM', available: true },
+    { id: 's5', time: '01:00 PM - 01:40 PM', available: false },
+    { id: 's6', time: '04:00 PM - 04:40 PM', available: true },
+    { id: 's7', time: '05:00 PM - 05:40 PM', available: true },
+  ],
+  night: [
+    { id: 's8', time: '06:00 PM - 06:40 PM', available: true },
+    { id: 's9', time: '07:00 PM - 07:40 PM', available: true },
   ],
 };
 
@@ -142,8 +144,8 @@ const TimeSlotsUI = ({
 
   const periods = [
     { id: 'morning', label: 'Morning', icon: '🌅' },
-    { id: 'noon', label: 'Noon', icon: '☀️' },
     { id: 'evening', label: 'Evening', icon: '🌇' },
+    { id: 'night', label: 'Night', icon: '🌃' },
   ];
 
   return (
