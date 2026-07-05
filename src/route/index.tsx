@@ -36,6 +36,8 @@ import TherapistOnboardingPage from '@/pages/Therapist/Onboarding';
 import TherapistFinalOnboarding from '@/pages/Therapist/FinalOnboarding';
 import Subscription from '@/pages/Therapist/Subscription';
 import CreateAssessment from '@/pages/Therapist/My-Booking/[id]/Create-Assessment';
+import TherapistDashboard from '@/pages/Therapist/Dashboard';
+import Activity from '@/pages/Activity';
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +64,7 @@ export const router = createBrowserRouter([
         children: [
           { path: '/settings', element: <SettingsPage /> },
           { path: '/my-issues', element: <Issue /> },
+          { path: '/activities', element: <Activity /> },
           {
             element: <PatientLayout />,
             children: [
@@ -77,6 +80,7 @@ export const router = createBrowserRouter([
               { path: '/therapist/onboarding', element: <TherapistOnboardingPage /> },
               { path: '/therapist/onboarding/final', element: <TherapistFinalOnboarding /> },
               { path: '/therapist/profile', element: <TherapistProfile /> },
+              { path: '/therapist/dashboard', element: <TherapistDashboard /> },
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
               { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
               {

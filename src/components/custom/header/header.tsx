@@ -3,12 +3,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Activity,
+  ActivityIcon,
   BookOpen,
   Building2,
   FileText,
   Globe,
   Home,
   House,
+  LayoutDashboard,
   LogOut,
   Menu,
   Search,
@@ -184,6 +186,11 @@ const Header = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
+                {user.role === 'therapist' && (
+                  <DropdownMenuItem onSelect={() => navigate('/therapist/dashboard')}>
+                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onSelect={handleProfileView}>
                   <User className="mr-2 h-4 w-4" /> Profile
                 </DropdownMenuItem>
@@ -208,6 +215,9 @@ const Header = () => {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
+                <DropdownMenuItem onSelect={() => navigate('/activities')}>
+                  <ActivityIcon className="mr-2 h-4 w-4" /> Activities
+                </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => navigate('/my-issues')}>
                   <FileText className="mr-2 h-4 w-4" /> Issues
                 </DropdownMenuItem>

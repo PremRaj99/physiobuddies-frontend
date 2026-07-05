@@ -13,7 +13,6 @@ import {
 import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-import PageHeader from '@/components/custom/page-header/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -189,31 +188,23 @@ export default function CommissionHistoryPage() {
   return (
     <div className="min-h-body bg-[#f8fbfa] pb-24 font-sans">
       {/* Header Decorator */}
-      <PageHeader
-        heading={
-          <span>
-            <span className="text-[#a9d6e5]">Financial</span> Overview
-          </span>
-        }
-        subheading="Track your monthly earnings, platform commissions, and session history."
-      />
 
-      <main className="mx-auto max-w-6xl px-4 pt-12 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
         {/* Top Actions & Header */}
         <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="flex items-center gap-3 text-3xl font-bold text-[#012a4a]">
-              <Wallet className="h-8 w-8 text-[#014f86]" /> Financial Overview
+            <h1 className="flex items-center gap-3 text-2xl font-bold text-[#012a4a]">
+              <Wallet className="h-6 w-6 text-[#014f86]" /> Financial Overview
             </h1>
-            <p className="mt-2 text-[#013a63]">
+            <p className="mt-2 text-sm text-[#013a63]">
               Track your monthly earnings, platform commissions, and session history.
             </p>
           </div>
 
-          <div className="border-border flex items-center gap-3 rounded-xl border bg-white p-2 shadow-sm">
-            <CalendarDays className="text-muted-foreground ml-2 h-5 w-5 shrink-0" />
+          <div className="border-border flex items-center gap-3 rounded-xl border bg-white px-2 shadow-sm">
+            <CalendarDays className="text-muted-foreground h-5 w-5 shrink-0" />
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger className="w-45 border-none font-semibold text-[#012a4a] shadow-none focus:ring-0">
+              <SelectTrigger className="mx-w-45 border-none font-semibold text-[#012a4a] shadow-none focus:ring-0">
                 <SelectValue placeholder="Select Month" />
               </SelectTrigger>
               <SelectContent>
