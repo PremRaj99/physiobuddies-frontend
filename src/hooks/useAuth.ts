@@ -3,9 +3,11 @@ import {
   sendOtpBeforeSignup,
   signupPatient,
   signupPhysiotherapist,
+  login,
   type SendOtpPayload,
   type SignupPatientPayload,
   type SignupPhysiotherapistPayload,
+  type LoginPayload,
 } from '@/services/auth.service';
 
 export const useSendOtp = () => {
@@ -23,5 +25,11 @@ export const useSignupPatient = () => {
 export const useSignupPhysiotherapist = () => {
   return useMutation({
     mutationFn: (payload: SignupPhysiotherapistPayload) => signupPhysiotherapist(payload),
+  });
+};
+
+export const useLogin = () => {
+  return useMutation({
+    mutationFn: (payload: LoginPayload) => login(payload),
   });
 };

@@ -26,6 +26,7 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { useCurrUser } from '@/store/userStore';
 
 /* STREAMING_CHUNK:Defining Constants and Types... */
 
@@ -78,9 +79,10 @@ const STEPS = [
 
 // --- Main Page Component ---
 export default function TherapistOnboardingPage() {
+  const user = useCurrUser((state) => state.user);
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(!!user.therapistStatus?.isOnboardingFilled);
   const navigate = useNavigate();
 
   /* STREAMING_CHUNK:Initializing Form State... */

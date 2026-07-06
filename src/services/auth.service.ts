@@ -58,13 +58,28 @@ export const signupPhysiotherapist = async (
   return data;
 };
 
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   role: 'therapist' | 'patient' | 'admin';
   phone?: string;
+  therapistStatus?: {
+    isOnboardingFilled: boolean;
+    isVerified: boolean;
+    isFinalOnboardingFilled: boolean;
+  } | null;
 }
+
+export const login = async (payload: LoginPayload): Promise<ApiResponse<SignupResponseData>> => {
+  const { data } = await axios.post<ApiResponse<SignupResponseData>>('/auth/login', payload);
+  return data;
+};
 
 export const getCurrentUser = async (): Promise<ApiResponse<UserProfile>> => {
   const { data } = await axios.get<ApiResponse<UserProfile>>('/user');

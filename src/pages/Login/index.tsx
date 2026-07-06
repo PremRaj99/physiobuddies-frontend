@@ -1,13 +1,11 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, HeartPulse, Lock, Mail, ShieldCheck } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { FcGoogle } from 'react-icons/fc';
+import { HeartPulse, ShieldCheck } from 'lucide-react';
+import { LoginForm } from './components/LoginForm';
+import { useLoginPage } from './hooks/useLoginPage';
 
 const LoginPage = () => {
+  const { register, handleSubmit, errors, onSubmit, isFormSubmitting, navigate } = useLoginPage();
+
   // Subtle animation variants for the clinical, calm feel
   const fadeIn = {
     initial: { opacity: 0, y: 10 },
@@ -57,7 +55,7 @@ const LoginPage = () => {
           </motion.div>
         </div>
 
-        {/* Right Side: Login Form */}
+        {/* Right Side: Login Form Area */}
         <div className="flex w-full flex-col justify-center p-8 md:p-16 lg:w-1/2">
           <motion.div {...fadeIn} className="mx-auto w-full max-w-sm">
             <div className="mb-8 flex justify-center lg:hidden">
@@ -71,83 +69,14 @@ const LoginPage = () => {
               </p>
             </div>
 
-            <div className="space-y-2">
-              {/* Google Login */}
-              <Button
-                variant="outline"
-                className="border-border hover:bg-secondary/30 w-full py-6 text-[#012a4a] transition-all duration-200"
-              >
-                <FcGoogle className="mr-2 h-4 w-4" />
-                Continue with Google
-              </Button>
-
-              <div className="relative py-2">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="text-muted-foreground bg-white px-2">Or email access</span>
-                </div>
-              </div>
-
-              {/* Email & Password Form */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="font-medium text-[#012a4a]">
-                    Email Address
-                  </Label>
-                  <div className="relative">
-                    <Mail className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="akash@example.com"
-                      className="focus-visible:ring-primary border-border pl-10"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="font-medium text-[#012a4a]">
-                      Password
-                    </Label>
-                    <Button
-                      variant="link"
-                      className="text-primary px-0 text-xs font-medium hover:text-[#013a63]"
-                    >
-                      Forgot password?
-                    </Button>
-                  </div>
-                  <div className="relative">
-                    <Lock className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      className="focus-visible:ring-primary border-border pl-10"
-                    />
-                  </div>
-                </div>
-
-                <Button className="bg-primary w-full py-6 text-white shadow-md transition-all hover:bg-[#013a63] hover:shadow-lg">
-                  Sign In to Wellness
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-
-              <div className="pt-2 text-center">
-                <p className="text-muted-foreground text-sm">
-                  Don't have an account?{' '}
-                  <Button
-                    variant="link"
-                    className="text-primary p-0 font-semibold hover:text-[#013a63]"
-                  >
-                    Sign up now
-                  </Button>
-                </p>
-              </div>
-            </div>
+            <LoginForm
+              register={register}
+              handleSubmit={handleSubmit}
+              errors={errors}
+              onSubmit={onSubmit}
+              isFormSubmitting={isFormSubmitting}
+              navigate={navigate}
+            />
           </motion.div>
         </div>
       </div>

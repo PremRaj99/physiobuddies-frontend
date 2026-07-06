@@ -7,6 +7,11 @@ export type User = {
   role: 'therapist' | 'patient' | 'admin' | null;
   email: string | null;
   phone: string | null;
+  therapistStatus?: {
+    isOnboardingFilled: boolean;
+    isVerified: boolean;
+    isFinalOnboardingFilled: boolean;
+  } | null;
 };
 
 const initialUser: User = {
@@ -15,6 +20,7 @@ const initialUser: User = {
   role: null,
   email: null,
   phone: null,
+  therapistStatus: null,
 };
 
 export interface UserState {
