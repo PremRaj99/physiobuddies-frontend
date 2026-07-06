@@ -113,7 +113,7 @@ export default function TherapistOnboardingPage() {
         const uploadRes = await uploadMutation.mutateAsync(formData.image);
         if (uploadRes.success && uploadRes.data) {
           avatarUrl = uploadRes.data.url;
-          await updateAvatarMutation.mutateAsync({ avatar: avatarUrl });
+          await updateAvatarMutation.mutateAsync({ avatar: `http://localhost:3000/${avatarUrl}` });
         }
       }
 

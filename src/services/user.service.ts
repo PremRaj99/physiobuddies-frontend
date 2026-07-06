@@ -69,14 +69,14 @@ export const uploadFile = async (file: File): Promise<ApiResponse<{ url: string 
 export const submitTherapistOnboarding = async (
   payload: TherapistOnboardingPayload,
 ): Promise<ApiResponse> => {
-  const { data } = await axios.post<ApiResponse>('/therapist/onboarding', payload);
+  const { data } = await axios.post<ApiResponse>('/therapist/meta/onboarding', payload);
   return data;
 };
 
 export const submitTherapistFinalOnboarding = async (
   payload: TherapistFinalOnboardingPayload,
 ): Promise<ApiResponse> => {
-  const { data } = await axios.post<ApiResponse>('/therapist/onboarding/final', payload);
+  const { data } = await axios.post<ApiResponse>('/therapist/meta/onboarding/final', payload);
   return data;
 };
 
