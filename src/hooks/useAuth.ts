@@ -7,6 +7,7 @@ import {
   forgotPassword,
   verifyEmailOtp,
   resetPassword,
+  logout,
   type SendOtpPayload,
   type SignupPatientPayload,
   type SignupPhysiotherapistPayload,
@@ -55,5 +56,11 @@ export const useVerifyEmailOtp = () => {
 export const useResetPassword = () => {
   return useMutation({
     mutationFn: (payload: ResetPasswordPayload) => resetPassword(payload),
+  });
+};
+
+export const useLogout = () => {
+  return useMutation({
+    mutationFn: () => logout(),
   });
 };

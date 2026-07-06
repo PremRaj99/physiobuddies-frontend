@@ -1,105 +1,26 @@
-'use client';
-
-import { AnimatePresence, motion } from 'framer-motion';
-import {
-  Activity,
-  ActivityIcon,
-  BookOpen,
-  Building2,
-  FileText,
-  Globe,
-  Home,
-  House,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Search,
-  Settings,
-  Shield,
-  ShieldCheck,
-  Stethoscope,
-  User,
-  Wallet,
-  X,
-} from 'lucide-react';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
-import { useCurrUser } from '@/hooks/isLoggedIn';
-import { toast } from 'sonner';
-import { useCurrUser as useUser } from '@/store/userStore';
+import { useHeader } from './hooks/useHeader';
+import { DesktopNav } from './components/DesktopNav';
+import { UserMenu } from './components/UserMenu';
+import { MobileNav } from './components/MobileNav';
 
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const user = useCurrUser();
-  const removeUser = useUser((state) => state.removeUser);
-
-  const navigationItems = [
-    { name: 'Home', href: '/', icon: <Home className="h-4 w-4" /> },
-    { name: 'Search Physio', href: '/search', icon: <Search className="h-4 w-4" /> },
-  ];
-
-  const networkItems = [
-    {
-      title: 'Home Network',
-      icon: <House className="h-4 w-4" />,
-      href: '/network/home',
-    },
-    {
-      title: 'Clinic Network',
-      icon: <Building2 className="h-4 w-4" />,
-      href: '/network/clinic',
-    },
-    {
-      title: 'Online Network',
-      icon: <Globe className="h-4 w-4" />,
-      href: '/network/online',
-    },
-  ];
-
-  const handleProfileView = () => {
-    if (user.role === 'therapist') {
-      navigate('/therapist/profile');
-    } else if (user.role === 'patient') {
-      navigate('/patient/profile');
-    } else {
-      toast.error('Unknown user role. Please log in again.');
-    }
-  };
-  const handleTherapyPlans = () => {
-    if (user.role === 'therapist') {
-      navigate('/therapist/my-bookings');
-    } else if (user.role === 'patient') {
-      navigate('/patient/my-bookings');
-    } else {
-      toast.error('Unknown user role. Please log in again.');
-    }
-  };
-
-  const handleLogout = () => {
-    removeUser();
-    toast.success('Logged out successfully!');
-    navigate('/login');
-  };
+  const {
+    isMobileMenuOpen,
+    setIsMobileMenuOpen,
+    navigate,
+    user,
+    navigationItems,
+    networkItems,
+    handleProfileView,
+    handleTherapyPlans,
+    handleLogout,
+  } = useHeader();
 
   return (
     <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
@@ -114,56 +35,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center space-x-6 lg:flex">
-          <NavigationMenu>
-            <NavigationMenuList className="gap-1">
-              {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.name}>
-                  <Link to={item.href}>
-                    <Button
-                      variant="ghost"
-                      className="hover:text-primary flex items-center gap-2 text-[#012a4a]"
-                    >
-                      {item.icon} {item.name}
-                    </Button>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-[#012a4a]">
-                  <Stethoscope className="mr-2 h-4 w-4" /> Physio Network
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="bg-background/70 grid w-100 gap-2 p-1 backdrop-blur-md md:w-125 md:grid-cols-1 lg:w-50">
-                    {networkItems.map((item) => (
-                      <li key={item.title}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to={item.href}
-                            className="hover:bg-secondary bg-background/70 hover:text-primary-foreground focus:bg-accent block w-full space-y-1 rounded-md p-3 leading-none no-underline backdrop-blur-md transition-colors outline-none select-none"
-                          >
-                            <div className="flex items-center gap-4 text-sm leading-none font-medium">
-                              {item.icon} {item.title}
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Link to="/blog">
-                  <Button variant="ghost" className="text-[#012a4a]">
-                    <BookOpen className="mr-2 h-4 w-4" /> Blog
-                  </Button>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </nav>
+        <DesktopNav navigationItems={navigationItems} networkItems={networkItems} />
 
         {/* Right Section: Profile & Mobile Toggle */}
         <div className="flex items-center gap-4">
@@ -176,70 +48,13 @@ const Header = () => {
             </Link>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="icon" className="bg-primary rounded-full hover:bg-[#013a63]">
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-white" align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                {user.role === 'therapist' && (
-                  <DropdownMenuItem onSelect={() => navigate('/therapist/dashboard')}>
-                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onSelect={handleProfileView}>
-                  <User className="mr-2 h-4 w-4" /> Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleTherapyPlans}>
-                  <Activity className="mr-2 h-4 w-4" /> Your Therapy Plans
-                </DropdownMenuItem>
-                {user.role === 'therapist' && (
-                  <DropdownMenuItem onSelect={() => navigate('/therapist/slot-management')}>
-                    <Stethoscope className="mr-2 h-4 w-4" /> Slot Management
-                  </DropdownMenuItem>
-                )}
-                {user.role === 'therapist' && (
-                  <DropdownMenuItem onSelect={() => navigate('/therapist/commission-history')}>
-                    <Wallet className="mr-2 h-4 w-4" /> Commission History
-                  </DropdownMenuItem>
-                )}
-                {user.role === 'therapist' && (
-                  <DropdownMenuItem onSelect={() => navigate('/therapist/subscriptions')}>
-                    <ShieldCheck className="mr-2 h-4 w-4" /> Subscription Plans
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={() => navigate('/activities')}>
-                  <ActivityIcon className="mr-2 h-4 w-4" /> Activities
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate('/my-issues')}>
-                  <FileText className="mr-2 h-4 w-4" /> Issues
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate('/settings')}>
-                  <Settings className="mr-2 h-4 w-4" /> Settings
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={() => navigate('/terms')}>
-                  <FileText className="mr-2 h-4 w-4" /> Terms of Service
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => navigate('/privacy-policy')}>
-                  <Shield className="mr-2 h-4 w-4" /> Privacy Policy
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={handleLogout} className="text-destructive">
-                <LogOut className="mr-2 h-4 w-4" /> Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserMenu
+            user={user}
+            navigate={navigate}
+            handleProfileView={handleProfileView}
+            handleTherapyPlans={handleTherapyPlans}
+            handleLogout={handleLogout}
+          />
 
           {/* Mobile Menu Button */}
           <Button
@@ -255,45 +70,15 @@ const Header = () => {
 
       {/* Mobile Navigation Menu */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-border bg-background overflow-hidden border-t lg:hidden"
-          >
-            <div className="flex flex-col space-y-2 p-4">
-              {[
-                ...navigationItems,
-                { name: 'Blog', href: '/blog', icon: <BookOpen className="h-4 w-4" /> },
-              ].map((item) => (
-                <Link key={item.name} to={item.href} onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="hover:bg-secondary flex items-center gap-3 rounded-lg p-3 text-[#012a4a] transition-colors">
-                    {item.icon} {item.name}
-                  </div>
-                </Link>
-              ))}
-              <div className="text-muted-foreground p-3 text-xs font-semibold tracking-wider uppercase">
-                Physio Network
-              </div>
-              {networkItems.map((item) => (
-                <Link key={item.title} to={item.href} onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="hover:bg-secondary flex items-center gap-3 rounded-lg p-3 pl-6 text-[#012a4a]">
-                    {item.icon} {item.title}
-                  </div>
-                </Link>
-              ))}
-              <div className="border-border grid grid-cols-2 gap-2 border-t pt-4">
-                <Link to="/about" className="p-2 text-center text-sm text-[#012a4a]">
-                  About
-                </Link>
-                <Link to="/contact" className="p-2 text-center text-sm text-[#012a4a]">
-                  Contact
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        )}
+        <MobileNav
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          user={user}
+          navigationItems={navigationItems}
+          networkItems={networkItems}
+          handleLogout={handleLogout}
+          navigate={navigate}
+        />
       </AnimatePresence>
     </header>
   );

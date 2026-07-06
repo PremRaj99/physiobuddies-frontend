@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { useIsLoggedIn } from '@/hooks/isLoggedIn';
+import { useIsLoggedIn } from '@/hooks/isLoggedIn';
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  // const isLoggedInStatus = useIsLoggedIn();
-  const isLoggedInStatus = true;
+  const isLoggedInStatus = useIsLoggedIn();
 
   useEffect(() => {
     if (!isLoggedInStatus) {

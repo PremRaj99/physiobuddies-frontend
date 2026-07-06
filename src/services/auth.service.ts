@@ -115,3 +115,8 @@ export const resetPassword = async (payload: ResetPasswordPayload): Promise<ApiR
   const { data } = await axios.post<ApiResponse>('/auth/reset-password', payload);
   return data;
 };
+
+export const logout = async (): Promise<ApiResponse> => {
+  const { data } = await axios.post<ApiResponse>('/auth/logout');
+  return data;
+};

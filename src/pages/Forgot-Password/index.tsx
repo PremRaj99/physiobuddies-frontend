@@ -1,11 +1,10 @@
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { KeyRound, ShieldCheck } from 'lucide-react';
-import React from 'react';
-import { useForgotPasswordPage } from './hooks/useForgotPasswordPage';
 import { EmailStep } from './components/EmailStep';
 import { OtpStep } from './components/OtpStep';
 import { PasswordStep } from './components/PasswordStep';
 import { SuccessStep } from './components/SuccessStep';
+import { useForgotPasswordPage } from './hooks/useForgotPasswordPage';
 
 const ForgotPasswordPage = () => {
   const {

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist, createJSONStorage, devtools } from 'zustand/middleware';
 
 export type User = {
   id: string | null;
@@ -30,15 +30,17 @@ export interface UserState {
 }
 
 export const useCurrUser = create<UserState>()(
-  persist(
-    (set) => ({
-      user: initialUser,
-      setUser: (user: User) => set({ user }),
-      removeUser: () => set({ user: initialUser }),
-    }),
-    {
-      name: 'user-storage',
-      storage: createJSONStorage(() => localStorage),
-    },
+  devtools(
+    persist(
+      (set) => ({
+        user: initialUser,
+        setUser: (user: User) => set({ user }),
+        removeUser: () => set({ user: initialUser }),
+      }),
+      {
+        name: 'user-storage',
+        storage: createJSONStorage(() => localStorage),
+      },
+    ),
   ),
 );

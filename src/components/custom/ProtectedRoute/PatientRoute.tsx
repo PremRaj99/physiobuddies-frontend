@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-// import { useIsPatient } from '@/hooks/isLoggedIn';
+import { useIsPatient } from '@/hooks/isLoggedIn';
 
 export default function PatientRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  //   const isPatientStatus = useIsPatient();
-  const isPatientStatus = true;
+  const isPatientStatus = useIsPatient();
 
   useEffect(() => {
     if (!isPatientStatus) {
