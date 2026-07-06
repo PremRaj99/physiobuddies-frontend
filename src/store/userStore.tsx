@@ -2,25 +2,33 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type User = {
-  id: number | null;
+  id: string | null;
   name: string | null;
   role: 'therapist' | 'patient' | 'admin' | null;
   email: string | null;
-  mobile: string | null;
+  phone: string | null;
 };
-export const useCurrUser = create(
+
+const initialUser: User = {
+  id: null,
+  name: null,
+  role: null,
+  email: null,
+  phone: null,
+};
+
+export interface UserState {
+  user: User;
+  setUser: (user: User) => void;
+  removeUser: () => void;
+}
+
+export const useCurrUser = create<UserState>()(
   persist(
     (set) => ({
-      user: {
-        id: '4598743',
-        name: 'Prem Raj',
-        role: 'therapist',
-        email: 'prem.raj@example.com',
-        mobile: '9876543210',
-      },
+      user: initialUser,
       setUser: (user: User) => set({ user }),
-      removeUser: () =>
-        set({ user: { id: null, name: null, role: null, email: null, mobile: null } }),
+      removeUser: () => set({ user: initialUser }),
     }),
     {
       name: 'user-storage',

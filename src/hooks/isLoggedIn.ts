@@ -5,12 +5,12 @@ const emptyUser: User = {
   name: null,
   role: null,
   email: null,
-  mobile: null,
+  phone: null,
 };
 
 export const useCurrUser = (): User => {
   // useCurrUser may accept a selector; keep selector typed loosely to avoid runtime issues
-  const user = useUser((state: unknown) => (state as { user?: User }).user);
+  const user = useUser((state) => state.user);
   return user ?? emptyUser;
 };
 

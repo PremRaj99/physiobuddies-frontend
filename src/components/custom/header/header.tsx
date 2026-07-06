@@ -51,7 +51,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const user = useCurrUser();
-  const removeUser = useUser((state: unknown) => (state as { removeUser: () => void }).removeUser);
+  const removeUser = useUser((state) => state.removeUser);
 
   const navigationItems = [
     { name: 'Home', href: '/', icon: <Home className="h-4 w-4" /> },
