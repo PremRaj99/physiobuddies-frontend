@@ -8,6 +8,7 @@ import {
   verifyEmailOtp,
   resetPassword,
   logout,
+  googleLogin,
   type SendOtpPayload,
   type SignupPatientPayload,
   type SignupPhysiotherapistPayload,
@@ -15,6 +16,7 @@ import {
   type ForgotPasswordPayload,
   type VerifyEmailPayload,
   type ResetPasswordPayload,
+  type GoogleLoginPayload,
 } from '@/services/auth.service';
 
 export const useSendOtp = () => {
@@ -62,5 +64,11 @@ export const useResetPassword = () => {
 export const useLogout = () => {
   return useMutation({
     mutationFn: () => logout(),
+  });
+};
+
+export const useGoogleLoginMutation = () => {
+  return useMutation({
+    mutationFn: (payload: GoogleLoginPayload) => googleLogin(payload),
   });
 };

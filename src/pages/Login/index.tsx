@@ -4,7 +4,15 @@ import { LoginForm } from './components/LoginForm';
 import { useLoginPage } from './hooks/useLoginPage';
 
 const LoginPage = () => {
-  const { register, handleSubmit, errors, onSubmit, isFormSubmitting, navigate } = useLoginPage();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    onSubmit,
+    handleGoogleSuccess,
+    isFormSubmitting,
+    navigate,
+  } = useLoginPage();
 
   // Subtle animation variants for the clinical, calm feel
   const fadeIn = {
@@ -74,6 +82,7 @@ const LoginPage = () => {
               handleSubmit={handleSubmit}
               errors={errors}
               onSubmit={onSubmit}
+              onGoogleLoginSuccess={handleGoogleSuccess}
               isFormSubmitting={isFormSubmitting}
               navigate={navigate}
             />

@@ -120,3 +120,16 @@ export const logout = async (): Promise<ApiResponse> => {
   const { data } = await axios.post<ApiResponse>('/auth/logout');
   return data;
 };
+
+export interface GoogleLoginPayload {
+  code: string;
+}
+
+export const googleLogin = async (
+  payload: GoogleLoginPayload,
+): Promise<ApiResponse<SignupResponseData>> => {
+  const { data } = await axios.post<ApiResponse<SignupResponseData>>(
+    `/auth/google?code=${payload.code}`,
+  );
+  return data;
+};

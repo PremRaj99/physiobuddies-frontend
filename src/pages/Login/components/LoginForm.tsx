@@ -1,5 +1,7 @@
 import React from 'react';
 import type { UseFormRegister, UseFormHandleSubmit, FieldErrors } from 'react-hook-form';
+import { useGoogleLogin } from '@react-oauth/google';
+import { toast } from 'sonner';
 import { ArrowRight, Lock, Mail } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { Button } from '@/components/ui/button';
@@ -14,6 +16,7 @@ interface LoginFormProps {
   handleSubmit: UseFormHandleSubmit<LoginPayload>;
   errors: FieldErrors<LoginPayload>;
   onSubmit: (data: LoginPayload) => void;
+  onGoogleLoginSuccess: (code: string) => void;
   isFormSubmitting: boolean;
   navigate: (path: string) => void;
 }
@@ -23,13 +26,30 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   handleSubmit,
   errors,
   onSubmit,
+  onGoogleLoginSuccess,
   isFormSubmitting,
   navigate,
 }) => {
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      if (codeResponse.code) {
+        onGoogleLoginSuccess(codeResponse.code);
+      }
+    },
+    onError: (error) => {
+      console.error('Google Login Failed:', error);
+      toast.error('Google login failed. Please try again.');
+    },
+    flow: 'auth-code',
+  });
+
   return (
     <div className="space-y-2">
       {/* Google Login */}
       <Button
+        type="button"
+        onClick={() => handleGoogleLogin()}
+        disabled={isFormSubmitting}
         variant="outline"
         className="border-border hover:bg-secondary/30 w-full py-6 text-[#012a4a] transition-all duration-200"
       >
