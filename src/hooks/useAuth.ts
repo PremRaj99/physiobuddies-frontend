@@ -4,10 +4,16 @@ import {
   signupPatient,
   signupPhysiotherapist,
   login,
+  forgotPassword,
+  verifyEmailOtp,
+  resetPassword,
   type SendOtpPayload,
   type SignupPatientPayload,
   type SignupPhysiotherapistPayload,
   type LoginPayload,
+  type ForgotPasswordPayload,
+  type VerifyEmailPayload,
+  type ResetPasswordPayload,
 } from '@/services/auth.service';
 
 export const useSendOtp = () => {
@@ -31,5 +37,23 @@ export const useSignupPhysiotherapist = () => {
 export const useLogin = () => {
   return useMutation({
     mutationFn: (payload: LoginPayload) => login(payload),
+  });
+};
+
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: (payload: ForgotPasswordPayload) => forgotPassword(payload),
+  });
+};
+
+export const useVerifyEmailOtp = () => {
+  return useMutation({
+    mutationFn: (payload: VerifyEmailPayload) => verifyEmailOtp(payload),
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: (payload: ResetPasswordPayload) => resetPassword(payload),
   });
 };

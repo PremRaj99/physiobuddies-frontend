@@ -85,3 +85,33 @@ export const getCurrentUser = async (): Promise<ApiResponse<UserProfile>> => {
   const { data } = await axios.get<ApiResponse<UserProfile>>('/user');
   return data;
 };
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface VerifyEmailPayload {
+  email: string;
+  token: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  token: string;
+  newPassword: string;
+}
+
+export const forgotPassword = async (payload: ForgotPasswordPayload): Promise<ApiResponse> => {
+  const { data } = await axios.post<ApiResponse>('/auth/forgot-password', payload);
+  return data;
+};
+
+export const verifyEmailOtp = async (payload: VerifyEmailPayload): Promise<ApiResponse> => {
+  const { data } = await axios.post<ApiResponse>('/auth/verify-email', payload);
+  return data;
+};
+
+export const resetPassword = async (payload: ResetPasswordPayload): Promise<ApiResponse> => {
+  const { data } = await axios.post<ApiResponse>('/auth/reset-password', payload);
+  return data;
+};
