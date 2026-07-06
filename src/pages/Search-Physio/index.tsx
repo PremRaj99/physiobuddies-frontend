@@ -197,7 +197,7 @@ export default function TherapistList() {
       console.error(error);
       setLoading(false);
     }
-  }, [filters]);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {

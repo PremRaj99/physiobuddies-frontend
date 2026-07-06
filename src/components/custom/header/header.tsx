@@ -1,13 +1,11 @@
 import { AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import React from 'react';
 import { Link } from 'react-router-dom';
-
 import { Button } from '@/components/ui/button';
-import { useHeader } from './hooks/useHeader';
 import { DesktopNav } from './components/DesktopNav';
-import { UserMenu } from './components/UserMenu';
 import { MobileNav } from './components/MobileNav';
+import { UserMenu } from './components/UserMenu';
+import { useHeader } from './hooks/useHeader';
 
 const Header = () => {
   const {

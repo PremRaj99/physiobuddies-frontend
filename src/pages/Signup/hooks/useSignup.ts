@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSendOtp, useSignupPatient, useSignupPhysiotherapist } from '@/hooks/useAuth';
 import { useCurrUser } from '@/store/userStore';
-import { getCurrentUser } from '@/services/auth.service';
+import { getCurrentUser } from '@/services/user.service';
 import type { SignupPatientPayload, SignupPhysiotherapistPayload } from '@/services/auth.service';
 
 export type PatientFormValues = Omit<SignupPatientPayload, 'token'>;

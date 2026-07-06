@@ -6,11 +6,18 @@ export type User = {
   name: string | null;
   role: 'therapist' | 'patient' | 'admin' | null;
   email: string | null;
-  phone: string | null;
+  phone?: string | null;
+  image?: string | null;
   therapistStatus?: {
     isOnboardingFilled: boolean;
     isVerified: boolean;
     isFinalOnboardingFilled: boolean;
+  } | null;
+  therapistProfile?: {
+    id: string;
+    about?: string | null;
+    displayAddress?: string | null;
+    location?: { lat: number; lng: number } | null;
   } | null;
 };
 
@@ -20,7 +27,9 @@ const initialUser: User = {
   role: null,
   email: null,
   phone: null,
+  image: null,
   therapistStatus: null,
+  therapistProfile: null,
 };
 
 export interface UserState {

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useLogin, useGoogleLoginMutation } from '@/hooks/useAuth';
 import { useCurrUser } from '@/store/userStore';
-import { getCurrentUser } from '@/services/auth.service';
-import type { LoginPayload, UserProfile } from '@/services/auth.service';
+import { getCurrentUser, type UserProfile } from '@/services/user.service';
+import type { LoginPayload } from '@/services/auth.service';
 
 export const useLoginPage = () => {
   const navigate = useNavigate();
