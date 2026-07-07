@@ -102,10 +102,135 @@ export default function TherapistOnboardingPage() {
     });
   };
 
-  const handleNext = () => setStep((p) => Math.min(5, p + 1));
+  const handleNext = () => {
+    if (step === 1) {
+      if (!imagePreview && !formData.image) {
+        toast.error('Profile image is required');
+        return;
+      }
+      if (!formData.dob) {
+        const age = new Date().getFullYear() - new Date(formData.dob).getFullYear();
+        if (age < 18) {
+          // 18+
+          toast.error('You must be 18 or older to use this platform.');
+          return;
+        }
+
+        toast.error('Date of birth is required');
+        return;
+      }
+      if (!formData.displayAddress.trim()) {
+        toast.error('Display address is required');
+        return;
+      }
+      if (!formData.about.trim()) {
+        toast.error('About section is required');
+        return;
+      }
+    }
+
+    if (step === 2) {
+      if (!formData.experience.trim()) {
+        toast.error('Years of experience is required');
+        return;
+      }
+      const expNum = Number(formData.experience);
+      if (isNaN(expNum) || expNum < 0) {
+        toast.error('Please enter a valid number of years of experience');
+        return;
+      }
+    }
+
+    if (step === 3) {
+      if (formData.specializations.length === 0) {
+        toast.error('Please select at least one specialization');
+        return;
+      }
+      if (formData.education.length === 0) {
+        toast.error('Please select at least one educational qualification');
+        return;
+      }
+      if (formData.languages.length === 0) {
+        toast.error('Please select at least one language');
+        return;
+      }
+    }
+
+    if (step === 4) {
+      if (!formData.resume) {
+        toast.error('Resume is required');
+        return;
+      }
+      if (formData.certificates.length === 0) {
+        toast.error('Please upload at least one certificate or license');
+        return;
+      }
+    }
+
+    setStep((p) => Math.min(5, p + 1));
+  };
+
   const handleBack = () => setStep((p) => Math.max(1, p - 1));
 
   const handleSubmit = async () => {
+    // Validate everything before submission
+    if (!imagePreview && !formData.image) {
+      toast.error('Profile image is required');
+      setStep(1);
+      return;
+    }
+    if (!formData.dob) {
+      toast.error('Date of birth is required');
+      setStep(1);
+      return;
+    }
+    if (!formData.displayAddress.trim()) {
+      toast.error('Display address is required');
+      setStep(1);
+      return;
+    }
+    if (!formData.about.trim()) {
+      toast.error('About section is required');
+      setStep(1);
+      return;
+    }
+    if (!formData.experience.trim()) {
+      toast.error('Years of experience is required');
+      setStep(2);
+      return;
+    }
+    const expNum = Number(formData.experience);
+    if (isNaN(expNum) || expNum < 0) {
+      toast.error('Please enter a valid number of years of experience');
+      setStep(2);
+      return;
+    }
+    if (formData.specializations.length === 0) {
+      toast.error('Please select at least one specialization');
+      setStep(3);
+      return;
+    }
+    if (formData.education.length === 0) {
+      toast.error('Please select at least one educational qualification');
+      setStep(3);
+      return;
+    }
+    if (formData.languages.length === 0) {
+      toast.error('Please select at least one language');
+      setStep(3);
+      return;
+    }
+    if (!formData.resume) {
+      toast.error('Resume is required');
+      setStep(4);
+      return;
+    }
+    if (formData.certificates.length === 0) {
+      toast.error('Please upload at least one certificate or license');
+      setStep(4);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       let avatarUrl = '';

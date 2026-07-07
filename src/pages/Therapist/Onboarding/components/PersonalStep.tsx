@@ -37,7 +37,9 @@ export const PersonalStep: React.FC<PersonalStepProps> = ({
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2 md:col-span-2">
           <div className="flex items-center justify-between">
-            <Label>Profile Image</Label>
+            <Label>
+              Profile Image <span className="text-destructive">*</span>
+            </Label>
             <span className="bg-secondary/50 flex items-center gap-1 rounded px-2 py-0.5 text-[10px] text-[#014f86]">
               <Info className="h-3 w-3" /> Can update later
             </span>
@@ -84,7 +86,9 @@ export const PersonalStep: React.FC<PersonalStepProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[#012a4a]">Date of Birth</Label>
+          <Label className="text-[#012a4a]">
+            Date of Birth <span className="text-destructive">*</span>
+          </Label>
           <Input
             type="date"
             value={formData.dob}
@@ -94,7 +98,9 @@ export const PersonalStep: React.FC<PersonalStepProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[#012a4a]">Display Address (Public)</Label>
+          <Label className="text-[#012a4a]">
+            Display Address (Public) <span className="text-destructive">*</span>
+          </Label>
           <div className="relative">
             <MapPin className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
             <Input
@@ -108,7 +114,9 @@ export const PersonalStep: React.FC<PersonalStepProps> = ({
 
         <div className="space-y-2 md:col-span-2">
           <div className="flex items-center justify-between">
-            <Label className="text-[#012a4a]">About Me</Label>
+            <Label className="text-[#012a4a]">
+              About Me <span className="text-destructive">*</span>
+            </Label>
             <span className="bg-secondary/50 flex items-center gap-1 rounded px-2 py-0.5 text-[10px] text-[#014f86]">
               <Info className="h-3 w-3" /> Can update later
             </span>

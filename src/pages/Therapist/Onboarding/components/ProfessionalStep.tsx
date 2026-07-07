@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 interface ProfessionalStepProps {
   formData: {
     experience: string;
-    iapId: string;
-    affiliation: string;
+    iapId?: string;
+    affiliation?: string;
   };
   updateField: (field: string, value: string) => void;
 }
@@ -25,7 +25,9 @@ export const ProfessionalStep: React.FC<ProfessionalStepProps> = ({ formData, up
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2">
-          <Label className="text-[#012a4a]">Years of Experience</Label>
+          <Label className="text-[#012a4a]">
+            Years of Experience <span className="text-destructive">*</span>
+          </Label>
           <Input
             type="number"
             placeholder="e.g. 5"
@@ -36,7 +38,7 @@ export const ProfessionalStep: React.FC<ProfessionalStepProps> = ({ formData, up
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[#012a4a]">IAP Registration ID</Label>
+          <Label className="text-[#012a4a]">IAP Registration ID </Label>
           <Input
             placeholder="Enter your valid IAP ID"
             value={formData.iapId}
@@ -46,7 +48,7 @@ export const ProfessionalStep: React.FC<ProfessionalStepProps> = ({ formData, up
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label className="text-[#012a4a]">Current Affiliation (Clinic / Hospital Name)</Label>
+          <Label className="text-[#012a4a]">Current Affiliation (Clinic / Hospital Name) </Label>
           <Input
             placeholder="Where do you currently practice?"
             value={formData.affiliation}

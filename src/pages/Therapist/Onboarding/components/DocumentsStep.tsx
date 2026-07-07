@@ -11,8 +11,8 @@ export interface OnboardingFormData {
   displayAddress: string;
   about: string;
   experience: string;
-  iapId: string;
-  affiliation: string;
+  iapId?: string;
+  affiliation?: string;
   specializations: string[];
   education: string[];
   languages: string[];
@@ -46,7 +46,9 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label className="text-[#012a4a]">Upload Resume (CV)</Label>
+          <Label className="text-[#012a4a]">
+            Upload Resume (CV) <span className="text-destructive">*</span>
+          </Label>
           <input
             type="file"
             id="resume-input"
@@ -97,7 +99,9 @@ export const DocumentsStep: React.FC<DocumentsStepProps> = ({
         <Separator />
 
         <div className="space-y-2">
-          <Label className="text-[#012a4a]">Professional Certificates & Licenses</Label>
+          <Label className="text-[#012a4a]">
+            Professional Certificates & Licenses <span className="text-destructive">*</span>
+          </Label>
           <p className="text-muted-foreground mb-2 text-xs">
             Upload your degree, IAP registration certificate, etc.
           </p>

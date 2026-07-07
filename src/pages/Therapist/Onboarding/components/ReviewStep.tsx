@@ -6,8 +6,8 @@ interface ReviewStepProps {
   formData: {
     dob: string;
     experience: string;
-    iapId: string;
-    affiliation: string;
+    iapId?: string;
+    affiliation?: string;
     displayAddress: string;
     specializations: string[];
     education: string[];

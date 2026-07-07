@@ -65,7 +65,7 @@ export const ExpertiseStep: React.FC<ExpertiseStepProps> = ({ formData, toggleAr
 
       <div>
         <LabelWithLayout className="mb-3 block text-base text-[#012a4a]">
-          Specializations (Select all that apply)
+          Specializations (Select all that apply) <span className="text-destructive">*</span>
         </LabelWithLayout>
         <div className="flex flex-wrap gap-2">
           {SPECIALIZATIONS.map((spec) => {
@@ -93,7 +93,7 @@ export const ExpertiseStep: React.FC<ExpertiseStepProps> = ({ formData, toggleAr
 
       <div>
         <LabelWithLayout className="mb-3 block text-base text-[#012a4a]">
-          Educational Qualifications
+          Educational Qualifications <span className="text-destructive">*</span>
         </LabelWithLayout>
         <div className="flex flex-wrap gap-2">
           {EDUCATIONS.map((edu) => {
@@ -121,7 +121,7 @@ export const ExpertiseStep: React.FC<ExpertiseStepProps> = ({ formData, toggleAr
 
       <div>
         <LabelWithLayout className="mb-3 block text-base text-[#012a4a]">
-          Languages Spoken
+          Languages Spoken <span className="text-destructive">*</span>
         </LabelWithLayout>
         <div className="flex flex-wrap gap-2">
           {LANGUAGES.map((lang) => {
