@@ -24,14 +24,7 @@ export const useLoginPage = () => {
   });
 
   const handleSuccessRedirect = (userData: UserProfile) => {
-    setUser({
-      id: userData.id,
-      name: userData.name,
-      email: userData.email,
-      phone: userData.phone || null,
-      role: userData.role,
-      therapistStatus: userData.therapistStatus || null,
-    });
+    setUser(userData);
 
     if (userData.role === 'patient') {
       navigate('/search');
