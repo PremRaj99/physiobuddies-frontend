@@ -16,8 +16,10 @@ import { CheckoutStep } from './components/CheckoutStep';
 
 const BookingPage = () => {
   const {
+    sessionId,
     slotDate,
     startHour,
+    expiresAt,
     step,
     setStep,
     selectedPatientId,
@@ -28,7 +30,8 @@ const BookingPage = () => {
     setSelectedConditionId,
     problemDesc,
     setProblemDesc,
-    reservationId,
+    couponCode,
+    couponDiscount,
     sessionExpired,
     setSessionExpired,
     therapist,
@@ -44,16 +47,18 @@ const BookingPage = () => {
     navigate,
   } = useBookingFlow();
 
-  if (!slotDate || startHour === undefined) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">Invalid booking link. Please select a slot from the therapist page.</p>
-      </div>
-    );
-  }
-
   if (sessionExpired) {
     return <SessionExpired onRestart={() => navigate(-1)} />;
+  }
+
+  if (therapistLoading || !slotDate || startHour === undefined) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-12">
+        <Skeleton className="h-12 w-64 mb-6" />
+        <Skeleton className="h-16 w-full mb-8 rounded-xl" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
+      </div>
+    );
   }
 
   return (
@@ -65,18 +70,16 @@ const BookingPage = () => {
             <ChevronLeft className="mr-2 h-4 w-4" /> Back
           </Button>
           <h1 className="text-3xl font-bold text-[#012a4a]">Book a Session</h1>
-          {therapistLoading ? (
-            <Skeleton className="mt-1 h-5 w-48" />
-          ) : therapist ? (
+          {therapist && (
             <p className="text-muted-foreground mt-1">
-              with Dr. {therapist.name} · {slotDate} at {startHour}:00
+              with {therapist.name} · {slotDate} at {String(startHour).padStart(2, '0')}:00
             </p>
-          ) : null}
+          )}
         </div>
 
-        {/* Timer */}
-        {reservationId && (
-          <HoldTimer durationMinutes={10} onExpire={() => setSessionExpired(true)} />
+        {/* Server-synced Hold Timer */}
+        {expiresAt && (
+          <HoldTimer expiresAt={expiresAt} onExpire={() => setSessionExpired(true)} />
         )}
 
         {/* Step Indicator */}
@@ -116,9 +119,10 @@ const BookingPage = () => {
               onNext={() => setStep(4)}
             />
           )}
-          {step === 4 && therapist && selectedPatient && selectedLocation && (
+          {step === 4 && therapist && selectedPatient && selectedLocation && sessionId && (
             <CheckoutStep
               key="checkout"
+              sessionId={sessionId}
               therapist={therapist}
               slotDate={slotDate}
               slotHour={startHour}
@@ -126,7 +130,11 @@ const BookingPage = () => {
               location={selectedLocation}
               conditionId={selectedConditionId}
               problemDesc={problemDesc}
+              couponCode={couponCode}
+              couponDiscount={couponDiscount}
               onBack={() => setStep(3)}
+              onEditPatient={() => setStep(1)}
+              onEditLocation={() => setStep(2)}
               onComplete={handleConfirm}
               isConfirming={isConfirming}
             />

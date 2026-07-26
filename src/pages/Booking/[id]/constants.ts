@@ -18,4 +18,4 @@ export const CONDITIONS: ConditionItem[] = [
   { id: 'general', title: 'General', desc: 'Routine checkups & wellness', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=300' },
 ];
 
-export const BOOKING_STEPS = ['Patient', 'Location', 'Condition', 'Checkout'] as const;
+export const BOOKING_STEPS = ['Patient', 'Location', 'Condition', 'Review & Pay'] as const;

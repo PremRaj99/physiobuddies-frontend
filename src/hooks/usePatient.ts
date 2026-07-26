@@ -40,6 +40,169 @@ export const useCreatePatientLocation = () => {
   });
 };
 
+export interface CreateBookingSessionPayload {
+  therapistId: string;
+  date: string; // ISO datetime
+  startHour: number;
+}
+
+export interface CreateBookingSessionResult {
+  sessionId: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+export interface BookingSessionDataResponse {
+  sessionId: string;
+  reservationId: string;
+  therapistId: string;
+  patientId: string;
+  date: string;
+  startHour: number;
+  createdAt: string;
+  expiresAt: string;
+  step: number;
+  formData: {
+    patientDetailId: string | null;
+    locationId: string | null;
+    conditionId: string | null;
+    problemDesc: string;
+    couponCode: string | null;
+    couponDiscount: number;
+  };
+  paymentPhase: boolean;
+  paymentId: string | null;
+  therapist: {
+    id: string;
+    name: string;
+    image: string | null;
+    price: number;
+    priceAlt: number | null;
+    mode: string;
+    clinic: string | null;
+    address: string;
+  } | null;
+  isConfirmed?: boolean;
+}
+
+export const useCreateBookingSession = () =>
+  useMutation({
+    mutationFn: async (
+      payload: CreateBookingSessionPayload,
+    ): Promise<ApiResponse<CreateBookingSessionResult>> => {
+      const { data } = await axios.post<ApiResponse<CreateBookingSessionResult>>(
+        '/reservation/session',
+        payload,
+      );
+      return data;
+    },
+  });
+
+export const useBookingSession = (sessionId: string | undefined) =>
+  useQuery({
+    queryKey: ['booking-session', sessionId],
+    queryFn: async (): Promise<ApiResponse<BookingSessionDataResponse>> => {
+      const { data } = await axios.get<ApiResponse<BookingSessionDataResponse>>(
+        `/reservation/session/${sessionId}`,
+      );
+      return data;
+    },
+    enabled: Boolean(sessionId),
+    staleTime: 5000,
+    retry: 1,
+  });
+
+export const useUpdateBookingForm = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      sessionId,
+      formData,
+    }: {
+      sessionId: string;
+      formData: Partial<BookingSessionDataResponse['formData']> & { step?: number };
+    }) => {
+      const { data } = await axios.patch<ApiResponse>(
+        `/reservation/session/${sessionId}/form`,
+        formData,
+      );
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['booking-session', variables.sessionId] });
+    },
+  });
+};
+
+export const useApplyCoupon = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      sessionId,
+      couponCode,
+    }: {
+      sessionId: string;
+      couponCode: string;
+    }): Promise<ApiResponse<{ message: string; discount: number; finalPrice: number }>> => {
+      const { data } = await axios.post<
+        ApiResponse<{ message: string; discount: number; finalPrice: number }>
+      >(`/reservation/session/${sessionId}/apply-coupon`, { couponCode });
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['booking-session', variables.sessionId] });
+    },
+  });
+};
+
+export const useRemoveCoupon = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (sessionId: string): Promise<ApiResponse> => {
+      const { data } = await axios.delete<ApiResponse>(
+        `/reservation/session/${sessionId}/remove-coupon`,
+      );
+      return data;
+    },
+    onSuccess: (_, sessionId) => {
+      queryClient.invalidateQueries({ queryKey: ['booking-session', sessionId] });
+    },
+  });
+};
+
+export const useInitiatePayment = () =>
+  useMutation({
+    mutationFn: async (
+      sessionId: string,
+    ): Promise<ApiResponse<{ paymentId: string; invoiceId: string; amount: number }>> => {
+      const { data } = await axios.post<
+        ApiResponse<{ paymentId: string; invoiceId: string; amount: number }>
+      >(`/reservation/session/${sessionId}/initiate-payment`);
+      return data;
+    },
+  });
+
+export const useFinalizeBooking = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      sessionId,
+      gatewayPaymentId,
+    }: {
+      sessionId: string;
+      gatewayPaymentId?: string;
+    }): Promise<ApiResponse<{ reservationId: string; message: string }>> => {
+      const { data } = await axios.post<
+        ApiResponse<{ reservationId: string; message: string }>
+      >(`/reservation/session/${sessionId}/finalize`, { gatewayPaymentId });
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['patient'] });
+    },
+  });
+};
+
 export interface HoldReservationPayload {
   therapistId: string;
   date: string; // ISO datetime

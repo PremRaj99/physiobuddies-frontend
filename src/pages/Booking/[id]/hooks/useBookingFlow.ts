@@ -1,97 +1,172 @@
 import { useState, useEffect } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import {
   usePatientDetails,
   usePatientLocations,
-  useHoldReservation,
-  useConfirmReservation,
+  useBookingSession,
+  useUpdateBookingForm,
+  useInitiatePayment,
+  useFinalizeBooking,
 } from '@/hooks/usePatient';
-import { useTherapistDetail } from '@/hooks/useTherapist';
 
 export const useBookingFlow = () => {
-  const { id: therapistId } = useParams<{ id: string }>();
-  const location = useLocation();
+  const { id: sessionId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { date: slotDate, startHour } = (location.state ?? {}) as { date?: string; startHour?: number };
 
-  const [step, setStep] = useState(1);
+  const [step, setStepState] = useState(1);
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
   const [selectedConditionId, setSelectedConditionId] = useState<string | null>(null);
   const [problemDesc, setProblemDesc] = useState('');
-  const [reservationId, setReservationId] = useState<string | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
 
-  const { data: therapistData, isLoading: therapistLoading } = useTherapistDetail(therapistId!);
+  const { data: sessionResponse, isLoading: sessionLoading, error: sessionError } = useBookingSession(sessionId);
   const { data: patientDetails = [], isLoading: patientsLoading } = usePatientDetails();
   const { data: patientLocations = [], isLoading: locationsLoading } = usePatientLocations();
 
-  const holdReservation = useHoldReservation();
-  const confirmReservation = useConfirmReservation();
+  const updateFormMutation = useUpdateBookingForm();
+  const initiatePaymentMutation = useInitiatePayment();
+  const finalizeBookingMutation = useFinalizeBooking();
 
-  // Hold slot on mount
+  const sessionData = sessionResponse?.data;
+
+  // Restore session data on load
   useEffect(() => {
-    if (!therapistId || !slotDate || startHour === undefined) return;
-    const [dd, mm, yyyy] = slotDate.split('-');
-    const isoDate = `${yyyy}-${mm}-${dd}T00:00:00.000Z`;
-    holdReservation.mutate(
-      { therapistId, date: isoDate, startHour },
-      {
-        onSuccess: (res) => setReservationId(res.data?.reservationId ?? null),
-        onError: (e: unknown) => {
-          const err = e as { response?: { data?: { message?: string } } };
-          toast.error(err.response?.data?.message || 'Could not hold this slot. It may already be taken.')},
-      },
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!sessionData) return;
 
-  const handleConfirm = async () => {
-    if (!reservationId || !selectedPatientId || !selectedLocationId) return;
-    try {
-      await confirmReservation.mutateAsync(reservationId);
-      toast.success('Booking confirmed!');
+    if (sessionData.isConfirmed) {
+      toast.success('This booking is already confirmed!');
       navigate('/patient/my-bookings');
-    } catch {
-      toast.error('Booking failed. Please try again.');
+      return;
+    }
+
+    if (sessionData.step) setStepState(sessionData.step);
+    if (sessionData.formData?.patientDetailId) setSelectedPatientId(sessionData.formData.patientDetailId);
+    if (sessionData.formData?.locationId) setSelectedLocationId(sessionData.formData.locationId);
+    if (sessionData.formData?.conditionId) setSelectedConditionId(sessionData.formData.conditionId);
+    if (sessionData.formData?.problemDesc) setProblemDesc(sessionData.formData.problemDesc);
+  }, [sessionData, navigate]);
+
+  useEffect(() => {
+    if (sessionError) {
+      setSessionExpired(true);
+    }
+  }, [sessionError]);
+
+  const setStep = (newStep: number) => {
+    setStepState(newStep);
+    if (sessionId) {
+      updateFormMutation.mutate({
+        sessionId,
+        formData: {
+          step: newStep,
+          patientDetailId: selectedPatientId,
+          locationId: selectedLocationId,
+          conditionId: selectedConditionId,
+          problemDesc,
+        },
+      });
     }
   };
 
-  const detail = therapistData?.data;
-  const therapist = detail
+  const handleSelectPatient = (patientId: string) => {
+    setSelectedPatientId(patientId);
+    if (sessionId) {
+      updateFormMutation.mutate({
+        sessionId,
+        formData: { patientDetailId: patientId },
+      });
+    }
+  };
+
+  const handleSelectLocation = (locationId: string) => {
+    setSelectedLocationId(locationId);
+    if (sessionId) {
+      updateFormMutation.mutate({
+        sessionId,
+        formData: { locationId },
+      });
+    }
+  };
+
+  const handleSelectCondition = (conditionId: string) => {
+    setSelectedConditionId(conditionId);
+    if (sessionId) {
+      updateFormMutation.mutate({
+        sessionId,
+        formData: { conditionId },
+      });
+    }
+  };
+
+  const handleDescChange = (desc: string) => {
+    setProblemDesc(desc);
+  };
+
+  const handleConfirm = async () => {
+    if (!sessionId || !selectedPatientId || !selectedLocationId) {
+      toast.error('Please complete all required fields.');
+      return;
+    }
+
+    try {
+      // 1. Initiate payment order
+      await initiatePaymentMutation.mutateAsync(sessionId);
+
+      // 2. Finalize booking (simulating successful payment/webhook)
+      await finalizeBookingMutation.mutateAsync({ sessionId });
+
+      toast.success('Payment completed & booking confirmed!');
+      navigate('/patient/my-bookings');
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Payment failed. Please try again.');
+    }
+  };
+
+  const therapist = sessionData?.therapist
     ? {
-        name: detail.name,
-        image: detail.image ?? null,
-        price: detail.discountedPrice,
-        priceAlt: detail.originalPrice ?? null,
-        mode: 'home_visit',
+        name: sessionData.therapist.name,
+        image: sessionData.therapist.image,
+        price: sessionData.therapist.price,
+        priceAlt: sessionData.therapist.priceAlt,
+        mode: sessionData.therapist.mode || 'home_visit',
       }
     : null;
+
+  const slotDate = sessionData?.date
+    ? new Date(sessionData.date).toLocaleDateString('en-GB')
+    : undefined;
+  const startHour = sessionData?.startHour;
 
   const selectedPatient = patientDetails.find((p) => p.id === selectedPatientId) ?? null;
   const selectedLocation = patientLocations.find((l) => l.id === selectedLocationId) ?? null;
 
   return {
-    therapistId,
+    sessionId,
+    therapistId: sessionData?.therapistId,
     slotDate,
     startHour,
+    expiresAt: sessionData?.expiresAt,
     step,
     setStep,
     selectedPatientId,
-    setSelectedPatientId,
+    setSelectedPatientId: handleSelectPatient,
     selectedLocationId,
-    setSelectedLocationId,
+    setSelectedLocationId: handleSelectLocation,
     selectedConditionId,
-    setSelectedConditionId,
+    setSelectedConditionId: handleSelectCondition,
     problemDesc,
-    setProblemDesc,
-    reservationId,
+    setProblemDesc: handleDescChange,
+    couponCode: sessionData?.formData?.couponCode,
+    couponDiscount: sessionData?.formData?.couponDiscount,
+    reservationId: sessionData?.reservationId,
     sessionExpired,
     setSessionExpired,
     therapist,
-    therapistLoading,
+    therapistLoading: sessionLoading,
     patientDetails,
     patientsLoading,
     patientLocations,
@@ -99,7 +174,7 @@ export const useBookingFlow = () => {
     selectedPatient,
     selectedLocation,
     handleConfirm,
-    isConfirming: confirmReservation.isPending,
+    isConfirming: initiatePaymentMutation.isPending || finalizeBookingMutation.isPending,
     navigate,
   };
 };
