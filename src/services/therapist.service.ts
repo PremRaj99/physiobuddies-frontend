@@ -219,6 +219,43 @@ export interface TherapistBookingRecord {
   lastSessionTime: string;
 }
 
+export interface DocumentRecordItem {
+  id: string;
+  name: string;
+  fileType?: string;
+  url?: string;
+  createdAt?: string;
+}
+
+export interface ClinicalAssessmentRecord {
+  id?: string;
+  assessmentType?: string;
+  chiefComplaint?: string[];
+  durationOfSymptoms?: string;
+  painScore?: number;
+  rom?: string;
+  muscleStrength?: string;
+  problemsIdentified?: string[];
+  treatmentPlanItems?: string[];
+  visitFrequency?: string;
+  hepGiven?: boolean;
+  therapistNotes?: string | null;
+  documentUrls?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface SessionImprovementRecordItem {
+  id: string;
+  sessionId: string;
+  sessionDate?: string;
+  painScoreBefore?: number | null;
+  painScoreAfter: number;
+  improvementNotes: string;
+  exercisesGiven?: string[];
+  createdAt?: string;
+}
+
 export interface TherapistBookingDetail {
   id: string;
   mode: 'home_visit' | 'online' | 'clinic';
@@ -249,7 +286,9 @@ export interface TherapistBookingDetail {
     scheduledTime: string;
     status: string;
   }>;
-  clinicalAssessment?: unknown;
+  documents?: DocumentRecordItem[];
+  clinicalAssessment?: ClinicalAssessmentRecord | null;
+  improvementRecords?: SessionImprovementRecordItem[];
 }
 
 export const getTherapistBookings = async (): Promise<ApiResponse<TherapistBookingRecord[]>> => {

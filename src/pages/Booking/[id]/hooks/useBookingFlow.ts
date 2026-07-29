@@ -49,11 +49,13 @@ export const useBookingFlow = () => {
     }
 
     restoredRef.current = true;
-    if (sessionData.step) setStepState(sessionData.step);
-    if (sessionData.formData?.patientDetailId) setSelectedPatientId(sessionData.formData.patientDetailId);
-    if (sessionData.formData?.locationId) setSelectedLocationId(sessionData.formData.locationId);
-    if (sessionData.formData?.conditionId) setSelectedConditionId(sessionData.formData.conditionId);
-    if (sessionData.formData?.problemDesc) setProblemDesc(sessionData.formData.problemDesc);
+    queueMicrotask(() => {
+      if (sessionData.step) setStepState(sessionData.step);
+      if (sessionData.formData?.patientDetailId) setSelectedPatientId(sessionData.formData.patientDetailId);
+      if (sessionData.formData?.locationId) setSelectedLocationId(sessionData.formData.locationId);
+      if (sessionData.formData?.conditionId) setSelectedConditionId(sessionData.formData.conditionId);
+      if (sessionData.formData?.problemDesc) setProblemDesc(sessionData.formData.problemDesc);
+    });
   }, [sessionData, navigate]);
 
   const sessionExpired = Boolean(sessionError) || manualExpired;

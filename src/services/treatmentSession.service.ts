@@ -211,3 +211,14 @@ export const bookMoreSession = async (
   >('/treatment-session/book-more-session', payload);
   return data;
 };
+
+export const submitAssessment = async (
+  sessionId: string,
+  payload: unknown,
+): Promise<ApiResponse<{ message: string }>> => {
+  const { data } = await axios.post<ApiResponse<{ message: string }>>(
+    `/treatment-session/${sessionId}/assessment`,
+    payload,
+  );
+  return data;
+};

@@ -18,7 +18,7 @@ interface TreatmentTimelineProps {
   isGeneratingOtp: boolean;
   handleAccept: () => void;
   handleStartSessionOtp: () => void;
-  handleEndSessionAction: (sessionId: string) => void;
+  handleEndSessionAction: (sessionId: string, sessionIndex?: number) => void;
   openAddDocsModal: (sessionId: string) => void;
   openRescheduleModal: (sessionId: string) => void;
 }
@@ -101,7 +101,7 @@ export const TreatmentTimeline = ({
 
                 {(session.status === 'active' || sessionActive) && (
                   <Button
-                    onClick={() => handleEndSessionAction(session.id)}
+                    onClick={() => handleEndSessionAction(session.id, idx)}
                     className="h-10 bg-amber-600 px-6 font-bold text-white hover:bg-amber-700"
                   >
                     <Clock className="mr-2 h-4 w-4" /> End Session

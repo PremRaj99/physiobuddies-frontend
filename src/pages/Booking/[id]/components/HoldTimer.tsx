@@ -15,11 +15,16 @@ export const HoldTimer: React.FC<HoldTimerProps> = ({ expiresAt, onExpire }) => 
     return diff;
   }, [expiresAt]);
 
+  const [prevExpiresAt, setPrevExpiresAt] = useState(expiresAt);
   const [timeLeft, setTimeLeft] = useState(calculateRemainingSeconds);
+
+  if (prevExpiresAt !== expiresAt) {
+    setPrevExpiresAt(expiresAt);
+    setTimeLeft(calculateRemainingSeconds());
+  }
 
   useEffect(() => {
     const initial = calculateRemainingSeconds();
-    setTimeLeft(initial);
     if (initial <= 0) {
       onExpire();
       return;

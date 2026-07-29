@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useTherapistBookingFlow } from './hooks/useTherapistBookingFlow';
 import { PatientHeader } from './components/PatientHeader';
 import { TreatmentTimeline } from './components/TreatmentTimeline';
+import { MedicalRecordsSection } from './components/MedicalRecordsSection';
 import { VisitLogistics } from './components/VisitLogistics';
 import { ClinicalSupport } from './components/ClinicalSupport';
 import { OtpModal } from './components/OtpModal';
@@ -153,6 +154,14 @@ export default function TherapistBookingDetailPage() {
               handleEndSessionAction={handleEndSessionAction}
               openAddDocsModal={openAddDocsModal}
               openRescheduleModal={openRescheduleModal}
+            />
+
+            <MedicalRecordsSection
+              bookingId={booking.id}
+              documents={booking.documents}
+              clinicalAssessment={booking.clinicalAssessment}
+              improvementRecords={booking.improvementRecords}
+              openAddDocsModal={openAddDocsModal}
             />
           </div>
 

@@ -126,9 +126,13 @@ export const useTherapistBookingFlow = () => {
     }
   };
 
-  const handleEndSessionAction = (sessionId: string) => {
+  const handleEndSessionAction = (sessionId: string, sessionIndex: number = 0) => {
     setActiveSessionId(sessionId);
-    setIsImprovementOpen(true);
+    if (sessionIndex === 0) {
+      navigate(`/therapist/my-booking/${id}/create-assessment`);
+    } else {
+      setIsImprovementOpen(true);
+    }
   };
 
   const openRescheduleModal = (sessionId: string) => {

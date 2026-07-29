@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -32,14 +32,16 @@ export const ProfileTab = ({
     patientId: '',
   };
 
+  const [prevProfile, setPrevProfile] = useState<UserProfile | null>(profile);
   const [formData, setFormData] = useState<UserProfile>(profile ?? defaultProfile);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
+  if (profile !== prevProfile) {
+    setPrevProfile(profile);
     if (profile) {
       setFormData(profile);
     }
-  }, [profile]);
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

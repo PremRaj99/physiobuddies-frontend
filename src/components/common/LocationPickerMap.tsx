@@ -34,12 +34,19 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
   const markerRef = useRef<L.Marker | null>(null);
   const [isLocating, setIsLocating] = useState(false);
 
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  const { lat, lng } = coords;
+
   // Initialize Leaflet map
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
     if (!mapInstanceRef.current) {
-      const map = L.map(mapContainerRef.current).setView([coords.lat, coords.lng], 13);
+      const map = L.map(mapContainerRef.current).setView([lat, lng], 13);
 
       // OpenStreetMap Free Tile Layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -48,14 +55,14 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
       }).addTo(map);
 
       // Add Draggable Marker
-      const marker = L.marker([coords.lat, coords.lng], { draggable: true }).addTo(map);
+      const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
       // Update coords on marker dragend
       marker.on('dragend', () => {
         const position = marker.getLatLng();
         const newLat = parseFloat(position.lat.toFixed(6));
         const newLng = parseFloat(position.lng.toFixed(6));
-        onChange({ lat: newLat, lng: newLng });
+        onChangeRef.current({ lat: newLat, lng: newLng });
       });
 
       // Update coords on map click
@@ -63,7 +70,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
         const newLat = parseFloat(e.latlng.lat.toFixed(6));
         const newLng = parseFloat(e.latlng.lng.toFixed(6));
         marker.setLatLng([newLat, newLng]);
-        onChange({ lat: newLat, lng: newLng });
+        onChangeRef.current({ lat: newLat, lng: newLng });
       });
 
       mapInstanceRef.current = map;
@@ -77,18 +84,19 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
         markerRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Pan map & update marker when external coords change
   useEffect(() => {
     if (mapInstanceRef.current && markerRef.current) {
       const currentPos = markerRef.current.getLatLng();
-      if (currentPos.lat !== coords.lat || currentPos.lng !== coords.lng) {
-        markerRef.current.setLatLng([coords.lat, coords.lng]);
-        mapInstanceRef.current.panTo([coords.lat, coords.lng]);
+      if (currentPos.lat !== lat || currentPos.lng !== lng) {
+        markerRef.current.setLatLng([lat, lng]);
+        mapInstanceRef.current.panTo([lat, lng]);
       }
     }
-  }, [coords.lat, coords.lng]);
+  }, [lat, lng]);
 
   // Handle GPS location detection
   const handleDetectLocation = () => {
@@ -140,7 +148,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
 
       <div className="relative h-64 w-full overflow-hidden rounded-md border border-gray-200 shadow-inner">
         <div ref={mapContainerRef} className="h-full w-full z-0" />
-        <div className="absolute top-2 right-2 z-[1000] rounded-md bg-white/90 px-3 py-1 text-xs font-mono shadow text-[#012a4a]">
+        <div className="absolute top-2 right-2 z-1000 rounded-md bg-white/90 px-3 py-1 text-xs font-mono shadow text-[#012a4a]">
           Click map or drag pin
         </div>
       </div>

@@ -34,6 +34,8 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router';
+import { toast } from 'sonner';
+import { submitAssessment } from '@/services/treatmentSession.service';
 
 /* STREAMING_CHUNK:Defining Schema and Types... */
 
@@ -287,12 +289,17 @@ export default function CreateAssessmentPage() {
 
   const onSubmit = async (data: PhysiotherapyAssessment) => {
     setIsSubmitting(true);
-    // Simulate API Call
-    setTimeout(() => {
-      console.log('Submitted Data:', data);
+    try {
+      if (bookingId) {
+        await submitAssessment(bookingId, data);
+      }
       setIsSubmitting(false);
       setIsSuccess(true);
-    }, 2000);
+    } catch (err: unknown) {
+      setIsSubmitting(false);
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to submit assessment');
+    }
   };
 
   /* STREAMING_CHUNK:Helper for Multi-select Badges... */

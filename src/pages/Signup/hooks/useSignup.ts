@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSendOtp, useSignupPatient, useSignupPhysiotherapist } from '@/hooks/useAuth';
@@ -47,8 +47,8 @@ export const useSignup = () => {
     },
   });
 
-  const patientEmail = patientForm.watch('email');
-  const therapistEmail = therapistForm.watch('email');
+  const patientEmail = useWatch({ control: patientForm.control, name: 'email' });
+  const therapistEmail = useWatch({ control: therapistForm.control, name: 'email' });
   const registeredEmail = role === 'patient' ? patientEmail : therapistEmail;
 
   // Pin Map

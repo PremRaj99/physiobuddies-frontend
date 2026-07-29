@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Plus, CheckCircle2, ChevronRight } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -40,9 +40,10 @@ export const PatientStep: React.FC<PatientStepProps> = ({
 }) => {
   const [showNewForm, setShowNewForm] = useState(false);
   const createPatient = useCreatePatientDetail();
-  const { register, handleSubmit, setValue, watch, reset, formState } = useForm<NewPatientForm>({
+  const { register, handleSubmit, setValue, control, reset, formState } = useForm<NewPatientForm>({
     defaultValues: { gender: 'male' },
   });
+  const genderValue = useWatch({ control, name: 'gender' });
 
   const onSubmit = async (data: NewPatientForm) => {
     try {
@@ -91,7 +92,7 @@ export const PatientStep: React.FC<PatientStepProps> = ({
                 </div>
                 <div className="space-y-2">
                   <Label>Gender</Label>
-                  <RadioGroup value={watch('gender')} onValueChange={(v) => setValue('gender', v as NewPatientForm['gender'])} className="flex gap-4">
+                  <RadioGroup value={genderValue} onValueChange={(v) => setValue('gender', v as NewPatientForm['gender'])} className="flex gap-4">
                     {(['male', 'female', 'other'] as const).map((g) => (
                       <div key={g} className="flex items-center space-x-2">
                         <RadioGroupItem value={g} id={`r-${g}`} />
