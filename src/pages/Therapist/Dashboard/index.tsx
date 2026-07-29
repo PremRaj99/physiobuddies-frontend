@@ -162,8 +162,6 @@ export default function TherapistDashboard() {
   const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState<'weekly' | 'monthly'>('weekly');
   const [dashboardData, setDashboardData] = useState<TherapistDashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     getTherapistDashboard()
       .then((res) => {
@@ -173,9 +171,6 @@ export default function TherapistDashboard() {
       })
       .catch((err) => {
         console.error('Failed to load therapist dashboard:', err);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, []);
 

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Plus, CheckCircle2, ChevronLeft, ChevronRight, LocateFixed, Globe } from 'lucide-react';
+import { MapPin, Plus, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { useCreatePatientLocation } from '@/hooks/usePatient';
 import type { PatientLocationItem } from '@/services/patient.service';
 import { LocationPickerMap } from '@/components/common/LocationPickerMap';
+import { toast } from 'sonner';
 
 // All 28 States and 8 Union Territories of India
 const INDIAN_STATES_AND_UTS = [
@@ -98,10 +98,8 @@ export const LocationStep: React.FC<LocationStepProps> = ({
     lat: 28.6139,
     lng: 77.2090, // Default to New Delhi, India
   });
-  const [isLocating, setIsLocating] = useState(false);
-
   const createLocation = useCreatePatientLocation();
-  const { register, handleSubmit, reset, formState, setValue } = useForm<NewLocationForm>({
+  const { register, handleSubmit, reset, formState } = useForm<NewLocationForm>({
     defaultValues: {
       country: 'India',
       state: 'Delhi',
@@ -111,30 +109,6 @@ export const LocationStep: React.FC<LocationStepProps> = ({
       postalCode: '',
     },
   });
-
-  // Fetch user current geolocation
-  const handleDetectLocation = () => {
-    if (!navigator.geolocation) {
-      toast.error('Geolocation is not supported by your browser.');
-      return;
-    }
-
-    setIsLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = parseFloat(position.coords.latitude.toFixed(6));
-        const lng = parseFloat(position.coords.longitude.toFixed(6));
-        setCoords({ lat, lng });
-        setIsLocating(false);
-        toast.success(`Location pinned: Lat ${lat}, Lng ${lng}`);
-      },
-      (error) => {
-        setIsLocating(false);
-        toast.error(`Unable to retrieve location: ${error.message}`);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  };
 
   const onSubmit = async (data: NewLocationForm) => {
     try {

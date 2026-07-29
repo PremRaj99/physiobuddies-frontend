@@ -64,3 +64,20 @@ export const createPatientLocation = async (
   const { data } = await axios.post<ApiResponse>('/patient/location', payload);
   return data;
 };
+
+export interface PatientBookingRecord {
+  id: string;
+  therapistId: string;
+  therapistName: string;
+  therapistImage: string;
+  therapistGender: 'MALE' | 'FEMALE' | 'OTHER';
+  treatmentMode: 'home_visit' | 'online' | 'clinic';
+  status: 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
+  lastSessionDate: string;
+  lastSessionTime: string;
+}
+
+export const getPatientMyBookings = async (): Promise<ApiResponse<PatientBookingRecord[]>> => {
+  const { data } = await axios.get<ApiResponse<PatientBookingRecord[]>>('/patient/my-bookings');
+  return data;
+};

@@ -219,6 +219,39 @@ export interface TherapistBookingRecord {
   lastSessionTime: string;
 }
 
+export interface TherapistBookingDetail {
+  id: string;
+  mode: 'home_visit' | 'online' | 'clinic';
+  overallStatus: string;
+  status?: 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
+  patient: {
+    id: string;
+    name: string;
+    dob: string;
+    gender: 'MALE' | 'FEMALE' | 'OTHER';
+    phone: string;
+    image?: string;
+  };
+  condition?: {
+    title: string;
+  };
+  problemDescription?: string;
+  location?: {
+    address?: string;
+    landmark?: string | null;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+  };
+  sessions?: Array<{
+    id: string;
+    date: string;
+    scheduledTime: string;
+    status: string;
+  }>;
+  clinicalAssessment?: unknown;
+}
+
 export const getTherapistBookings = async (): Promise<ApiResponse<TherapistBookingRecord[]>> => {
   const { data } = await axios.get<ApiResponse<TherapistBookingRecord[]>>(
     '/therapist/sessions/my-bookings',
@@ -226,8 +259,8 @@ export const getTherapistBookings = async (): Promise<ApiResponse<TherapistBooki
   return data;
 };
 
-export const getTherapistBookingById = async (id: string): Promise<ApiResponse<any>> => {
-  const { data } = await axios.get<ApiResponse<any>>(
+export const getTherapistBookingById = async (id: string): Promise<ApiResponse<TherapistBookingDetail>> => {
+  const { data } = await axios.get<ApiResponse<TherapistBookingDetail>>(
     `/therapist/sessions/my-bookings/${id}`,
   );
   return data;
@@ -252,8 +285,8 @@ export const generateSessionOtp = async (
 export const verifySessionOtp = async (
   id: string,
   otp: string,
-): Promise<ApiResponse<{ message: string; session?: any }>> => {
-  const { data } = await axios.post<ApiResponse<{ message: string; session?: any }>>(
+): Promise<ApiResponse<{ message: string; session?: unknown }>> => {
+  const { data } = await axios.post<ApiResponse<{ message: string; session?: unknown }>>(
     `/therapist/sessions/my-bookings/${id}/verify-otp`,
     { otp },
   );

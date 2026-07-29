@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -23,7 +23,9 @@ export const useBookingFlow = () => {
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
   const [selectedConditionId, setSelectedConditionId] = useState<string | null>(null);
   const [problemDesc, setProblemDesc] = useState('');
-  const [sessionExpired, setSessionExpired] = useState(false);
+  const restoredRef = useRef(false);
+
+  const [manualExpired, setManualExpired] = useState(false);
 
   const { data: sessionResponse, isLoading: sessionLoading, error: sessionError } = useBookingSession(sessionId);
   const { data: patientDetails = [], isLoading: patientsLoading } = usePatientDetails();
@@ -38,7 +40,7 @@ export const useBookingFlow = () => {
 
   // Restore session data on load
   useEffect(() => {
-    if (!sessionData) return;
+    if (!sessionData || restoredRef.current) return;
 
     if (sessionData.isConfirmed) {
       toast.success('This booking is already confirmed!');
@@ -46,6 +48,7 @@ export const useBookingFlow = () => {
       return;
     }
 
+    restoredRef.current = true;
     if (sessionData.step) setStepState(sessionData.step);
     if (sessionData.formData?.patientDetailId) setSelectedPatientId(sessionData.formData.patientDetailId);
     if (sessionData.formData?.locationId) setSelectedLocationId(sessionData.formData.locationId);
@@ -53,11 +56,26 @@ export const useBookingFlow = () => {
     if (sessionData.formData?.problemDesc) setProblemDesc(sessionData.formData.problemDesc);
   }, [sessionData, navigate]);
 
-  useEffect(() => {
-    if (sessionError) {
-      setSessionExpired(true);
-    }
-  }, [sessionError]);
+  const sessionExpired = Boolean(sessionError) || manualExpired;
+
+  const rawDate = sessionData?.date;
+  const slotDate = rawDate
+    ? isNaN(Date.parse(rawDate))
+      ? rawDate
+      : new Date(rawDate).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })
+    : '';
+
+  const startHour = sessionData?.startHour;
+  const expiresAt = sessionData?.expiresAt;
+  const therapist = sessionData?.therapist;
+  const therapistLoading = sessionLoading;
+
+  const couponCode = sessionData?.formData?.couponCode || null;
+  const couponDiscount = sessionData?.formData?.couponDiscount || 0;
 
   const setStep = (newStep: number) => {
     setStepState(newStep);
@@ -162,32 +180,33 @@ export const useBookingFlow = () => {
     }
   };
 
-  const therapist = sessionData?.therapist
-    ? {
-        name: sessionData.therapist.name,
-        image: sessionData.therapist.image,
-        price: sessionData.therapist.price,
-        priceAlt: sessionData.therapist.priceAlt,
-        mode: sessionData.therapist.mode || 'home_visit',
-      }
-    : null;
+  const selectedPatient = patientDetails.find((p) => p.id === selectedPatientId);
+  const selectedLocation = patientLocations.find((l) => l.id === selectedLocationId);
 
-  const slotDate = sessionData?.date
-    ? new Date(sessionData.date).toLocaleDateString('en-GB')
-    : undefined;
-  const startHour = sessionData?.startHour;
-
-  const selectedPatient = patientDetails.find((p) => p.id === selectedPatientId) ?? null;
-  const selectedLocation = patientLocations.find((l) => l.id === selectedLocationId) ?? null;
+  const isSubmitting =
+    updateFormMutation.isPending ||
+    initiatePaymentMutation.isPending ||
+    verifyPaymentMutation.isPending ||
+    finalizeBookingMutation.isPending ||
+    isRazorpayProcessing;
 
   return {
     sessionId,
-    therapistId: sessionData?.therapistId,
     slotDate,
     startHour,
-    expiresAt: sessionData?.expiresAt,
+    expiresAt,
     step,
     setStep,
+    sessionData,
+    sessionLoading,
+    sessionExpired,
+    setSessionExpired: setManualExpired,
+    therapist,
+    therapistLoading,
+    patientDetails,
+    patientsLoading,
+    patientLocations,
+    locationsLoading,
     selectedPatientId,
     setSelectedPatientId: handleSelectPatient,
     selectedLocationId,
@@ -196,25 +215,17 @@ export const useBookingFlow = () => {
     setSelectedConditionId: handleSelectCondition,
     problemDesc,
     setProblemDesc: handleDescChange,
-    couponCode: sessionData?.formData?.couponCode,
-    couponDiscount: sessionData?.formData?.couponDiscount,
-    reservationId: sessionData?.reservationId,
-    sessionExpired,
-    setSessionExpired,
-    therapist,
-    therapistLoading: sessionLoading,
-    patientDetails,
-    patientsLoading,
-    patientLocations,
-    locationsLoading,
+    couponCode,
+    couponDiscount,
     selectedPatient,
     selectedLocation,
+    handleSelectPatient,
+    handleSelectLocation,
+    handleSelectCondition,
+    handleDescChange,
     handleConfirm,
-    isConfirming:
-      initiatePaymentMutation.isPending ||
-      isRazorpayProcessing ||
-      verifyPaymentMutation.isPending ||
-      finalizeBookingMutation.isPending,
+    isConfirming: isSubmitting,
+    isSubmitting,
     navigate,
   };
 };

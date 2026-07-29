@@ -10,6 +10,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import type { ApiResponse } from '@/services';
+import type { SeeMoreSlotsResponse } from '@/services/treatmentSession.service';
+
 interface BookMoreModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -17,7 +20,7 @@ interface BookMoreModalProps {
   setBookMoreDate: (date: string) => void;
   bookMoreHour: number;
   setBookMoreHour: (hour: number) => void;
-  seeMoreSlotsRes: any;
+  seeMoreSlotsRes?: ApiResponse<SeeMoreSlotsResponse> | null;
   isBookingMore: boolean;
   onSubmit: () => void;
 }

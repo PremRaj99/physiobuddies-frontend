@@ -91,6 +91,17 @@ export default function TherapistBookingDetailPage() {
     );
   }
 
+  if (!booking) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8fbfa] gap-4">
+        <p className="font-medium text-gray-600">Booking not found.</p>
+        <Button onClick={() => navigate('/therapist/my-bookings')} variant="outline">
+          Back to Bookings
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fbfa] pb-24 font-sans">
       {/* Header Decorator */}

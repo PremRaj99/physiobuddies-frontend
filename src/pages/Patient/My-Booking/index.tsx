@@ -8,6 +8,7 @@ import {
   Clock,
   Filter,
   Home,
+  Loader2,
   Search,
   Video,
 } from 'lucide-react';
@@ -28,6 +29,7 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router';
+import { usePatientMyBookings } from '@/hooks/usePatient';
 
 // --- Types ---
 type TreatmentMode = 'home_visit' | 'online' | 'clinic';
@@ -42,72 +44,9 @@ interface BookingRecord {
   therapistGender: Gender;
   treatmentMode: TreatmentMode;
   status: TreatmentStatus;
-  lastSessionDate: string; // ISO or formatted string
+  lastSessionDate: string;
   lastSessionTime: string;
 }
-
-// --- Mock Data ---
-const MOCK_BOOKINGS: BookingRecord[] = [
-  {
-    id: 'BKG-001',
-    therapistId: 'TH-101',
-    therapistName: 'Dr. Sarah Jenkins',
-    therapistImage:
-      'https://images.unsplash.com/photo-1594824436998-d7037b52479e?auto=format&fit=crop&q=80&w=200',
-    therapistGender: 'FEMALE',
-    treatmentMode: 'home_visit',
-    status: 'UPCOMING',
-    lastSessionDate: 'May 25, 2026',
-    lastSessionTime: '10:00 AM',
-  },
-  {
-    id: 'BKG-002',
-    therapistId: 'TH-102',
-    therapistName: 'Dr. Marcus Chen',
-    therapistImage:
-      'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=200',
-    therapistGender: 'MALE',
-    treatmentMode: 'clinic',
-    status: 'COMPLETED',
-    lastSessionDate: 'May 10, 2026',
-    lastSessionTime: '02:30 PM',
-  },
-  {
-    id: 'BKG-003',
-    therapistId: 'TH-103',
-    therapistName: 'Dr. Emily Roberts',
-    therapistImage:
-      'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200',
-    therapistGender: 'FEMALE',
-    treatmentMode: 'online',
-    status: 'PENDING',
-    lastSessionDate: 'May 28, 2026',
-    lastSessionTime: '11:15 AM',
-  },
-  {
-    id: 'BKG-004',
-    therapistId: 'TH-101',
-    therapistName: 'Dr. Sarah Jenkins',
-    therapistImage:
-      'https://images.unsplash.com/photo-1594824436998-d7037b52479e?auto=format&fit=crop&q=80&w=200',
-    therapistGender: 'FEMALE',
-    treatmentMode: 'home_visit',
-    status: 'COMPLETED',
-    lastSessionDate: 'April 15, 2026',
-    lastSessionTime: '10:00 AM',
-  },
-  {
-    id: 'BKG-005',
-    therapistId: 'TH-104',
-    therapistName: 'Dr. Alan Turing',
-    therapistImage: '', // Test Fallback
-    therapistGender: 'MALE',
-    treatmentMode: 'clinic',
-    status: 'CANCELLED',
-    lastSessionDate: 'March 02, 2026',
-    lastSessionTime: '04:00 PM',
-  },
-];
 
 // --- Helper Functions ---
 const getStatusColor = (status: TreatmentStatus) => {
@@ -168,9 +107,10 @@ export default function PatientBookingListPage() {
   const [modeFilter, setModeFilter] = useState<string>('ALL');
 
   const navigate = useNavigate();
+  const { data: bookings = [], isLoading } = usePatientMyBookings();
 
   // Filtering Logic
-  const filteredBookings = MOCK_BOOKINGS.filter((booking) => {
+  const filteredBookings = (bookings as BookingRecord[]).filter((booking) => {
     // 1. Tab Filter (Status)
     const matchesTab =
       activeTab === 'ALL' ||
@@ -182,7 +122,9 @@ export default function PatientBookingListPage() {
     const matchesMode = modeFilter === 'ALL' || booking.treatmentMode === modeFilter;
 
     // 3. Search Filter
-    const matchesSearch = booking.therapistName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (booking.therapistName || '')
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
     return matchesTab && matchesMode && matchesSearch;
   });
@@ -263,129 +205,137 @@ export default function PatientBookingListPage() {
           </CardContent>
         </Card>
 
-        {/* List Area */}
-        <AnimatePresence mode="wait">
-          {filteredBookings.length > 0 ? (
-            <motion.div
-              key={activeTab + modeFilter + searchQuery} // Re-trigger animation on filter change
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="space-y-4"
-            >
-              {filteredBookings.map((booking) => (
-                <motion.div key={booking.id} variants={itemVariants}>
-                  <Card
-                    onClick={() => navigate(`/patient/my-booking/${booking.id}`)}
-                    className="border-border group overflow-hidden py-0 transition-all duration-300 hover:border-[#a9d6e5] hover:shadow-md"
-                  >
-                    <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row">
-                        {/* Therapist Info Section (Left) */}
-                        <div className="border-border/50 bg-secondary/10 flex items-center gap-4 border-b p-5 md:w-2/5 md:border-r md:border-b-0">
-                          <Avatar className="h-16 w-16 border-2 border-white shadow-sm">
-                            <AvatarImage src={booking.therapistImage} className="object-cover" />
-                            <AvatarFallback className="bg-[#a9d6e5] text-xl font-bold text-[#013a63]">
-                              {booking.therapistName.replace('Dr. ', '').charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <h3 className="text-lg leading-tight font-bold text-[#012a4a] transition-colors group-hover:text-[#014f86]">
-                              {booking.therapistName}
-                            </h3>
-                            <p className="text-muted-foreground mt-0.5 text-sm capitalize">
-                              {booking.therapistGender.toLowerCase()} • Therapist
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Session Details Section (Middle) */}
-                        <div className="flex flex-col justify-center space-y-3 p-5 md:w-2/5">
-                          <div className="flex items-center gap-3 text-[#012a4a]">
-                            <div className="bg-secondary/50 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-                              <CalendarDays className="h-4 w-4 text-[#014f86]" />
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                                Date
-                              </p>
-                              <p className="font-semibold">{booking.lastSessionDate}</p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-3 text-[#012a4a]">
-                            <div className="bg-secondary/50 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-                              <Clock className="h-4 w-4 text-[#014f86]" />
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                                Time
-                              </p>
-                              <p className="font-semibold">{booking.lastSessionTime}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Status & Action Section (Right) */}
-                        <div className="border-border/50 flex flex-row items-center justify-between border-t bg-gray-50/50 p-5 md:w-1/5 md:flex-col md:items-end md:justify-center md:border-t-0">
-                          <div className="flex flex-col items-start gap-2 md:items-end">
-                            <Badge
-                              className={`${getStatusColor(booking.status)} border-transparent px-3 py-1 font-semibold`}
-                            >
-                              {booking.status}
-                            </Badge>
-
-                            <Badge
-                              variant="outline"
-                              className="border-border flex items-center gap-1.5 bg-white text-[#013a63] shadow-sm"
-                            >
-                              {getModeIcon(booking.treatmentMode)}
-                              {getModeLabel(booking.treatmentMode)}
-                            </Badge>
-                          </div>
-
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="mt-4 hidden text-[#014f86] group-hover:bg-[#a9d6e5]/30 md:flex"
-                          >
-                            <ChevronRight className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-          ) : (
-            /* Empty State */
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="border-border rounded-xl border border-dashed bg-white py-24 text-center"
-            >
-              <div className="mb-4 inline-flex rounded-full bg-[#a9d6e5]/30 p-4">
-                <CalendarDays className="h-8 w-8 text-[#014f86]" />
-              </div>
-              <h3 className="mb-2 text-xl font-bold text-[#012a4a]">No sessions found</h3>
-              <p className="text-muted-foreground mx-auto mb-6 max-w-sm">
-                We couldn't find any treatment sessions matching your current filters.
-              </p>
-              <Button
-                variant="outline"
-                className="border-[#014f86] text-[#014f86] transition-colors hover:bg-[#014f86] hover:text-white"
-                onClick={() => {
-                  setSearchQuery('');
-                  setActiveTab('ALL');
-                  setModeFilter('ALL');
-                }}
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <Loader2 className="h-10 w-10 animate-spin text-[#014f86]" />
+            <p className="text-muted-foreground mt-4 text-sm">Loading your bookings...</p>
+          </div>
+        ) : (
+          /* List Area */
+          <AnimatePresence mode="wait">
+            {filteredBookings.length > 0 ? (
+              <motion.div
+                key={activeTab + modeFilter + searchQuery}
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="space-y-4"
               >
-                Clear Filters
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {filteredBookings.map((booking) => (
+                  <motion.div key={booking.id} variants={itemVariants}>
+                    <Card
+                      onClick={() => navigate(`/patient/my-bookings/${booking.id}`)}
+                      className="border-border group overflow-hidden py-0 transition-all duration-300 hover:border-[#a9d6e5] hover:shadow-md cursor-pointer"
+                    >
+                      <CardContent className="p-0">
+                        <div className="flex flex-col md:flex-row">
+                          {/* Therapist Info Section (Left) */}
+                          <div className="border-border/50 bg-secondary/10 flex items-center gap-4 border-b p-5 md:w-2/5 md:border-r md:border-b-0">
+                            <Avatar className="h-16 w-16 border-2 border-white shadow-sm">
+                              <AvatarImage src={booking.therapistImage} className="object-cover" />
+                              <AvatarFallback className="bg-[#a9d6e5] text-xl font-bold text-[#013a63]">
+                                {booking.therapistName ? booking.therapistName.replace('Dr. ', '').charAt(0) : 'T'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <h3 className="text-lg leading-tight font-bold text-[#012a4a] transition-colors group-hover:text-[#014f86]">
+                                {booking.therapistName}
+                              </h3>
+                              <p className="text-muted-foreground mt-0.5 text-sm capitalize">
+                                {booking.therapistGender ? booking.therapistGender.toLowerCase() : 'male'} • Therapist
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Session Details Section (Middle) */}
+                          <div className="flex flex-col justify-center space-y-3 p-5 md:w-2/5">
+                            <div className="flex items-center gap-3 text-[#012a4a]">
+                              <div className="bg-secondary/50 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
+                                <CalendarDays className="h-4 w-4 text-[#014f86]" />
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                                  Date
+                                </p>
+                                <p className="font-semibold">{booking.lastSessionDate}</p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 text-[#012a4a]">
+                              <div className="bg-secondary/50 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
+                                <Clock className="h-4 w-4 text-[#014f86]" />
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                                  Time
+                                </p>
+                                <p className="font-semibold">{booking.lastSessionTime}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Status & Action Section (Right) */}
+                          <div className="border-border/50 flex flex-row items-center justify-between border-t bg-gray-50/50 p-5 md:w-1/5 md:flex-col md:items-end md:justify-center md:border-t-0">
+                            <div className="flex flex-col items-start gap-2 md:items-end">
+                              <Badge
+                                className={`${getStatusColor(booking.status)} border-transparent px-3 py-1 font-semibold`}
+                              >
+                                {booking.status}
+                              </Badge>
+
+                              <Badge
+                                variant="outline"
+                                className="border-border flex items-center gap-1.5 bg-white text-[#013a63] shadow-sm"
+                              >
+                                {getModeIcon(booking.treatmentMode)}
+                                {getModeLabel(booking.treatmentMode)}
+                              </Badge>
+                            </div>
+
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="mt-4 hidden text-[#014f86] group-hover:bg-[#a9d6e5]/30 md:flex"
+                            >
+                              <ChevronRight className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              /* Empty State */
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="border-border rounded-xl border border-dashed bg-white py-24 text-center"
+              >
+                <div className="mb-4 inline-flex rounded-full bg-[#a9d6e5]/30 p-4">
+                  <CalendarDays className="h-8 w-8 text-[#014f86]" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold text-[#012a4a]">No sessions found</h3>
+                <p className="text-muted-foreground mx-auto mb-6 max-w-sm">
+                  We couldn't find any treatment sessions matching your current filters.
+                </p>
+                <Button
+                  variant="outline"
+                  className="border-[#014f86] text-[#014f86] transition-colors hover:bg-[#014f86] hover:text-white"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setActiveTab('ALL');
+                    setModeFilter('ALL');
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
       </div>
     </div>
   );

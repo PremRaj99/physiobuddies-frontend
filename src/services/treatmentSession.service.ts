@@ -33,11 +33,82 @@ export interface SeeMoreSlotsResponse {
   recommendationRule: string | null;
   visitFrequency: string | null;
   suggestedTreatmentDays: number | null;
-  availableSlots: any[];
+  availableSlots: unknown[];
 }
 
-export const getTreatmentSession = async (sessionId: string): Promise<ApiResponse<any>> => {
-  const { data } = await axios.get<ApiResponse<any>>(`/treatment-session/${sessionId}`);
+export interface TreatmentSessionDocRecord {
+  id: string;
+  name: string;
+  fileType?: string;
+  url?: string;
+  createdAt: string;
+}
+
+export interface TreatmentSessionTherapist {
+  id: string;
+  mode?: string;
+  user?: {
+    name?: string;
+    image?: string;
+    gender?: string;
+  };
+}
+
+export interface TreatmentSessionPatient {
+  id: string;
+  dob?: string;
+  user?: {
+    name?: string;
+    phone?: string;
+    gender?: string;
+  };
+}
+
+export interface TreatmentPlan {
+  id?: string;
+  therapist?: TreatmentSessionTherapist;
+  patient?: TreatmentSessionPatient;
+  docRecords?: TreatmentSessionDocRecord[];
+}
+
+export interface TreatmentSessionReservation {
+  address?: string;
+  landmark?: string | null;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  lat?: number;
+  lng?: number;
+}
+
+export interface TreatmentSession {
+  id: string;
+  status: string;
+  date?: string;
+  startAt?: string;
+  startHour?: number;
+  scheduledTime?: string;
+  actualStartTime?: string;
+  actualEndTime?: string;
+  condition?: string;
+  DescribedAs?: string;
+  treatmentPlanId?: string;
+  treatmentPlan?: TreatmentPlan;
+  reservation?: TreatmentSessionReservation;
+  location?: {
+    address?: string;
+    landmark?: string | null;
+    city?: string;
+    state?: string;
+    country?: string;
+    postalCode?: string;
+    coords?: { lat: number; lng: number };
+  };
+}
+
+export const getTreatmentSession = async (sessionId: string): Promise<ApiResponse<TreatmentSession>> => {
+  const { data } = await axios.get<ApiResponse<TreatmentSession>>(`/treatment-session/${sessionId}`);
   return data;
 };
 
@@ -104,8 +175,8 @@ export const markSessionNoShow = async (
 export const addSessionDocs = async (
   sessionId: string,
   payload: AddDocsPayload,
-): Promise<ApiResponse<any>> => {
-  const { data } = await axios.post<ApiResponse<any>>(
+): Promise<ApiResponse<unknown>> => {
+  const { data } = await axios.post<ApiResponse<unknown>>(
     `/treatment-session/${sessionId}/add-docs`,
     payload,
   );

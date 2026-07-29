@@ -33,78 +33,7 @@ import { useNavigate } from 'react-router';
 // --- Types ---
 type TreatmentMode = 'home_visit' | 'online' | 'clinic';
 type TreatmentStatus = 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
-type Gender = 'MALE' | 'FEMALE' | 'OTHER';
 
-interface BookingRecord {
-  id: string;
-  patientID: string;
-  patientName: string;
-  patientGender: Gender;
-  patientAge: number | null;
-  treatmentMode: TreatmentMode;
-  status: TreatmentStatus;
-  lastSessionDate: string; // ISO or formatted string
-  lastSessionTime: string;
-}
-
-// --- Mock Data ---
-const MOCK_BOOKINGS: BookingRecord[] = [
-  {
-    id: 'BKG-001',
-    patientID: 'PAT-101',
-    patientName: 'John Doe',
-    patientGender: 'MALE',
-    patientAge: 30,
-    treatmentMode: 'home_visit',
-    status: 'UPCOMING',
-    lastSessionDate: 'June 05, 2026',
-    lastSessionTime: '10:00 AM - 11:00 AM',
-  },
-  {
-    id: 'BKG-002',
-    patientID: 'PAT-102',
-    patientName: 'Jane Smith',
-    patientGender: 'FEMALE',
-    patientAge: 25,
-    treatmentMode: 'online',
-    status: 'COMPLETED',
-    lastSessionDate: 'May 10, 2026',
-    lastSessionTime: '02:30 PM - 03:15 PM',
-  },
-  {
-    id: 'BKG-003',
-    patientID: 'PAT-103',
-    patientName: 'Dr. Emily Roberts',
-    patientGender: 'FEMALE',
-    patientAge: 35,
-    treatmentMode: 'online',
-    status: 'PENDING',
-    lastSessionDate: 'May 28, 2026',
-    lastSessionTime: '11:15 AM - 12:00 PM',
-  },
-  {
-    id: 'BKG-004',
-    patientID: 'PAT-101',
-    patientName: 'Dr. Sarah Jenkins',
-    patientGender: 'FEMALE',
-    patientAge: 40,
-    treatmentMode: 'home_visit',
-    status: 'COMPLETED',
-    lastSessionDate: 'April 15, 2026',
-    lastSessionTime: '10:00 AM - 11:00 AM',
-  },
-  {
-    id: 'BKG-005',
-    patientID: 'PAT-104',
-    patientName: 'Dr. Alan Turing',
-    patientGender: 'MALE',
-    patientAge: 50,
-    treatmentMode: 'clinic',
-    status: 'CANCELLED',
-    lastSessionDate: 'March 02, 2026',
-    lastSessionTime: '04:00 PM - 05:00 PM',
-  },
-];
 
 // --- Helper Functions ---
 const getStatusColor = (status: TreatmentStatus) => {
@@ -179,11 +108,11 @@ export default function TherapistBookingListPage() {
         activeTab === 'ALL' ||
         (activeTab === 'TODAY' &&
           booking.lastSessionDate ===
-            new Date().toLocaleDateString('en-US', {
-              month: 'long',
-              day: '2-digit',
-              year: 'numeric',
-            })) ||
+          new Date().toLocaleDateString('en-US', {
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric',
+          })) ||
         (activeTab === 'UPCOMING' &&
           (booking.status === 'UPCOMING' || booking.status === 'PENDING')) ||
         (activeTab === 'PAST' && (booking.status === 'COMPLETED' || booking.status === 'CANCELLED'));

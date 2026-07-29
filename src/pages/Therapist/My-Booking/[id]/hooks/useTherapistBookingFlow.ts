@@ -12,6 +12,7 @@ import {
   useAddSessionDocs,
   useSubmitImprovementRecord,
 } from '@/hooks/useTreatmentSession';
+import { toast } from 'sonner';
 
 export type TreatmentMode = 'home_visit' | 'online' | 'clinic';
 export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
@@ -82,8 +83,9 @@ export const useTherapistBookingFlow = () => {
     try {
       await acceptBooking(id);
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to accept booking');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || 'Failed to accept booking');
     } finally {
       setIsAccepting(false);
     }
@@ -99,8 +101,9 @@ export const useTherapistBookingFlow = () => {
         setDevOtpCode(res.data.otpCode);
       }
       setIsOtpOpen(true);
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to generate OTP');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      toast.error(error?.response?.data?.message || 'Failed to generate OTP');
     } finally {
       setIsGeneratingOtp(false);
     }
@@ -115,8 +118,9 @@ export const useTherapistBookingFlow = () => {
       setIsOtpOpen(false);
       setSessionActive(true);
       await refetch();
-    } catch (err: any) {
-      setOtpError(err?.response?.data?.message || err?.message || 'Invalid OTP');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      setOtpError(error?.response?.data?.message || error?.message || 'Invalid OTP');
     } finally {
       setIsVerifyingOtp(false);
     }
@@ -155,8 +159,9 @@ export const useTherapistBookingFlow = () => {
       setRescheduleDate('');
       setRescheduleReason('');
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Failed to reschedule slot');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || error?.message || 'Failed to reschedule slot');
     }
   };
 
@@ -182,8 +187,9 @@ export const useTherapistBookingFlow = () => {
       setDocName('');
       setDocUrl('');
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Failed to add document');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || error?.message || 'Failed to add document');
     }
   };
 
@@ -205,8 +211,9 @@ export const useTherapistBookingFlow = () => {
       setIsImprovementOpen(false);
       setSessionActive(false);
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Failed to submit improvement record');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || error?.message || 'Failed to submit improvement record');
     }
   };
 
@@ -221,8 +228,9 @@ export const useTherapistBookingFlow = () => {
       });
       setIsCompletePlanOpen(false);
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to complete treatment plan');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || 'Failed to complete treatment plan');
     } finally {
       setIsCompletingPlan(false);
     }

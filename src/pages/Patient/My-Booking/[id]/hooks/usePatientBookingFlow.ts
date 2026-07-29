@@ -71,69 +71,6 @@ export interface BookingDetails {
   documents: DocumentItem[];
 }
 
-const MOCK_DATA: BookingDetails = {
-  bookingId: 'BKG-2026-9823',
-  overallStatus: 'IN_PROGRESS',
-  therapist: {
-    id: 'TH-PT-1042',
-    name: 'Dr. Sarah Jenkins',
-    image:
-      'https://images.unsplash.com/photo-1594824436998-d7037b52479e?auto=format&fit=crop&q=80&w=200',
-    gender: 'FEMALE',
-    mode: 'home_visit',
-  },
-  patient: {
-    name: 'Robert Fox',
-    dob: '1985-06-15',
-    gender: 'MALE',
-    phone: '+1 (555) 123-4567',
-  },
-  condition: {
-    title: 'Post Surgical',
-  },
-  problemDescription:
-    'Experiencing severe stiffness and limited range of motion in the left knee after ACL reconstruction surgery 3 weeks ago.',
-  location: {
-    address: '123 Wellness Ave, Apt 4B',
-    landmark: 'Near Central Park',
-    city: 'New York',
-    state: 'NY',
-    country: 'USA',
-    postalCode: '10001',
-    coords: { lat: 40.7128, lng: -74.006 },
-  },
-  sessions: [
-    {
-      id: 's1',
-      date: 'May 10, 2026',
-      scheduledTime: '10:00 AM - 11:00 AM',
-      actualStartTime: '10:02 AM',
-      actualEndTime: '11:05 AM',
-      status: 'settled',
-    },
-    {
-      id: 's2',
-      date: 'May 12, 2026',
-      scheduledTime: '10:00 AM - 11:00 AM',
-      actualStartTime: '10:05 AM',
-      actualEndTime: '11:00 AM',
-      status: 'completed',
-    },
-    { id: 's3', date: 'May 15, 2026', scheduledTime: '10:00 AM - 11:00 AM', status: 'cancelled' },
-    { id: 's4', date: 'May 18, 2026', scheduledTime: '10:00 AM - 11:00 AM', status: 'confirmed' },
-    { id: 's5', date: 'May 21, 2026', scheduledTime: '10:00 AM - 11:00 AM', status: 'pending' },
-  ],
-  documents: [
-    {
-      id: 'doc1',
-      title: 'Initial Physical Assessment',
-      type: 'Assessment Report',
-      date: 'May 10, 2026',
-    },
-    { id: 'doc2', title: 'Pain Management Plan', type: 'Prescription', date: 'May 12, 2026' },
-  ],
-};
-
 export const usePatientBookingFlow = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -141,44 +78,57 @@ export const usePatientBookingFlow = () => {
   const { data: sessionRes, refetch } = useTreatmentSession(id);
   const liveSession = sessionRes?.data;
 
-  // Build merged data using live session or fallback mock
+  // Build merged data using live session data
   const data: BookingDetails = {
-    bookingId: liveSession?.id || id || MOCK_DATA.bookingId,
+    bookingId: liveSession?.id || id || '',
     overallStatus:
       liveSession?.status === 'completed'
         ? 'COMPLETED'
         : liveSession?.status === 'cancelled'
-        ? 'CANCELLED'
-        : MOCK_DATA.overallStatus,
-    therapist: liveSession?.treatmentPlan?.therapist
-      ? {
-          id: liveSession.treatmentPlan.therapist.id,
-          name: liveSession.treatmentPlan.therapist.user?.name || 'Dr. Physical Therapist',
-          image: liveSession.treatmentPlan.therapist.user?.image || MOCK_DATA.therapist.image,
-          gender: 'FEMALE',
-          mode: 'home_visit',
-        }
-      : MOCK_DATA.therapist,
-    patient: liveSession?.treatmentPlan?.patient
-      ? {
-          name: liveSession.treatmentPlan.patient.user?.name || 'Patient',
-          dob: '1990-01-01',
-          gender: 'MALE',
-          phone: '+91 9876543210',
-        }
-      : MOCK_DATA.patient,
-    condition: { title: liveSession?.condition || MOCK_DATA.condition.title },
-    problemDescription: liveSession?.DescribedAs || MOCK_DATA.problemDescription,
-    location: MOCK_DATA.location,
+          ? 'CANCELLED'
+          : 'IN_PROGRESS',
+    therapist: {
+      id: liveSession?.treatmentPlan?.therapist?.id || '',
+      name: liveSession?.treatmentPlan?.therapist?.user?.name || 'Dr. Physical Therapist',
+      image:
+        liveSession?.treatmentPlan?.therapist?.user?.image ||
+        'https://images.unsplash.com/photo-1594824436998-d7037b52479e?auto=format&fit=crop&q=80&w=200',
+      gender: (liveSession?.treatmentPlan?.therapist?.user?.gender as Gender) || 'FEMALE',
+      mode: (liveSession?.treatmentPlan?.therapist?.mode as TreatmentMode) || 'home_visit',
+    },
+    patient: {
+      name: liveSession?.treatmentPlan?.patient?.user?.name || 'Patient',
+      dob: liveSession?.treatmentPlan?.patient?.dob || 'N/A',
+      gender: (liveSession?.treatmentPlan?.patient?.user?.gender as Gender) || 'MALE',
+      phone: liveSession?.treatmentPlan?.patient?.user?.phone || 'N/A',
+    },
+    condition: { title: liveSession?.condition || 'Physiotherapy Treatment' },
+    problemDescription: liveSession?.DescribedAs || 'No description provided.',
+    location: {
+      address: liveSession?.reservation?.address || liveSession?.location?.address || 'Address not provided',
+      landmark: liveSession?.reservation?.landmark || liveSession?.location?.landmark || null,
+      city: liveSession?.reservation?.city || liveSession?.location?.city || '',
+      state: liveSession?.reservation?.state || liveSession?.location?.state || '',
+      country: liveSession?.reservation?.country || liveSession?.location?.country || '',
+      postalCode: liveSession?.reservation?.postalCode || liveSession?.location?.postalCode || '',
+      coords: {
+        lat: liveSession?.reservation?.lat || liveSession?.location?.coords?.lat || 0,
+        lng: liveSession?.reservation?.lng || liveSession?.location?.coords?.lng || 0,
+      },
+    },
     sessions: liveSession
-      ? [
+      ? (() => {
+        const sessionDate = liveSession.date || liveSession.startAt;
+        return [
           {
             id: liveSession.id,
-            date: new Date(liveSession.date || liveSession.startAt || Date.now()).toLocaleDateString('en-US', {
-              month: 'short',
-              day: '2-digit',
-              year: 'numeric',
-            }),
+            date: sessionDate
+              ? new Date(sessionDate).toLocaleDateString('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric',
+              })
+              : 'N/A',
             scheduledTime: `${liveSession.startHour || 10}:00 AM - ${(liveSession.startHour || 10) + 1}:00 AM`,
             actualStartTime: liveSession.actualStartTime
               ? new Date(liveSession.actualStartTime).toLocaleTimeString()
@@ -186,18 +136,21 @@ export const usePatientBookingFlow = () => {
             actualEndTime: liveSession.actualEndTime
               ? new Date(liveSession.actualEndTime).toLocaleTimeString()
               : undefined,
-            status: (liveSession.status || 'pending') as SessionStatus,
+            status: (liveSession.status?.toLowerCase() as SessionStatus) || 'pending',
           },
-        ]
-      : MOCK_DATA.sessions,
+        ];
+      })()
+      : [],
     documents: liveSession?.treatmentPlan?.docRecords
-      ? liveSession.treatmentPlan.docRecords.map((d: any) => ({
+      ? liveSession.treatmentPlan.docRecords.map(
+        (d: { id: string; name: string; fileType?: string; createdAt: string }) => ({
           id: d.id,
           title: d.name,
           type: d.fileType || 'Medical Report',
           date: new Date(d.createdAt).toLocaleDateString(),
-        }))
-      : MOCK_DATA.documents,
+        })
+      )
+      : [],
   };
 
   // Treatment Session Mutations & Hooks
@@ -224,8 +177,9 @@ export const usePatientBookingFlow = () => {
       setIsCancelOpen(false);
       setCancelReason('');
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Failed to cancel session');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || error?.message || 'Failed to cancel session');
     }
   };
 
@@ -242,8 +196,9 @@ export const usePatientBookingFlow = () => {
       });
       setIsBookMoreOpen(false);
       await refetch();
-    } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || 'Failed to book follow-up session');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(error?.response?.data?.message || error?.message || 'Failed to book follow-up session');
     }
   };
 

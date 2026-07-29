@@ -4,11 +4,19 @@ import {
   createPatientDetail,
   getPatientLocations,
   createPatientLocation,
+  getPatientMyBookings,
   type CreatePatientDetailPayload,
   type CreatePatientLocationPayload,
 } from '@/services/patient.service';
 import { axios } from '@/utils/axios';
 import type { ApiResponse } from '@/services/index';
+
+export const usePatientMyBookings = () =>
+  useQuery({
+    queryKey: ['patient', 'my-bookings'],
+    queryFn: getPatientMyBookings,
+    select: (res) => res.data ?? [],
+  });
 
 export const usePatientDetails = () =>
   useQuery({
@@ -203,9 +211,9 @@ export const useVerifyPayment = () =>
   useMutation({
     mutationFn: async (
       payload: VerifyPaymentPayload,
-    ): Promise<ApiResponse<{ verified: boolean; reservation?: any }>> => {
+    ): Promise<ApiResponse<{ verified: boolean; reservation?: unknown }>> => {
       const { data } = await axios.post<
-        ApiResponse<{ verified: boolean; reservation?: any }>
+        ApiResponse<{ verified: boolean; reservation?: unknown }>
       >('/payment/confirm', payload);
       return data;
     },
