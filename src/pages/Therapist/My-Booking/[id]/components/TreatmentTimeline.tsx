@@ -107,15 +107,6 @@ export const TreatmentTimeline = ({
                     <Clock className="mr-2 h-4 w-4" /> End Session
                   </Button>
                 )}
-
-                <Button
-                  variant="outline"
-                  onClick={() => openAddDocsModal(session.id)}
-                  className="hover:bg-secondary/20 h-10 border-[#014f86] text-[#014f86]"
-                >
-                  <FilePlus className="mr-2 h-4 w-4" /> Add Document
-                </Button>
-
                 <Button
                   variant="ghost"
                   onClick={() => openRescheduleModal(session.id)}
