@@ -1,18 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
-import {
-  Activity,
-  ArrowRight,
-  Building2,
-  ClipboardList,
-  Headset,
-  PieChart,
-  ShieldCheck,
-  Star,
-  Target,
-  TrendingUp,
-  Wallet,
-} from 'lucide-react';
-
+import { Activity, ArrowRight, Building2, ShieldCheck, Star, TrendingUp } from 'lucide-react';
 import Footer from '@/components/custom/footer/footer';
 import {
   Accordion,
@@ -21,9 +8,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { useClinicNetwork } from './hooks/useClinicNetwork';
+import { ClinicBenefits } from './components/ClinicBenefits';
 
-// --- Animation Variants ---
 const fadeUpVariant: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
@@ -34,92 +21,12 @@ const staggerContainer: Variants = {
   visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
 };
 
-// --- Data Models ---
-const benefits = [
-  {
-    title: 'Enhance Online Visibility',
-    desc: 'Showcase your clinic to thousands of patients actively seeking physiotherapy.',
-    icon: TrendingUp,
-  },
-  {
-    title: 'Reduce Admin Burden',
-    desc: 'Automated booking and patient management directly through the platform.',
-    icon: ClipboardList,
-  },
-  {
-    title: 'Build Patient Trust',
-    desc: 'Leverage our verified clinical network badge to increase conversion rates.',
-    icon: ShieldCheck,
-  },
-  {
-    title: 'Dedicated Support',
-    desc: 'Access a 24/7 dedicated B2B partner support team for your clinic.',
-    icon: Headset,
-  },
-  {
-    title: 'Targeted Marketing',
-    desc: 'Benefit from our localized digital campaigns driving footfall to your area.',
-    icon: Target,
-  },
-  {
-    title: 'Maximize ROI',
-    desc: "Fill empty slots and optimize your clinic's daily operational capacity.",
-    icon: PieChart,
-  },
-];
-
-const steps = [
-  {
-    step: '01',
-    title: 'Register Clinic',
-    desc: 'Submit your clinic details and credentials through our secure partner portal.',
-    icon: Building2,
-  },
-  {
-    step: '02',
-    title: 'Get Verified',
-    desc: 'Our medical board reviews your facility to ensure clinical standards.',
-    icon: ShieldCheck,
-  },
-  {
-    step: '03',
-    title: 'Start Treating',
-    desc: 'Receive direct patient bookings and footfall to your physical clinic.',
-    icon: Activity,
-  },
-  {
-    step: '04',
-    title: 'Track Revenue',
-    desc: 'Monitor your growth and transparent payouts via the partner dashboard.',
-    icon: Wallet,
-  },
-];
-
-const faqs = [
-  {
-    q: 'How do I partner my clinic with Physiobuddies?',
-    a: "Simply click 'Onboard Your Clinic', fill out the primary facility details, and our onboarding team will contact you within 24 hours to begin the verification process.",
-  },
-  {
-    q: 'Is there any registration fee?',
-    a: 'No. Partnering with the Physiobuddies network requires zero upfront registration fees. We operate on a transparent performance-based model.',
-  },
-  {
-    q: 'How does Physiobuddies verify clinics?',
-    a: "We conduct a stringent review of your clinic's registrations, practitioner licenses (BPT/MPT), and facility standards to maintain our 'Medical-Trust' guarantee.",
-  },
-  {
-    q: 'Can I customize the services I offer?',
-    a: 'Absolutely. You have full control over the specific treatments, availability slots, and specializations your clinic lists on the platform.',
-  },
-];
-
 export default function ClinicNetwork() {
+  const { benefits, steps, faqs } = useClinicNetwork();
+
   return (
     <div className="bg-background flex min-h-screen flex-col font-sans">
-      {/* --- HERO SECTION --- */}
       <section className="relative overflow-hidden bg-[#013a63] px-4 py-20 md:py-28 lg:px-8">
-        {/* Calming deep background orbs */}
         <div className="pointer-events-none absolute top-0 left-0 h-125 w-125 -translate-x-1/4 -translate-y-1/4 rounded-full bg-[#014f86] opacity-40 blur-[120px]" />
         <div className="bg-primary pointer-events-none absolute right-0 bottom-0 h-100 w-100 translate-x-1/3 translate-y-1/3 rounded-full opacity-30 blur-[100px]" />
 
@@ -148,7 +55,6 @@ export default function ClinicNetwork() {
         </motion.div>
       </section>
 
-      {/* --- KEY HIGHLIGHTS (Overlapping Stats) --- */}
       <section className="relative z-20 -mt-12 px-4 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <motion.div
@@ -176,7 +82,6 @@ export default function ClinicNetwork() {
         </div>
       </section>
 
-      {/* --- HOW IT WORKS (STEPS) --- */}
       <section className="mt-8 bg-white px-4 py-20 md:py-28 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
@@ -189,7 +94,6 @@ export default function ClinicNetwork() {
           </div>
 
           <div className="relative">
-            {/* Connecting line for desktop */}
             <div className="bg-secondary/40 absolute top-12 left-0 hidden h-0.5 w-full lg:block" />
 
             <motion.div
@@ -199,72 +103,35 @@ export default function ClinicNetwork() {
               viewport={{ once: true }}
               className="grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8"
             >
-              {steps.map((item, idx) => {
-                const Icon = item.icon;
-                return (
-                  <motion.div
-                    key={idx}
-                    variants={fadeUpVariant}
-                    className="relative z-10 flex flex-col items-center text-center"
-                  >
-                    <div className="bg-secondary/30 shadow-primary/5 mb-6 flex h-24 w-24 items-center justify-center rounded-full border-8 border-white text-[#013a63] shadow-xl transition-transform hover:scale-105">
-                      <Icon className="h-8 w-8" />
-                    </div>
-                    <div className="text-primary mb-2 text-sm font-bold tracking-widest uppercase">
-                      Step {item.step}
-                    </div>
-                    <h3 className="mb-3 text-xl font-bold text-[#012a4a]">{item.title}</h3>
-                    <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-                      {item.desc}
-                    </p>
-                  </motion.div>
-                );
-              })}
+              {steps.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={fadeUpVariant}
+                  className="relative z-10 flex flex-col items-center text-center"
+                >
+                  <div className="bg-secondary/30 shadow-primary/5 mb-6 flex h-24 w-24 items-center justify-center rounded-full border-8 border-white text-[#013a63] shadow-xl transition-transform hover:scale-105">
+                    <Building2 className="h-8 w-8" />
+                  </div>
+                  <div className="text-primary mb-2 text-sm font-bold tracking-widest uppercase">
+                    Step {item.step}
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold text-[#012a4a]">{item.title}</h3>
+                  <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
+                    {item.desc}
+                  </p>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* --- EXCLUSIVE BENEFITS SECTION --- */}
-      <section className="bg-secondary/10 border-border border-y px-4 py-20 md:py-28 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <h2 className="text-3xl font-bold text-[#012a4a] md:text-4xl">
-              Exclusive Benefits For Clinic Partners
-            </h2>
-            <p className="text-muted-foreground mt-4 text-lg">
-              Tools and exposure designed to scale your physical practice.
-            </p>
-          </div>
+      <ClinicBenefits
+        benefits={benefits}
+        staggerContainer={staggerContainer}
+        fadeUpVariant={fadeUpVariant}
+      />
 
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-          >
-            {benefits.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <motion.div key={idx} variants={fadeUpVariant} whileHover={{ y: -5 }}>
-                  <Card className="border-border hover:shadow-primary/5 hover:border-primary/20 h-full bg-white shadow-sm transition-shadow hover:shadow-lg">
-                    <CardContent className="flex flex-col items-start p-8">
-                      <div className="bg-secondary/30 text-primary mb-6 rounded-2xl p-3.5">
-                        <Icon className="h-7 w-7" />
-                      </div>
-                      <h3 className="mb-3 text-xl font-bold text-[#012a4a]">{item.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* --- TESTIMONIAL SECTION --- */}
       <section className="bg-white px-4 py-20 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <motion.div
@@ -274,16 +141,11 @@ export default function ClinicNetwork() {
             className="overflow-hidden rounded-[2.5rem] bg-[#012a4a] p-1 shadow-2xl"
           >
             <div className="flex flex-col items-center gap-10 rounded-[2.25rem] bg-white p-8 md:flex-row md:p-12">
-              {/* Featured Image placeholder mimicking the clinic interior/doctor */}
               <div className="bg-secondary/20 border-border relative h-64 w-full shrink-0 overflow-hidden rounded-2xl border md:h-80 md:w-2/5">
                 <img
-                  src="/placeholder.jpg"
+                  src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800"
                   alt="Clinic Partner"
                   className="h-full w-full object-cover opacity-90"
-                  onError={(e) =>
-                    (e.currentTarget.src =
-                      'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800')
-                  }
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-[#012a4a]/80 to-transparent" />
                 <div className="absolute bottom-4 left-4 text-white">
@@ -292,7 +154,6 @@ export default function ClinicNetwork() {
                 </div>
               </div>
 
-              {/* Testimonial Content */}
               <div className="w-full space-y-6 md:w-3/5">
                 <div className="flex gap-1 text-amber-400">
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -305,7 +166,7 @@ export default function ClinicNetwork() {
                 <p className="text-muted-foreground text-lg leading-relaxed italic">
                   "Before partnering, we struggled with empty slots during mid-day hours. Now, the
                   automated booking system and targeted local visibility have completely transformed
-                  our operational capacity. The zero registration fee made it a no-brainer."
+                  our operational capacity."
                 </p>
               </div>
             </div>
@@ -313,7 +174,6 @@ export default function ClinicNetwork() {
         </div>
       </section>
 
-      {/* --- FAQ SECTION --- */}
       <section className="bg-secondary/5 border-border border-t px-4 py-20 md:py-28 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <div className="mb-12 text-center">
@@ -342,7 +202,6 @@ export default function ClinicNetwork() {
         </div>
       </section>
 
-      {/* --- FINAL CTA SECTION --- */}
       <section className="bg-white px-4 py-20 lg:px-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -351,7 +210,6 @@ export default function ClinicNetwork() {
           transition={{ duration: 0.5 }}
           className="relative mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] bg-[#013a63] shadow-2xl"
         >
-          {/* Decor */}
           <div className="bg-primary absolute -top-24 -left-24 h-64 w-64 rounded-full opacity-40 blur-[80px]" />
 
           <div className="relative z-10 flex flex-col items-center justify-between gap-8 p-12 text-center md:flex-row md:p-16 md:text-left">

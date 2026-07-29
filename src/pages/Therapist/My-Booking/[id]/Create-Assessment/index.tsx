@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   Activity,
   AlertCircle,
-  CheckCircle,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -32,10 +31,10 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { submitAssessment } from '@/services/treatmentSession.service';
+import { AssessmentStepHeader } from './components/AssessmentStepHeader';
 
 /* STREAMING_CHUNK:Defining Schema and Types... */
 
@@ -379,52 +378,8 @@ export default function CreateAssessmentPage() {
 
       <main className="mx-auto max-w-6xl px-4 pt-4 sm:px-6">
         <Card className="border-border gap-0 overflow-hidden bg-white py-0 shadow-xl shadow-[#012a4a]/5">
-          {/* Stepper Header */}
           <div className="bg-secondary/20 border-border border-b p-4 sm:p-6">
-            <div className="relative flex items-center justify-between px-2 sm:px-8">
-              <div className="bg-border absolute top-1/2 right-2 left-2 -z-10 h-1 -translate-y-1/2 sm:right-8 sm:left-8" />
-              <div
-                className="absolute top-1/2 left-2 -z-10 h-1 -translate-y-1/2 bg-[#014f86] transition-all duration-500 sm:left-8"
-                style={{ width: `${((step - 1) / 3) * (100 - 16 / 3)}%` }}
-              />
-              {[
-                { num: 1, label: 'Core Vitals', icon: Activity },
-                { num: 2, label: 'Specifics', icon: Stethoscope },
-                { num: 3, label: 'Treatment', icon: HeartPulse },
-                { num: 4, label: 'Preview', icon: CheckCircle2 },
-              ].map((s) => {
-                const isActive = s.num === step;
-                const isPassed = s.num < step;
-                return (
-                  <div key={s.num} className="flex flex-col items-center bg-transparent">
-                    <div
-                      className={cn(
-                        `flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors`,
-                        isActive
-                          ? 'border-[#014f86] bg-[#014f86] text-white'
-                          : isPassed
-                            ? 'text-success border-transparent bg-[#ffffff]'
-                            : 'border-border text-muted-foreground bg-gray-50',
-                      )}
-                    >
-                      {isPassed ? (
-                        <CheckCircle className="h-6 w-6" />
-                      ) : (
-                        <s.icon className="h-5 w-5" />
-                      )}
-                    </div>
-                    <span
-                      className={cn(
-                        `mt-2 hidden text-xs font-bold sm:block`,
-                        isActive || isPassed ? 'text-[#012a4a]' : 'text-muted-foreground',
-                      )}
-                    >
-                      {s.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+            <AssessmentStepHeader currentStep={step} />
           </div>
 
           <CardContent className="min-h-100 p-6 md:p-10">

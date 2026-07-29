@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import BackgroundDecor from '@/pages/Search-Physio/healthy-vibe-decorator';
+import BackgroundDecor from '@/pages/Search-Physio/components/healthy-vibe-decorator';
 import { motion, type Variants } from 'framer-motion';
 
 const fadeUpVariant: Variants = {

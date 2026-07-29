@@ -7,15 +7,15 @@ import StarRating from '@/components/custom/star-rating/star-rating';
 type Therapist = {
   id: string;
   name: string;
-  specializations: string[] | undefined;
-  experience: number | undefined;
-  rating: number | null;
-  totalReviews: number;
-  originalPrice: number | null;
-  discountedPrice: number;
-  displayAddress: string;
-  image: string | null;
-  distance: number | undefined; // Now utilized in the UI
+  specializations?: string[];
+  experience?: number;
+  rating?: number | null;
+  totalReviews?: number;
+  originalPrice?: number | null;
+  discountedPrice?: number;
+  displayAddress?: string;
+  image?: string | null;
+  distance?: number | null;
 };
 
 export default function TherapistCard({
@@ -99,12 +99,12 @@ export default function TherapistCard({
             <span className="max-w-30 truncate font-medium">{displayAddress}</span>
           </div>
 
-          {distance !== undefined && (
+          {distance !== undefined && distance !== null && (
             <>
               <div className="bg-border h-1 w-1 shrink-0 rounded-full" />
               <div className="flex items-center gap-1.5 text-[#012a4a]/70">
                 <Navigation className="text-primary/60 h-3.5 w-3.5 shrink-0" />
-                <span className="font-medium">{distance.toFixed(1)} km</span>
+                <span className="font-medium">{distance?.toFixed(1)} km</span>
               </div>
             </>
           )}

@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import BackgroundDecor from './healthy-vibe-decorator';
-import type { Filters } from '.';
+import type { Filters } from '../hooks/useSearchPhysio';
 
 // Compact Location Search
 const LocationSearch = () => (
@@ -19,7 +19,7 @@ const LocationSearch = () => (
 
 interface SearchSectionProps {
   filters: Filters;
-  onFilterChange: (key: string, value: unknown) => void;
+  onFilterChange: (key: keyof Filters, value: unknown) => void;
 }
 
 const fadeUpVariant: Variants = {

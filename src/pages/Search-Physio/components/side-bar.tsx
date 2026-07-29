@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ArrowDownAZ, IndianRupee, BriefcaseMedical } from 'lucide-react';
-import type { Filters } from '.';
+import type { Filters } from '../hooks/useSearchPhysio';
 
 interface SidebarProps {
   filters: Filters;

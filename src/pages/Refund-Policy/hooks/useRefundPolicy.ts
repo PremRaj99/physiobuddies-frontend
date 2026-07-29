@@ -1,0 +1,3 @@
+export function useRefundPolicy() {
+  return {};
+}

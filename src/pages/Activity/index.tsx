@@ -1,107 +1,26 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import {
-  ArrowRight,
-  CheckCircle,
-  Copy,
-  Database,
-  Eye,
-  EyeOff,
-  Filter,
-  History,
-  Info,
-  MapPin,
-  Search,
-  ShieldAlert,
-  Terminal,
-} from 'lucide-react';
-import React, { useMemo, useState } from 'react';
-import { toast } from 'sonner';
-
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import React, { useMemo } from 'react';
 import PageHeader from '@/components/custom/page-header/page-header';
-import { useActivities } from '@/hooks/useActivity';
-import type { ActivityType } from '@/services/activity.service';
-
-// --- Badges & Colors mapping ---
-const getTypeBadgeProps = (type: ActivityType) => {
-  switch (type) {
-    case 'frequent':
-      return { label: 'Frequent', style: 'bg-slate-100 text-slate-800 border-slate-200' };
-    case 'likely':
-      return { label: 'Likely', style: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
-    case 'possible':
-      return { label: 'Possible', style: 'bg-amber-50 text-amber-700 border-amber-200' };
-    case 'rare':
-      return { label: 'Rare Event', style: 'bg-indigo-50 text-indigo-700 border-indigo-200' };
-    case 'unlikely':
-      return { label: 'Unlikely Action', style: 'bg-rose-50 text-rose-700 border-rose-200' };
-  }
-};
-
-// JSON Parser Helper
-const parseJsonSafe = (jsonStr: string | null): Record<string, unknown> | null => {
-  if (!jsonStr) return null;
-  try {
-    return JSON.parse(jsonStr) as Record<string, unknown>;
-  } catch {
-    return { value: jsonStr };
-  }
-};
+import { useActivityPage } from './hooks/useActivityPage';
+import { ActivityStats } from './components/ActivityStats';
+import { ActivityFilterHeader } from './components/ActivityFilterHeader';
+import { ActivityLogTable } from './components/ActivityLogTable';
 
 export default function ActivityPage() {
-  const { data: activitiesRes, isLoading } = useActivities();
-  const activities = useMemo(() => activitiesRes?.data ?? [], [activitiesRes]);
+  const {
+    activities,
+    filteredActivities,
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    typeFilter,
+    setTypeFilter,
+    expandedId,
+    toggleRow,
+    copyToClipboard,
+  } = useActivityPage();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('ALL');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [now] = React.useState(() => Date.now());
 
-  const toggleRow = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
-  const copyToClipboard = (text: string, subject: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${subject} copied to clipboard!`);
-  };
-
-  // Filtered List
-  const filteredActivities = useMemo(() => {
-    return activities.filter((act) => {
-      const matchesSearch =
-        (act.title ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (act.data ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (act.ip ?? '').includes(searchQuery) ||
-        (act.id ?? '').includes(searchQuery);
-
-      const matchesType = typeFilter === 'ALL' || act.type === typeFilter;
-
-      return matchesSearch && matchesType;
-    });
-  }, [activities, searchQuery, typeFilter]);
-
-  const [now] = useState(() => Date.now());
-
-  // Aggregate stats
   const stats = useMemo(() => {
     const uniqueIps = new Set(activities.map((act) => act.ip)).size;
     const unusualEvents = activities.filter(
@@ -129,325 +48,20 @@ export default function ActivityPage() {
       />
 
       <main className="mx-auto max-w-6xl px-4 pt-4 sm:px-6">
-        {/* Aggregate KPI Stats */}
-        <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="border-border py-0 shadow-sm">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
-                  Total Audit Logs
-                </p>
-                {isLoading ? (
-                  <Skeleton className="h-8 w-12" />
-                ) : (
-                  <h3 className="text-2xl font-bold text-[#012a4a]">{stats.total}</h3>
-                )}
-              </div>
-              <div className="rounded-full bg-[#014f86]/10 p-2.5 text-[#014f86]">
-                <Database className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border py-0 shadow-sm">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
-                  Security Alerts
-                </p>
-                {isLoading ? (
-                  <Skeleton className="h-8 w-12" />
-                ) : (
-                  <h3 className="text-2xl font-bold text-rose-600">{stats.unusual}</h3>
-                )}
-              </div>
-              <div className="rounded-full bg-rose-50 p-2.5 text-rose-600">
-                <ShieldAlert className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border py-0 shadow-sm">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
-                  Unique IP Locations
-                </p>
-                {isLoading ? (
-                  <Skeleton className="h-8 w-12" />
-                ) : (
-                  <h3 className="text-2xl font-bold text-[#012a4a]">{stats.uniqueIps}</h3>
-                )}
-              </div>
-              <div className="bg-secondary/40 rounded-full p-2.5 text-[#014f86]">
-                <MapPin className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border py-0 shadow-sm">
-            <CardContent className="flex items-center justify-between p-5">
-              <div>
-                <p className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
-                  Recent Actions (48h)
-                </p>
-                {isLoading ? (
-                  <Skeleton className="h-8 w-12" />
-                ) : (
-                  <h3 className="text-2xl font-bold text-[#012a4a]">{stats.recent}</h3>
-                )}
-              </div>
-              <div className="rounded-full bg-emerald-50 p-2.5 text-emerald-600">
-                <CheckCircle className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filter controls */}
-        <Card className="border-border mb-6 bg-white py-0 shadow-sm">
-          <CardContent className="flex flex-col items-center justify-between gap-4 p-4 sm:flex-row">
-            <div className="relative w-full sm:w-80">
-              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-              <Input
-                placeholder="Search log titles, descriptions, IPs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-border bg-white pl-9 text-[#012a4a] focus-visible:ring-[#014f86]"
-              />
-            </div>
-
-            <div className="flex w-full items-center gap-3 sm:w-auto">
-              <span className="flex items-center gap-1 text-xs font-bold whitespace-nowrap text-[#012a4a] sm:inline">
-                <Filter className="h-3 w-3" /> Filter By:
-              </span>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="border-border w-full bg-white text-[#012a4a] sm:w-45">
-                  <SelectValue placeholder="Activity Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">All Types</SelectItem>
-                  <SelectItem value="frequent">Frequent Actions</SelectItem>
-                  <SelectItem value="likely">Likely Operations</SelectItem>
-                  <SelectItem value="possible">Possible Changes</SelectItem>
-                  <SelectItem value="rare">Rare Events</SelectItem>
-                  <SelectItem value="unlikely">Unlikely Checks</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Log Table */}
-        <Card className="border-border overflow-hidden bg-white py-0 shadow-sm">
-          <Table>
-            <TableHeader className="bg-gray-50/50">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-12"></TableHead>
-                <TableHead className="font-bold text-[#013a63]">Timestamp</TableHead>
-                <TableHead className="font-bold text-[#013a63]">Activity & description</TableHead>
-                <TableHead className="font-bold text-[#013a63]">Type</TableHead>
-                <TableHead className="font-bold text-[#013a63]">Source IP</TableHead>
-                <TableHead className="w-20 text-right"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                [0, 1, 2, 3, 4].map((i) => (
-                  <TableRow key={i}>
-                    <TableCell colSpan={6} className="py-4">
-                      <Skeleton className="h-8 w-full" />
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : filteredActivities.length > 0 ? (
-                filteredActivities.map((act) => {
-                  const isExpanded = expandedId === act.id;
-                  const beforeData = parseJsonSafe(act.before);
-                  const afterData = parseJsonSafe(act.after);
-                  const hasDetails = beforeData || afterData;
-                  const badgeProps = getTypeBadgeProps(act.type);
-
-                  return (
-                    <React.Fragment key={act.id}>
-                      <TableRow
-                        key={act.id}
-                        onClick={() => toggleRow(act.id)}
-                        className={`hover:bg-secondary/10 border-border cursor-pointer transition-colors ${
-                          isExpanded ? 'bg-secondary/5' : ''
-                        }`}
-                      >
-                        <TableCell className="text-center font-medium">
-                          {hasDetails ? (
-                            isExpanded ? (
-                              <EyeOff className="text-muted-foreground h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4 text-[#014f86]" />
-                            )
-                          ) : (
-                            <Info className="text-muted-foreground/30 h-4 w-4" />
-                          )}
-                        </TableCell>
-                        <TableCell className="text-xs font-semibold whitespace-nowrap text-[#012a4a]">
-                          {new Date(act.createdAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}{' '}
-                          <span className="text-muted-foreground ml-1">
-                            {new Date(act.createdAt).toLocaleTimeString('en-US', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              second: '2-digit',
-                            })}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm font-semibold text-[#012a4a]">{act.title}</div>
-                          <div className="text-muted-foreground mt-0.5 max-w-lg truncate text-xs">
-                            {act.data}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-[10px] ${badgeProps.style}`}>
-                            {badgeProps.label}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="font-mono text-xs font-medium text-[#013a63]">
-                          {act.ip}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              copyToClipboard(act.id, 'Log ID');
-                            }}
-                            className="text-muted-foreground h-8 px-2 hover:text-[#014f86]"
-                          >
-                            <Copy className="h-3.5 w-3.5" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-
-                      {/* Expandable diff box */}
-                      <AnimatePresence initial={false}>
-                        {isExpanded && hasDetails && (
-                          <TableRow key={`${act.id}-expanded`} className="hover:bg-transparent">
-                            <TableCell colSpan={6} className="border-t-0 p-0">
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.25 }}
-                                className="border-border overflow-hidden border-b bg-slate-50/50 p-6"
-                              >
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                  {/* Before state changes */}
-                                  <div>
-                                    <h4 className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wider text-rose-700 uppercase">
-                                      <Terminal className="h-3.5 w-3.5" /> Previous Value (Before)
-                                    </h4>
-                                    {beforeData ? (
-                                      <div className="max-h-60 space-y-1 overflow-y-auto rounded-xl border border-red-100 bg-red-50/20 p-4 font-mono text-xs text-[#012a4a]">
-                                        {Object.entries(beforeData).map(([key, val]) => (
-                                          <div
-                                            key={key}
-                                            className="flex flex-col gap-1 border-b border-red-50/50 py-1 last:border-0 sm:flex-row"
-                                          >
-                                            <span className="font-bold text-rose-800">{key}:</span>
-                                            <span className="font-medium text-red-950 sm:ml-2">
-                                              {typeof val === 'object'
-                                                ? JSON.stringify(val)
-                                                : String(val)}
-                                            </span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    ) : (
-                                      <div className="text-muted-foreground rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs italic">
-                                        No values recorded (Creation event)
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  {/* After state changes */}
-                                  <div>
-                                    <h4 className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wider text-emerald-700 uppercase">
-                                      <CheckCircle className="h-3.5 w-3.5" /> Updated Value (After)
-                                    </h4>
-                                    {afterData ? (
-                                      <div className="max-h-60 space-y-1 overflow-y-auto rounded-xl border border-emerald-100 bg-emerald-50/20 p-4 font-mono text-xs text-[#012a4a]">
-                                        {Object.entries(afterData).map(([key, val]) => {
-                                          const isChanged = beforeData && beforeData[key] !== val;
-                                          return (
-                                            <div
-                                              key={key}
-                                              className={`flex flex-col gap-1 border-b border-emerald-50/50 py-1 last:border-0 sm:flex-row ${
-                                                isChanged
-                                                  ? '-mx-2 rounded bg-emerald-100/30 px-2 font-bold'
-                                                  : ''
-                                              }`}
-                                            >
-                                              <span className="font-bold text-emerald-800">
-                                                {key}:
-                                              </span>
-                                              <span className="flex flex-wrap items-center gap-1 font-medium text-emerald-950 sm:ml-2">
-                                                {typeof val === 'object'
-                                                  ? JSON.stringify(val)
-                                                  : String(val)}
-                                                {isChanged && (
-                                                  <Badge className="ml-2 flex items-center gap-0.5 bg-emerald-600 px-1 py-0 text-[8px] font-normal text-white select-none">
-                                                    Modified <ArrowRight className="h-2 w-2" />
-                                                  </Badge>
-                                                )}
-                                              </span>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    ) : (
-                                      <div className="text-muted-foreground rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs italic">
-                                        No values recorded (Deletion event)
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div className="text-muted-foreground mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/50 pt-4 text-[10px]">
-                                  <span>
-                                    Log Reference:{' '}
-                                    <code className="rounded bg-slate-100 px-1 py-0.5 font-mono text-slate-700">
-                                      {act.id}
-                                    </code>
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <MapPin className="h-3 w-3" /> Activity logged from IP: {act.ip}
-                                  </span>
-                                </div>
-                              </motion.div>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </AnimatePresence>
-                    </React.Fragment>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="py-16 text-center">
-                    <History className="text-muted-foreground/30 mx-auto mb-3 h-12 w-12" />
-                    <h3 className="text-lg font-bold text-[#012a4a]">No audit logs found</h3>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                      Try updating your search query or choosing a different filter category.
-                    </p>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+        <ActivityStats isLoading={isLoading} stats={stats} />
+        <ActivityFilterHeader
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+        />
+        <ActivityLogTable
+          isLoading={isLoading}
+          filteredActivities={filteredActivities}
+          expandedId={expandedId}
+          toggleRow={toggleRow}
+          copyToClipboard={copyToClipboard}
+        />
       </main>
     </div>
   );

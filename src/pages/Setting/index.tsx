@@ -3,23 +3,23 @@ import { Bell, Shield, Smartphone } from 'lucide-react';
 
 import PageHeader from '@/components/custom/page-header/page-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DevicesTab } from './device-tab';
-import { NotificationsTab } from './notification-tab';
-import { SecurityTab } from './security-tab';
+import { DevicesTab } from './components/device-tab';
+import { NotificationsTab } from './components/notification-tab';
+import { SecurityTab } from './components/security-tab';
+import { useSettings } from './hooks/useSettings';
 
 export default function SettingsPage() {
+  useSettings();
+
   return (
     <div className="min-h-screen bg-[#f8fbfa] font-sans">
-      {/* Header Decorator */}
       <PageHeader
         heading="Preferences & Settings"
         subheading="Manage your account security, notifications, and active sessions."
       />
 
       <main className="mx-auto max-w-5xl px-4 pt-12 pb-24 sm:px-6">
-        {/* Desktop/Tablet Layout using Tabs */}
         <Tabs defaultValue="security" className="flex flex-col gap-8 md:flex-row">
-          {/* Sidebar Nav */}
           <TabsList className="my-8 flex h-auto flex-col items-stretch gap-4 bg-transparent p-0 md:my-0 md:flex-row">
             <TabsTrigger
               value="security"
@@ -41,7 +41,6 @@ export default function SettingsPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Main Content Area */}
           <div className="min-w-0 flex-1">
             <AnimatePresence mode="wait">
               <TabsContent value="security" className="mt-0 outline-none">

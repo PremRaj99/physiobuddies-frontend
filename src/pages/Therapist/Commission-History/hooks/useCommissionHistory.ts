@@ -119,6 +119,7 @@ export const useCommissionHistory = () => {
   return {
     isLoading: earningsQuery.isLoading,
     months,
+    availableMonths: months.map((m) => ({ value: m.key, label: m.label })),
     selectedMonth: activeMonth,
     setSelectedMonth,
     searchQuery,
@@ -128,13 +129,18 @@ export const useCommissionHistory = () => {
     chartData,
     balance,
     balanceLoading: walletQuery.isLoading,
+    wallet: walletQuery.data ?? { balance },
     payouts: payoutsQuery.data ?? [],
     payoutsLoading: payoutsQuery.isLoading,
     payoutDialogOpen,
     setPayoutDialogOpen,
     payoutAmount,
     setPayoutAmount,
+    payoutAmountInput: payoutAmount,
+    setPayoutAmountInput: setPayoutAmount,
     submitPayout,
+    handleRequestPayout: submitPayout,
     isRequesting: requestPayout.isPending,
+    isRequestingPayout: requestPayout.isPending,
   };
 };

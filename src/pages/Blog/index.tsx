@@ -1,15 +1,7 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Calendar, Clock, Eye, Filter, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
-
-// Shadcn UI Imports
+import { motion } from 'framer-motion';
 import ActionCTA from '@/components/custom/cta/cta';
 import Footer from '@/components/custom/footer/footer';
 import PageHeader from '@/components/custom/page-header/page-header';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import {
   Pagination,
   PaginationContent,
@@ -18,76 +10,26 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { useNavigate } from 'react-router-dom';
-
-import { useBlogs } from '@/hooks/useBlog';
-
-const ITEMS_PER_PAGE = 3;
+import { useBlogPage } from './hooks/useBlogPage';
+import { BlogFilter } from './components/BlogFilter';
+import { BlogCard } from './components/BlogCard';
 
 export default function BlogListPage() {
-  // State inference (avoids erasableSyntaxOnly errors)
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState('All');
-  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    navigate,
+    isLoading,
+    searchQuery,
+    selectedTag,
+    currentPage,
+    setCurrentPage,
+    allTags,
+    filteredBlogs,
+    currentBlogs,
+    totalPages,
+    handleSearchChange,
+    handleTagChange,
+  } = useBlogPage();
 
-  const navigate = useNavigate();
-
-  const { data, isLoading } = useBlogs();
-  const blogs = useMemo(() => data?.data ?? [], [data]);
-
-  // Extract unique tags from the comma-separated strings
-  const allTags = useMemo(() => {
-    const tagsSet = new Set<string>();
-    blogs.forEach((blog) => {
-      blog.tags.split(',').forEach((tag) => tagsSet.add(tag.trim()));
-    });
-    return ['All', ...Array.from(tagsSet)];
-  }, [blogs]);
-
-  // Filter and Search Logic
-  const filteredBlogs = useMemo(() => {
-    return blogs.filter((blog) => {
-      const matchesSearch =
-        blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        blog.summary.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesTag =
-        selectedTag === 'All' ||
-        blog.tags
-          .split(',')
-          .map((t) => t.trim())
-          .includes(selectedTag);
-
-      return matchesSearch && matchesTag;
-    });
-  }, [searchQuery, selectedTag, blogs]);
-
-  // Pagination Logic
-  const totalPages = Math.ceil(filteredBlogs.length / ITEMS_PER_PAGE);
-  const currentBlogs = filteredBlogs.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
-  );
-
-  // Reset to page 1 when filters change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleTagChange = (value: string) => {
-    setSelectedTag(value);
-    setCurrentPage(1);
-  };
-
-  // Framer Motion Variants
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -96,229 +38,99 @@ export default function BlogListPage() {
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-  } as const;
-
   return (
-    <div className="bg-background min-h-screen">
-      {/* Hero / Decorator Section */}
+    <div className="min-h-body bg-[#f8fbfa] font-sans">
       <PageHeader
-        heading="Wellness Insights"
-        subheading="Expert articles, clinical advice, and holistic approaches to help you manage pain,
-            recover faster, and live healthier."
+        heading={
+          <span>
+            Knowledge & Insights <span className="text-[#a9d6e5]">Blog</span>
+          </span>
+        }
+        subheading="Expert advice, physiotherapy guides, and wellness tips from leading physical health professionals."
       />
 
-      <div className="relative z-10 mx-auto -mt-8 max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
-        {/* Controls: Search and Filter Card */}
-        <Card className="border-border mb-12 bg-white shadow-sm">
-          <CardContent className="flex flex-col items-center justify-between gap-4 p-4 sm:flex-row sm:p-6">
-            <div className="relative w-full sm:max-w-md">
-              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-              <Input
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="border-border focus-visible:ring-primary h-11 pl-9 text-[#012a4a]"
-              />
-            </div>
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <BlogFilter
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          selectedTag={selectedTag}
+          onTagChange={handleTagChange}
+          allTags={allTags}
+        />
 
-            <div className="flex w-full items-center gap-3 sm:w-auto">
-              <Filter className="text-muted-foreground hidden h-4 w-4 sm:block" />
-              <Select value={selectedTag} onValueChange={handleTagChange}>
-                <SelectTrigger className="border-border h-11 w-full text-[#012a4a] sm:w-50">
-                  <SelectValue placeholder="Filter by Topic" />
-                </SelectTrigger>
-                <SelectContent>
-                  {allTags.map((tag) => (
-                    <SelectItem key={tag} value={tag} className="text-[#012a4a]">
-                      {tag}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Blog Grid */}
-        <AnimatePresence mode="wait">
-          {isLoading ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-96 w-full animate-pulse rounded-2xl bg-slate-200/60" />
+            ))}
+          </div>
+        ) : filteredBlogs.length > 0 ? (
+          <>
             <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
-            >
-              {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
-                <Card
-                  key={i}
-                  className="border-border flex h-full flex-col overflow-hidden bg-white py-0"
-                >
-                  <div className="bg-secondary/40 h-48 w-full animate-pulse" />
-                  <CardHeader className="pt-5 pb-3">
-                    <div className="bg-secondary/40 mb-3 h-3 w-1/3 animate-pulse rounded" />
-                    <div className="bg-secondary/40 h-6 w-3/4 animate-pulse rounded" />
-                  </CardHeader>
-                  <CardContent className="grow space-y-2">
-                    <div className="bg-secondary/40 h-3 w-full animate-pulse rounded" />
-                    <div className="bg-secondary/40 h-3 w-5/6 animate-pulse rounded" />
-                  </CardContent>
-                </Card>
-              ))}
-            </motion.div>
-          ) : currentBlogs.length > 0 ? (
-            <motion.div
-              key={currentPage + selectedTag + searchQuery}
               variants={containerVariants}
               initial="hidden"
               animate="show"
-              className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
             >
               {currentBlogs.map((blog) => (
-                <motion.div key={blog.id} variants={itemVariants} className="h-full">
-                  <Card
-                    onClick={() => navigate(`/blog/${blog.slug}`)}
-                    className="border-border hover:border-primary/30 group flex h-full flex-col overflow-hidden bg-white py-0 transition-all duration-300 hover:shadow-md"
-                  >
-                    {/* Thumbnail */}
-                    <div className="bg-secondary/50 relative h-48 overflow-hidden">
-                      <img
-                        src={blog.thumbnail}
-                        alt={blog.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                <BlogCard key={blog.id} blog={blog} onReadMore={(id) => navigate(`/blog/${id}`)} />
+              ))}
+            </motion.div>
+
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        className={
+                          currentPage === 1
+                            ? 'pointer-events-none opacity-50'
+                            : 'cursor-pointer hover:bg-[#014f86]/10'
+                        }
                       />
-                      <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                        {blog.tags.split(',').map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className="bg-white/90 text-[#013a63] shadow-sm backdrop-blur-sm"
-                          >
-                            {tag.trim()}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <CardHeader className="pt-5 pb-3">
-                      <div className="text-muted-foreground mb-3 flex items-center gap-4 text-xs font-medium">
-                        <span className="flex items-center gap-1.5">
-                          <Calendar className="h-3.5 w-3.5" />
-                          {new Date(blog.createdAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="h-3.5 w-3.5" />
-                          {blog.readTime}
-                        </span>
-                      </div>
-                      <h3 className="group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold text-[#012a4a] transition-colors">
-                        {blog.title}
-                      </h3>
-                    </CardHeader>
-
-                    <CardContent className="grow">
-                      <p className="line-clamp-3 text-sm leading-relaxed text-[#012a4a]/75">
-                        {blog.summary}
-                      </p>
-                    </CardContent>
-
-                    <CardFooter className="border-border/50 flex items-center justify-between border-t bg-gray-50/50 pt-4 pb-5">
-                      <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
-                        <Eye className="h-3.5 w-3.5" />
-                        {blog.views.toLocaleString()} views
-                      </div>
-
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-primary p-0 font-semibold hover:bg-transparent hover:text-[#013a63]"
-                      >
-                        Read Article <ArrowRight className="ml-1 h-4 w-4" />
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="py-24 text-center"
-            >
-              <div className="bg-secondary/50 mb-4 inline-flex rounded-full p-4">
-                <Search className="text-primary/40 h-8 w-8" />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className={
+                            currentPage === page
+                              ? 'bg-[#014f86] text-white hover:bg-[#013a63]'
+                              : 'cursor-pointer hover:bg-[#014f86]/10'
+                          }
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                        className={
+                          currentPage === totalPages
+                            ? 'pointer-events-none opacity-50'
+                            : 'cursor-pointer hover:bg-[#014f86]/10'
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
               </div>
-              <h3 className="mb-2 text-xl font-bold text-[#012a4a]">No articles found</h3>
-              <p className="text-muted-foreground mx-auto max-w-md">
-                We couldn't find any articles matching your search criteria. Try adjusting your
-                keywords or changing the category filter.
-              </p>
-              <Button
-                variant="outline"
-                className="border-border mt-6 text-[#012a4a]"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedTag('All');
-                }}
-              >
-                Clear Filters
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <Pagination className="mt-8">
-            <PaginationContent>
-              <PaginationItem>
-                <Button
-                  variant="ghost"
-                  className={`pl-2.5 text-[#012a4a] ${currentPage === 1 ? 'pointer-events-none opacity-50' : 'hover:bg-secondary/50'}`}
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                >
-                  <PaginationPrevious className="hover:bg-transparent hover:text-inherit" />
-                </Button>
-              </PaginationItem>
-
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(i + 1)}
-                    isActive={currentPage === i + 1}
-                    className={`cursor-pointer ${
-                      currentPage === i + 1
-                        ? 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground border-primary'
-                        : 'hover:bg-secondary/50 border-transparent text-[#012a4a]'
-                    }`}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <Button
-                  variant="ghost"
-                  className={`pr-2.5 text-[#012a4a] ${currentPage === totalPages ? 'pointer-events-none opacity-50' : 'hover:bg-secondary/50'}`}
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  <PaginationNext className="hover:bg-transparent hover:text-inherit" />
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+            )}
+          </>
+        ) : (
+          <div className="py-20 text-center">
+            <h3 className="text-xl font-bold text-[#012a4a]">No articles found</h3>
+            <p className="mt-2 text-sm text-slate-500">
+              Try adjusting your search criteria or tag filters.
+            </p>
+          </div>
         )}
-      </div>
+      </main>
+
       <ActionCTA />
       <Footer />
     </div>

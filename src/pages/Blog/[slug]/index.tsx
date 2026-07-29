@@ -1,72 +1,28 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import {
-  ArrowLeft,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Eye,
-  Heart,
-  MessageSquare,
-  Share2,
-} from 'lucide-react';
-import type { FormEvent } from 'react';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-
-// Shadcn UI Imports
+import { ArrowLeft, Calendar, Clock, Eye, Heart, Share2 } from 'lucide-react';
 import ActionCTA from '@/components/custom/cta/cta';
 import Footer from '@/components/custom/footer/footer';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
-import { useBlogDetail, useLikeBlog, useCreateReview } from '@/hooks/useBlog';
+import { useBlogDetails } from './hooks/useBlogDetails';
+import { ArticleComments } from './components/ArticleComments';
 
-// --- Main Page Component ---
 export default function BlogDetailPage() {
-  const { slug = '' } = useParams();
-
-  const { data, isLoading } = useBlogDetail(slug);
-  const blog = data?.data ?? null;
-
-  const likeMutation = useLikeBlog(slug);
-  const reviewMutation = useCreateReview(slug);
-
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState<number | null>(null);
-  const [reviewText, setReviewText] = useState('');
-
-  const displayLikeCount = likeCount ?? blog?.likes ?? 0;
-
-  const handleLike = () => {
-    if (!blog) return;
-    likeMutation.mutate(blog.id, {
-      onSuccess: (res) => {
-        setIsLiked(res.data.liked);
-        setLikeCount(res.data.likes);
-      },
-    });
-  };
-
-  const handleReviewSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!reviewText.trim() || !blog) return;
-
-    reviewMutation.mutate(
-      { id: blog.id, comment: reviewText },
-      {
-        onSuccess: () => {
-          setReviewText('');
-        },
-      },
-    );
-  };
-
-  const isSubmittingReview = reviewMutation.isPending;
+  const {
+    blog,
+    isLoading,
+    isLiked,
+    displayLikeCount,
+    reviewText,
+    setReviewText,
+    handleLike,
+    handleReviewSubmit,
+    isSubmittingReview,
+  } = useBlogDetails();
 
   if (isLoading) {
     return (
@@ -90,11 +46,9 @@ export default function BlogDetailPage() {
 
   return (
     <div className="bg-background min-h-screen font-sans">
-      {/* Top Decorator Bar - Secondary Soft Light Blue */}
       <div className="h-2 w-full bg-[#a9d6e5]" />
 
       <article className="mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6 md:pt-12 lg:px-8">
-        {/* Back Navigation */}
         <Button
           variant="ghost"
           className="text-muted-foreground mb-8 pl-0 hover:bg-transparent hover:text-[#013a63]"
@@ -103,7 +57,6 @@ export default function BlogDetailPage() {
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Articles
         </Button>
 
-        {/* Header Section */}
         <motion.header
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -146,7 +99,6 @@ export default function BlogDetailPage() {
           </div>
         </motion.header>
 
-        {/* Thumbnail Hero Image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -156,7 +108,6 @@ export default function BlogDetailPage() {
           <img src={blog.thumbnail} alt={blog.title} className="h-full w-full object-cover" />
         </motion.div>
 
-        {/* Article Content */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -167,7 +118,6 @@ export default function BlogDetailPage() {
 
         <Separator className="bg-border/60 my-12" />
 
-        {/* Article Actions (Like & Share) */}
         <div className="mb-16 flex items-center justify-between">
           <Button
             variant={isLiked ? 'default' : 'outline'}
@@ -189,74 +139,13 @@ export default function BlogDetailPage() {
           </Button>
         </div>
 
-        {/* Reviews / Comments Section */}
-        <section className="border-border rounded-2xl border bg-white p-6 shadow-sm md:p-8">
-          <div className="mb-8 flex items-center gap-3">
-            <MessageSquare className="text-primary h-6 w-6" />
-            <h3 className="text-2xl font-bold text-[#012a4a]">
-              Discussion ({blog.reviews.length})
-            </h3>
-          </div>
-
-          {/* Add Review Form */}
-          <form onSubmit={handleReviewSubmit} className="mb-10 space-y-4">
-            <Textarea
-              placeholder="Share your thoughts or ask a question..."
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              className="border-border focus-visible:ring-primary min-h-30 resize-none text-[#012a4a]"
-            />
-            <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={!reviewText.trim() || isSubmittingReview}
-                className="bg-primary text-white hover:bg-[#013a63]"
-              >
-                {isSubmittingReview ? 'Posting...' : 'Post Comment'}
-              </Button>
-            </div>
-          </form>
-
-          {/* Reviews List */}
-          <div className="space-y-6">
-            {blog.reviews.length === 0 ? (
-              <p className="text-muted-foreground py-6 text-center">
-                No comments yet. Be the first to share your thoughts!
-              </p>
-            ) : (
-              blog.reviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="hover:bg-secondary/10 flex gap-4 rounded-xl p-4 transition-colors"
-                >
-                  <Avatar className="border-border h-10 w-10 border">
-                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                      {review.userName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#012a4a]">{review.userName}</span>
-                        <CheckCircle2 className="text-success h-3.5 w-3.5" />
-                      </div>
-                      <span className="text-muted-foreground text-xs">
-                        {new Date(review.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-sm leading-relaxed text-[#012a4a]/80">
-                      {review.comment}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
+        <ArticleComments
+          reviews={blog.reviews}
+          reviewText={reviewText}
+          setReviewText={setReviewText}
+          onSubmit={handleReviewSubmit}
+          isSubmitting={isSubmittingReview}
+        />
       </article>
       <ActionCTA />
       <Footer />

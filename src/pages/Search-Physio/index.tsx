@@ -3,14 +3,12 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Building2, SlidersHorizontal, Stethoscope } from 'lucide-react';
-import { useState } from 'react';
 
-import ClinicCard from './clinic-card';
-import SearchSection from './search-section';
-import Sidebar from './side-bar';
-import TherapistCard from './therapist-card';
-import { useSearchTherapists } from '@/hooks/useTherapist';
-import type { SearchTherapistParams } from '@/services/therapist.service';
+import ClinicCard from './components/clinic-card';
+import SearchSection from './components/search-section';
+import Sidebar from './components/side-bar';
+import TherapistCard from './components/therapist-card';
+import { useSearchPhysio, initialFilterState, type Filters } from './hooks/useSearchPhysio';
 
 const LoadingSkeleton = () => (
   <>
@@ -54,48 +52,6 @@ const NoResults = () => (
   </motion.div>
 );
 
-export type Filters = {
-  lng: number;
-  lat: number;
-  radius: number;
-  mode: 'home_visit' | 'online' | 'clinic' | undefined;
-  price: number[];
-  experience: number[];
-  gender: 'male' | 'female' | 'other' | 'any';
-  specialization: string[];
-  sort: 'price' | 'rating' | 'experience' | 'distance';
-  page: number;
-  limit: number;
-};
-const initialFilterState: Filters = {
-  lng: 77.1025,
-  lat: 28.7041,
-  radius: 10,
-  mode: undefined,
-  price: [0, 5000],
-  gender: 'any',
-  specialization: [],
-  experience: [0, 10],
-  sort: 'rating',
-  page: 1,
-  limit: 10,
-};
-
-export type Therapist = {
-  id: string;
-  name: string;
-  specializations: string[] | undefined;
-  experience: number | undefined;
-  rating: number | null;
-  totalReviews: number;
-  originalPrice: number | null;
-  discountedPrice: number;
-  displayAddress: string;
-  image: string | null;
-  distance: number | undefined;
-};
-
-// Mock Clinic Data
 const clinicData = [
   {
     name: 'Olive Physiotherapy',
@@ -109,28 +65,11 @@ const clinicData = [
   },
 ];
 
-const buildSearchParams = (filters: Filters): SearchTherapistParams => ({
-  lng: filters.lng,
-  lat: filters.lat,
-  radius: filters.radius,
-  ...(filters.mode && { mode: filters.mode }),
-  ...(filters.gender !== 'any' && { gender: filters.gender }),
-  ...(filters.specialization.length > 0 && { specialization: filters.specialization }),
-  price: [filters.price[0], filters.price[1]],
-  experience: [filters.experience[0], filters.experience[1]],
-  sort: filters.sort,
-  page: filters.page,
-  limit: filters.limit,
-});
-
 export default function TherapistList() {
-  const [filters, setFilters] = useState<Filters>(initialFilterState);
+  const { filters, setFilters, therapists, isLoading } = useSearchPhysio();
 
-  const { data, isLoading } = useSearchTherapists(buildSearchParams(filters));
-  const therapists = data?.data ?? [];
-
-  const handleFilterChange = (name: string, value: unknown) => {
-    setFilters((prev) => ({ ...prev, [name]: value }));
+  const handleFilterChange = (name: keyof Filters, value: unknown) => {
+    setFilters((prev: Filters) => ({ ...prev, [name]: value }));
   };
 
   const handleResetFilters = () => setFilters(initialFilterState);
@@ -140,7 +79,6 @@ export default function TherapistList() {
       <SearchSection filters={filters} onFilterChange={handleFilterChange} />
 
       <div className="mx-auto flex max-w-350 flex-col gap-8 px-4 py-8 md:flex-row md:px-8">
-        {/* Desktop Sidebar */}
         <aside className="hidden w-72 shrink-0 md:block">
           <div className="sticky top-24">
             <Sidebar
@@ -151,9 +89,7 @@ export default function TherapistList() {
           </div>
         </aside>
 
-        {/* Main Content Area */}
         <main className="flex-1 space-y-12">
-          {/* Mobile Filter Trigger */}
           <div className="flex justify-end md:hidden">
             <Sheet>
               <SheetTrigger asChild>
@@ -177,7 +113,6 @@ export default function TherapistList() {
             </Sheet>
           </div>
 
-          {/* Therapists Section */}
           <section>
             <div className="mb-6 flex items-center gap-3">
               <Stethoscope className="text-primary h-8 w-8" />
@@ -209,7 +144,6 @@ export default function TherapistList() {
             </div>
           </section>
 
-          {/* Clinics Section */}
           <section className="border-secondary/50 border-t pt-8">
             <div className="mb-6 flex items-center gap-3">
               <Building2 className="h-8 w-8 text-[#013a63]" />

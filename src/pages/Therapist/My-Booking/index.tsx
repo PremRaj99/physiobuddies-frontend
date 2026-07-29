@@ -1,22 +1,9 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  Building2,
-  CalendarDays,
-  ChevronRight,
-  Clock,
-  Filter,
-  Home,
-  Search,
-  Video,
-} from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useTherapistBookings } from '@/hooks/useTherapist';
+import { CalendarDays, Filter, Search } from 'lucide-react';
 
 import PageHeader from '@/components/custom/page-header/page-header';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,52 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useNavigate } from 'react-router';
+import { useTherapistBookingList } from './hooks/useTherapistBookingList';
+import { TherapistBookingCard } from './components/TherapistBookingCard';
 
-// --- Types ---
-type TreatmentMode = 'home_visit' | 'online' | 'clinic';
-type TreatmentStatus = 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
-
-// --- Helper Functions ---
-const getStatusColor = (status: TreatmentStatus) => {
-  switch (status) {
-    case 'UPCOMING':
-      return 'bg-[#014f86] text-white hover:bg-[#013a63]';
-    case 'COMPLETED':
-      return 'bg-success text-white hover:bg-emerald-600';
-    case 'PENDING':
-      return 'bg-amber-500 text-white hover:bg-amber-600';
-    case 'CANCELLED':
-      return 'bg-muted text-muted-foreground hover:bg-muted';
-    default:
-      return 'bg-secondary text-secondary-foreground';
-  }
-};
-
-const getModeIcon = (mode: TreatmentMode) => {
-  switch (mode) {
-    case 'home_visit':
-      return <Home className="h-4 w-4" />;
-    case 'online':
-      return <Video className="h-4 w-4" />;
-    case 'clinic':
-      return <Building2 className="h-4 w-4" />;
-  }
-};
-
-const getModeLabel = (mode: TreatmentMode) => {
-  switch (mode) {
-    case 'home_visit':
-      return 'Home Visit';
-    case 'online':
-      return 'Online';
-    case 'clinic':
-      return 'Clinic';
-  }
-};
-
-// --- Framer Motion Variants ---
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -86,52 +32,21 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
 } as const;
 
-// --- Main Component ---
 export default function TherapistBookingListPage() {
-  const { data: bookingsRes, isLoading } = useTherapistBookings();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<string>('ALL');
-  const [modeFilter, setModeFilter] = useState<string>('ALL');
-
-  const navigate = useNavigate();
-
-  const bookings = useMemo(() => {
-    return bookingsRes?.data ?? [];
-  }, [bookingsRes]);
-
-  // Filtering Logic
-  const filteredBookings = useMemo(() => {
-    return bookings.filter((booking) => {
-      // 1. Tab Filter (Status)
-      const matchesTab =
-        activeTab === 'ALL' ||
-        (activeTab === 'TODAY' &&
-          booking.lastSessionDate ===
-            new Date().toLocaleDateString('en-US', {
-              month: 'long',
-              day: '2-digit',
-              year: 'numeric',
-            })) ||
-        (activeTab === 'UPCOMING' &&
-          (booking.status === 'UPCOMING' || booking.status === 'PENDING')) ||
-        (activeTab === 'PAST' &&
-          (booking.status === 'COMPLETED' || booking.status === 'CANCELLED'));
-
-      // 2. Mode Filter
-      const matchesMode = modeFilter === 'ALL' || booking.treatmentMode === modeFilter;
-
-      // 3. Search Filter
-      const matchesSearch = (booking.patientName ?? '')
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-
-      return matchesTab && matchesMode && matchesSearch;
-    });
-  }, [bookings, activeTab, modeFilter, searchQuery]);
+  const {
+    navigate,
+    isLoading,
+    filteredBookings,
+    activeTab,
+    setActiveTab,
+    searchQuery,
+    setSearchQuery,
+    modeFilter,
+    setModeFilter,
+  } = useTherapistBookingList();
 
   return (
     <div className="bg-background min-h-screen pb-24 font-sans">
-      {/* Header & Decorator */}
       <PageHeader
         heading={
           <span>
@@ -141,20 +56,17 @@ export default function TherapistBookingListPage() {
         subheading="Track patient sessions, monitor progress, or review past therapy sessions."
       />
 
-      {/* Main Content Area */}
       <div className="relative z-20 mx-auto -mt-12 max-w-5xl px-4 sm:px-6">
-        {/* Controls Card */}
         <Card className="border-border mb-8 bg-white py-0 shadow-sm">
           <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-              {/* Tabs */}
               <Tabs
                 defaultValue="ALL"
                 value={activeTab}
                 onValueChange={setActiveTab}
                 className="w-full md:w-auto"
               >
-                <TabsList className="bg-secondary/50 grid h-auto w-full grid-cols-3 rounded-lg p-0 md:flex md:w-auto">
+                <TabsList className="bg-secondary/50 grid h-auto w-full grid-cols-4 rounded-lg p-0 md:flex md:w-auto">
                   <TabsTrigger
                     value="ALL"
                     className="text-muted-foreground rounded-md px-4 py-2.5 transition-all data-[state=active]:bg-white data-[state=active]:text-[#014f86]"
@@ -182,7 +94,6 @@ export default function TherapistBookingListPage() {
                 </TabsList>
               </Tabs>
 
-              {/* Search & Filter */}
               <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
                 <div className="relative w-full sm:w-64">
                   <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
@@ -211,7 +122,6 @@ export default function TherapistBookingListPage() {
           </CardContent>
         </Card>
 
-        {/* List Area */}
         <AnimatePresence mode="wait">
           {isLoading ? (
             <div className="space-y-4">
@@ -227,7 +137,7 @@ export default function TherapistBookingListPage() {
             </div>
           ) : filteredBookings.length > 0 ? (
             <motion.div
-              key={activeTab + modeFilter + searchQuery} // Re-trigger animation on filter change
+              key={activeTab + modeFilter + searchQuery}
               variants={containerVariants}
               initial="hidden"
               animate="show"
@@ -235,89 +145,14 @@ export default function TherapistBookingListPage() {
             >
               {filteredBookings.map((booking) => (
                 <motion.div key={booking.id} variants={itemVariants}>
-                  <Card
-                    onClick={() => navigate(`/therapist/my-booking/${booking.id}`)}
-                    className="border-border group overflow-hidden py-0 transition-all duration-300 hover:border-[#a9d6e5] hover:shadow-md"
-                  >
-                    <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row">
-                        {/* Therapist Info Section (Left) */}
-                        <div className="border-border/50 bg-secondary/10 flex items-center gap-4 border-b p-5 md:w-2/5 md:border-r md:border-b-0">
-                          <div>
-                            <h3 className="text-lg leading-tight font-bold text-[#012a4a] transition-colors group-hover:text-[#014f86]">
-                              {booking.patientName}
-                            </h3>
-                            <p className="text-muted-foreground mt-0.5 text-sm capitalize">
-                              <Badge className="rounded-md" variant="outline">
-                                {booking.patientID}
-                              </Badge>{' '}
-                              • {booking.patientGender.toLowerCase()} •{' '}
-                              {booking.patientAge && `${booking.patientAge} yrs`}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Session Details Section (Middle) */}
-                        <div className="flex flex-col justify-center space-y-3 p-5 md:w-2/5">
-                          <div className="flex items-center gap-3 text-[#012a4a]">
-                            <div className="bg-secondary/50 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-                              <CalendarDays className="h-4 w-4 text-[#014f86]" />
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                                Date
-                              </p>
-                              <p className="font-semibold">{booking.lastSessionDate}</p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-3 text-[#012a4a]">
-                            <div className="bg-secondary/50 flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
-                              <Clock className="h-4 w-4 text-[#014f86]" />
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                                Time
-                              </p>
-                              <p className="font-semibold">{booking.lastSessionTime}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Status & Action Section (Right) */}
-                        <div className="border-border/50 flex flex-row items-center justify-between border-t bg-gray-50/50 p-5 md:w-1/5 md:flex-col md:items-end md:justify-center md:border-t-0">
-                          <div className="flex flex-col items-start gap-2 md:items-end">
-                            <Badge
-                              className={`${getStatusColor(booking.status)} border-transparent px-3 py-1 font-semibold`}
-                            >
-                              {booking.status}
-                            </Badge>
-
-                            <Badge
-                              variant="outline"
-                              className="border-border flex items-center gap-1.5 bg-white text-[#013a63] shadow-sm"
-                            >
-                              {getModeIcon(booking.treatmentMode)}
-                              {getModeLabel(booking.treatmentMode)}
-                            </Badge>
-                          </div>
-
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="mt-4 hidden text-[#014f86] group-hover:bg-[#a9d6e5]/30 md:flex"
-                          >
-                            <ChevronRight className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <TherapistBookingCard
+                    booking={booking}
+                    onNavigate={(id) => navigate(`/therapist/my-booking/${id}`)}
+                  />
                 </motion.div>
               ))}
             </motion.div>
           ) : (
-            /* Empty State */
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

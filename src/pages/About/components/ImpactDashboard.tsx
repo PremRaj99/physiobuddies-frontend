@@ -18,7 +18,6 @@ import {
   ChartLegendContent,
 } from '@/components/ui/chart';
 
-// Define the Shadcn Chart Configurations for styling tooltips and legends
 const barChartConfig = {
   value: { label: 'Total', color: 'hsl(var(--primary))' },
 } satisfies ChartConfig;
@@ -31,18 +30,18 @@ const lineChartConfig = {
   percentage: { label: 'Percentage', color: '#014f86' },
 } satisfies ChartConfig;
 
-type MetricDataItem = {
+export type MetricDataItem = {
   name: string;
   value: number;
   color: string;
 };
 
-type PieDataItem = {
+export type PieDataItem = {
   name: string;
   value: number;
 };
 
-type CoverageDataItem = {
+export type CoverageDataItem = {
   name: string;
   percentage: number;
 };

@@ -1,16 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
-import {
-  ArrowRight,
-  Clock,
-  Headset,
-  ShieldCheck,
-  Smartphone,
-  Stethoscope,
-  UserPlus,
-  Wallet,
-} from 'lucide-react';
-
-// Shadcn UI Imports
+import { ArrowRight, ShieldCheck, Smartphone, Stethoscope, UserPlus } from 'lucide-react';
 import Footer from '@/components/custom/footer/footer';
 import {
   Accordion,
@@ -19,9 +8,9 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { useHomeNetwork } from './hooks/useHomeNetwork';
+import { HomeNetworkFeatures } from './components/HomeNetworkFeatures';
 
-// --- Animation Variants ---
 const fadeUpVariant: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
@@ -32,80 +21,11 @@ const staggerContainer: Variants = {
   visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
 };
 
-// Fallback target icon since I didn't import it above, replacing with Award for safety
-const refinedBenefits = [
-  {
-    title: 'Pre-Screened Patients',
-    desc: 'Receive verified patient requests directly in your app.',
-    icon: ShieldCheck,
-  },
-  {
-    title: 'Zero Upfront Investment',
-    desc: 'No hidden costs or platform fees to start your practice.',
-    icon: Wallet,
-  },
-  {
-    title: 'Total Calendar Control',
-    desc: 'Set your own availability and accept visits on your terms.',
-    icon: Clock,
-  },
-  {
-    title: 'Dedicated Support',
-    desc: 'Our administrative team handles the backend so you can focus on care.',
-    icon: Headset,
-  },
-];
-
-const steps = [
-  {
-    step: '01',
-    title: 'Sign Up',
-    desc: 'Register your professional details through our secure portal.',
-    icon: UserPlus,
-  },
-  {
-    step: '02',
-    title: 'Get Verified',
-    desc: 'Our clinical team reviews your credentials and clinical experience.',
-    icon: ShieldCheck,
-  },
-  {
-    step: '03',
-    title: 'Accept Leads',
-    desc: 'Receive notifications for home visit requests in your selected zones.',
-    icon: Smartphone,
-  },
-  {
-    step: '04',
-    title: 'Treat & Earn',
-    desc: 'Provide exceptional care and track your earnings on the dashboard.',
-    icon: Stethoscope,
-  },
-];
-
-const faqs = [
-  {
-    q: 'How do I get paid for my visits?',
-    a: 'Payments are processed securely and transferred directly to your registered bank account on a weekly cycle.',
-  },
-  {
-    q: 'Is there a registration fee to join?',
-    a: 'No, joining the Physiobuddies Home Visit Network is completely free for qualified physiotherapists.',
-  },
-  {
-    q: 'Do I have to accept every patient request?',
-    a: 'Not at all. You have full autonomy to accept or decline requests based on your schedule and travel radius.',
-  },
-  {
-    q: 'What qualifications are required?',
-    a: 'You must hold a valid degree in Physiotherapy (BPT/MPT) and be registered with the relevant state or national council.',
-  },
-];
-
 export default function HomeVisitNetwork() {
+  const { refinedBenefits, steps, faqs } = useHomeNetwork();
+
   return (
     <div className="bg-background flex min-h-screen flex-col font-sans">
-      {/* --- HERO SECTION --- */}
       <section className="relative overflow-hidden bg-[#013a63] px-4 py-20 md:py-32 lg:px-8">
         <div className="pointer-events-none absolute top-0 right-0 h-125 w-125 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#014f86] opacity-40 blur-[120px]" />
 
@@ -140,46 +60,12 @@ export default function HomeVisitNetwork() {
         </motion.div>
       </section>
 
-      {/* --- WHY JOIN SECTION (BENEFITS) --- */}
-      <section className="bg-secondary/10 px-4 py-20 md:py-28 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <h2 className="text-3xl font-bold text-[#012a4a] md:text-4xl">
-              Exclusive Network Benefits
-            </h2>
-            <p className="text-muted-foreground mt-4 text-lg">
-              Everything you need to run a successful mobile clinic.
-            </p>
-          </div>
+      <HomeNetworkFeatures
+        benefits={refinedBenefits}
+        staggerContainer={staggerContainer}
+        fadeUpVariant={fadeUpVariant}
+      />
 
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
-          >
-            {refinedBenefits.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <motion.div key={idx} variants={fadeUpVariant} whileHover={{ y: -5 }}>
-                  <Card className="border-border hover:shadow-primary/5 h-full bg-white shadow-sm transition-shadow hover:shadow-lg">
-                    <CardContent className="flex flex-col items-start p-8">
-                      <div className="bg-secondary/30 text-primary mb-6 rounded-2xl p-4">
-                        <Icon className="h-8 w-8" />
-                      </div>
-                      <h3 className="mb-3 text-xl font-bold text-[#012a4a]">{item.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* --- HOW IT WORKS (STEPS) --- */}
       <section className="bg-white px-4 py-20 md:py-28 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
@@ -190,7 +76,6 @@ export default function HomeVisitNetwork() {
           </div>
 
           <div className="relative">
-            {/* Connecting line for desktop */}
             <div className="bg-secondary/40 absolute top-12 left-0 hidden h-0.5 w-full lg:block" />
 
             <motion.div
@@ -200,33 +85,32 @@ export default function HomeVisitNetwork() {
               viewport={{ once: true }}
               className="grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8"
             >
-              {steps.map((item, idx) => {
-                const Icon = item.icon;
-                return (
-                  <motion.div
-                    key={idx}
-                    variants={fadeUpVariant}
-                    className="relative z-10 flex flex-col items-center text-center"
-                  >
-                    <div className="bg-secondary/30 shadow-primary/5 mb-6 flex h-24 w-24 items-center justify-center rounded-full border-8 border-white text-[#013a63] shadow-xl">
-                      <Icon className="h-8 w-8" />
-                    </div>
-                    <div className="text-primary mb-2 text-sm font-bold tracking-widest uppercase">
-                      Step {item.step}
-                    </div>
-                    <h3 className="mb-3 text-xl font-bold text-[#012a4a]">{item.title}</h3>
-                    <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-                      {item.desc}
-                    </p>
-                  </motion.div>
-                );
-              })}
+              {steps.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={fadeUpVariant}
+                  className="relative z-10 flex flex-col items-center text-center"
+                >
+                  <div className="bg-secondary/30 shadow-primary/5 mb-6 flex h-24 w-24 items-center justify-center rounded-full border-8 border-white text-[#013a63] shadow-xl">
+                    {idx === 0 && <UserPlus className="h-8 w-8" />}
+                    {idx === 1 && <ShieldCheck className="h-8 w-8" />}
+                    {idx === 2 && <Smartphone className="h-8 w-8" />}
+                    {idx === 3 && <Stethoscope className="h-8 w-8" />}
+                  </div>
+                  <div className="text-primary mb-2 text-sm font-bold tracking-widest uppercase">
+                    Step {item.step}
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold text-[#012a4a]">{item.title}</h3>
+                  <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
+                    {item.desc}
+                  </p>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* --- FAQ SECTION --- */}
       <section className="bg-secondary/10 border-border border-t px-4 py-20 md:py-28 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <div className="mb-12 text-center">
@@ -257,7 +141,6 @@ export default function HomeVisitNetwork() {
         </div>
       </section>
 
-      {/* --- FINAL CTA SECTION --- */}
       <section className="bg-white px-4 py-20 lg:px-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -266,7 +149,6 @@ export default function HomeVisitNetwork() {
           transition={{ duration: 0.5 }}
           className="relative mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] bg-[#012a4a] shadow-2xl"
         >
-          {/* Decor */}
           <div className="bg-primary absolute -top-24 -right-24 h-64 w-64 rounded-full opacity-50 blur-[80px]" />
 
           <div className="relative z-10 flex flex-col items-center justify-between gap-8 p-12 text-center md:flex-row md:p-16 md:text-left">
