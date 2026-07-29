@@ -88,7 +88,7 @@ export const TreatmentTimeline = ({
                   </Button>
                 )}
 
-                {session.status !== 'completed' && session.status !== 'active' && (
+                {session.status !== 'completed' && session.status !== 'active' && !sessionActive && (
                   <Button
                     onClick={handleStartSessionOtp}
                     disabled={isGeneratingOtp}
