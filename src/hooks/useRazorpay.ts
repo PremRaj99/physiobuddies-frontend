@@ -1,4 +1,8 @@
-import { usePaymentContext, type RazorpayCheckoutOptions, type RazorpayPaymentResponse } from '@/components/custom/razorpay/RazorPayProvider';
+import {
+  usePaymentContext,
+  type RazorpayCheckoutOptions,
+  type RazorpayPaymentResponse,
+} from '@/components/custom/razorpay/RazorPayProvider';
 import { useCallback } from 'react';
 
 export const useRazorpay = () => {

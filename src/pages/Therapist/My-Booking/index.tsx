@@ -34,7 +34,6 @@ import { useNavigate } from 'react-router';
 type TreatmentMode = 'home_visit' | 'online' | 'clinic';
 type TreatmentStatus = 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
 
-
 // --- Helper Functions ---
 const getStatusColor = (status: TreatmentStatus) => {
   switch (status) {
@@ -108,14 +107,15 @@ export default function TherapistBookingListPage() {
         activeTab === 'ALL' ||
         (activeTab === 'TODAY' &&
           booking.lastSessionDate ===
-          new Date().toLocaleDateString('en-US', {
-            month: 'long',
-            day: '2-digit',
-            year: 'numeric',
-          })) ||
+            new Date().toLocaleDateString('en-US', {
+              month: 'long',
+              day: '2-digit',
+              year: 'numeric',
+            })) ||
         (activeTab === 'UPCOMING' &&
           (booking.status === 'UPCOMING' || booking.status === 'PENDING')) ||
-        (activeTab === 'PAST' && (booking.status === 'COMPLETED' || booking.status === 'CANCELLED'));
+        (activeTab === 'PAST' &&
+          (booking.status === 'COMPLETED' || booking.status === 'CANCELLED'));
 
       // 2. Mode Filter
       const matchesMode = modeFilter === 'ALL' || booking.treatmentMode === modeFilter;

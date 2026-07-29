@@ -44,8 +44,7 @@ export const useLikeBlog = (slug?: string) => {
 export const useCreateReview = (slug?: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, comment }: { id: string; comment: string }) =>
-      createBlogReview(id, comment),
+    mutationFn: ({ id, comment }: { id: string; comment: string }) => createBlogReview(id, comment),
     onSuccess: () => {
       if (slug) {
         queryClient.invalidateQueries({ queryKey: ['blog', slug] });

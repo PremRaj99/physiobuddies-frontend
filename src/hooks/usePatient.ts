@@ -189,9 +189,7 @@ export interface InitiatePaymentResult {
 
 export const useInitiatePayment = () =>
   useMutation({
-    mutationFn: async (
-      sessionId: string,
-    ): Promise<ApiResponse<InitiatePaymentResult>> => {
+    mutationFn: async (sessionId: string): Promise<ApiResponse<InitiatePaymentResult>> => {
       const { data } = await axios.post<ApiResponse<InitiatePaymentResult>>(
         `/reservation/session/${sessionId}/initiate-payment`,
       );
@@ -212,9 +210,10 @@ export const useVerifyPayment = () =>
     mutationFn: async (
       payload: VerifyPaymentPayload,
     ): Promise<ApiResponse<{ verified: boolean; reservation?: unknown }>> => {
-      const { data } = await axios.post<
-        ApiResponse<{ verified: boolean; reservation?: unknown }>
-      >('/payment/confirm', payload);
+      const { data } = await axios.post<ApiResponse<{ verified: boolean; reservation?: unknown }>>(
+        '/payment/confirm',
+        payload,
+      );
       return data;
     },
   });
@@ -229,9 +228,10 @@ export const useFinalizeBooking = () => {
       sessionId: string;
       gatewayPaymentId?: string;
     }): Promise<ApiResponse<{ reservationId: string; message: string }>> => {
-      const { data } = await axios.post<
-        ApiResponse<{ reservationId: string; message: string }>
-      >(`/reservation/session/${sessionId}/finalize`, { gatewayPaymentId });
+      const { data } = await axios.post<ApiResponse<{ reservationId: string; message: string }>>(
+        `/reservation/session/${sessionId}/finalize`,
+        { gatewayPaymentId },
+      );
       return data;
     },
     onSuccess: () => {

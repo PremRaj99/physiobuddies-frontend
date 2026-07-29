@@ -87,16 +87,18 @@ export const TreatmentTimeline = ({
                   </Button>
                 )}
 
-                {session.status !== 'completed' && session.status !== 'active' && !sessionActive && (
-                  <Button
-                    onClick={handleStartSessionOtp}
-                    disabled={isGeneratingOtp}
-                    className="bg-success h-10 animate-pulse px-6 font-bold text-white shadow-lg shadow-emerald-200 hover:bg-emerald-600"
-                  >
-                    <PlayCircle className="mr-2 h-4 w-4" />
-                    {isGeneratingOtp ? 'Sending OTP...' : 'Start Session Now'}
-                  </Button>
-                )}
+                {session.status !== 'completed' &&
+                  session.status !== 'active' &&
+                  !sessionActive && (
+                    <Button
+                      onClick={handleStartSessionOtp}
+                      disabled={isGeneratingOtp}
+                      className="bg-success h-10 animate-pulse px-6 font-bold text-white shadow-lg shadow-emerald-200 hover:bg-emerald-600"
+                    >
+                      <PlayCircle className="mr-2 h-4 w-4" />
+                      {isGeneratingOtp ? 'Sending OTP...' : 'Start Session Now'}
+                    </Button>
+                  )}
 
                 {(session.status === 'active' || sessionActive) && (
                   <Button

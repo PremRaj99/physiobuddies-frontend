@@ -124,7 +124,11 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
   const patientAge = calculateAge(patient.dob);
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+    >
       <h2 className="mb-6 text-2xl font-bold text-[#012a4a]">Review & Confirm Booking</h2>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -132,20 +136,25 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
           {/* Session Summary */}
           <Card className="border-[#a9d6e5] pt-0 shadow-xs">
             <CardHeader>
-              <CardTitle className="py-4 text-[#013a63] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 py-4 text-[#013a63]">
                 <Clock className="h-4 w-4" /> Session Details
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
                 <img
-                  src={therapist.image || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200'}
-                  className="h-12 w-12 rounded-full object-cover border border-[#a9d6e5]"
+                  src={
+                    therapist.image ||
+                    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200'
+                  }
+                  className="h-12 w-12 rounded-full border border-[#a9d6e5] object-cover"
                   alt={therapist.name}
                 />
                 <div>
                   <p className="font-bold text-[#012a4a]">{therapist.name}</p>
-                  <p className="text-muted-foreground capitalize">{therapist.mode.replace('_', ' ')}</p>
+                  <p className="text-muted-foreground capitalize">
+                    {therapist.mode.replace('_', ' ')}
+                  </p>
                 </div>
               </div>
               <Separator />
@@ -156,7 +165,8 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Time Slot</span>
                 <span className="font-medium">
-                  {String(slotHour).padStart(2, '0')}:00 – {String((slotHour + 1) % 24).padStart(2, '0')}:00
+                  {String(slotHour).padStart(2, '0')}:00 –{' '}
+                  {String((slotHour + 1) % 24).padStart(2, '0')}:00
                 </span>
               </div>
               {condition && (
@@ -168,7 +178,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
               {problemDesc && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Problem Description</span>
-                  <span className="font-medium max-w-62.5 truncate">{problemDesc}</span>
+                  <span className="max-w-62.5 truncate font-medium">{problemDesc}</span>
                 </div>
               )}
             </CardContent>
@@ -179,7 +189,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
             {/* Complete Patient Info */}
             <Card className="border-[#a9d6e5] pt-0 shadow-xs">
               <CardHeader className="flex flex-row items-center justify-between py-3 pb-0">
-                <CardTitle className="text-[#013a63] flex items-center gap-2 text-base font-semibold">
+                <CardTitle className="flex items-center gap-2 text-base font-semibold text-[#013a63]">
                   <User className="h-4 w-4 text-[#014f86]" /> Patient Info
                 </CardTitle>
                 {onEditPatient && (
@@ -195,8 +205,8 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
               </CardHeader>
               <CardContent className="space-y-3 pt-3 text-sm">
                 <div>
-                  <p className="font-bold text-[#012a4a] text-base">{patient.name}</p>
-                  <p className="flex items-center gap-1 text-muted-foreground text-xs mt-0.5">
+                  <p className="text-base font-bold text-[#012a4a]">{patient.name}</p>
+                  <p className="text-muted-foreground mt-0.5 flex items-center gap-1 text-xs">
                     <Phone className="h-3 w-3" /> {patient.phone}
                   </p>
                 </div>
@@ -204,11 +214,11 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
                 <div className="space-y-1.5 text-xs">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground flex items-center gap-1">Gender:</span>
-                    <span className="font-medium capitalize text-[#012a4a]">{patient.gender}</span>
+                    <span className="font-medium text-[#012a4a] capitalize">{patient.gender}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground flex items-center gap-1">
-                      <Calendar className="h-3 w-3 inline" /> Date of Birth:
+                      <Calendar className="inline h-3 w-3" /> Date of Birth:
                     </span>
                     <span className="font-medium text-[#012a4a]">
                       {patient.dob ? new Date(patient.dob).toLocaleDateString() : 'N/A'}
@@ -218,7 +228,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
                   {patient.heightCm !== undefined && patient.heightCm !== null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground flex items-center gap-1">
-                        <Ruler className="h-3 w-3 inline" /> Height:
+                        <Ruler className="inline h-3 w-3" /> Height:
                       </span>
                       <span className="font-medium text-[#012a4a]">{patient.heightCm} cm</span>
                     </div>
@@ -226,7 +236,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
                   {patient.weightKg !== undefined && patient.weightKg !== null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground flex items-center gap-1">
-                        <Scale className="h-3 w-3 inline" /> Weight:
+                        <Scale className="inline h-3 w-3" /> Weight:
                       </span>
                       <span className="font-medium text-[#012a4a]">{patient.weightKg} kg</span>
                     </div>
@@ -238,7 +248,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
             {/* Complete Location Info */}
             <Card className="border-[#a9d6e5] pt-0 shadow-xs">
               <CardHeader className="flex flex-row items-center justify-between py-3 pb-0">
-                <CardTitle className="text-[#013a63] flex items-center gap-2 text-base font-semibold">
+                <CardTitle className="flex items-center gap-2 text-base font-semibold text-[#013a63]">
                   <MapPin className="h-4 w-4 text-[#014f86]" /> Location Details
                 </CardTitle>
                 {onEditLocation && (
@@ -254,10 +264,13 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
               </CardHeader>
               <CardContent className="space-y-3 pt-3 text-sm">
                 <div>
-                  <p className="font-bold text-[#012a4a] text-sm leading-snug">{location.address}</p>
+                  <p className="text-sm leading-snug font-bold text-[#012a4a]">
+                    {location.address}
+                  </p>
                   {location.landmark && (
-                    <p className="text-muted-foreground text-xs mt-1">
-                      Landmark: <span className="font-medium text-[#012a4a]">{location.landmark}</span>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Landmark:{' '}
+                      <span className="font-medium text-[#012a4a]">{location.landmark}</span>
                     </p>
                   )}
                 </div>
@@ -276,7 +289,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
                   {location.country && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground flex items-center gap-1">
-                        <Globe className="h-3 w-3 inline" /> Country:
+                        <Globe className="inline h-3 w-3" /> Country:
                       </span>
                       <span className="font-medium text-[#012a4a]">{location.country}</span>
                     </div>
@@ -289,7 +302,8 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
                         rel="noreferrer"
                         className="inline-flex items-center gap-1 text-[11px] font-medium text-[#014f86] hover:underline"
                       >
-                        Map Pin ({location.location.lat.toFixed(4)}, {location.location.lng.toFixed(4)})
+                        Map Pin ({location.location.lat.toFixed(4)},{' '}
+                        {location.location.lng.toFixed(4)})
                         <ExternalLink className="h-3 w-3" />
                       </a>
                     </div>
@@ -305,14 +319,14 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
           {/* Coupon Code Section */}
           <Card className="border-[#a9d6e5] pt-0 shadow-xs">
             <CardHeader>
-              <CardTitle className="py-4 text-[#013a63] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 py-4 text-[#013a63]">
                 <Tag className="h-4 w-4" /> Apply Coupon
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {initialCouponCode ? (
                 <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm">
-                  <div className="flex items-center gap-2 text-emerald-800 font-medium">
+                  <div className="flex items-center gap-2 font-medium text-emerald-800">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                     <span>Coupon '{initialCouponCode}' applied!</span>
                   </div>
@@ -347,19 +361,19 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
           </Card>
 
           {/* Payment Card */}
-          <Card className="border-[#a9d6e5] pt-0 shadow-xs h-fit">
+          <Card className="h-fit border-[#a9d6e5] pt-0 shadow-xs">
             <CardHeader>
-              <CardTitle className="py-4 text-[#013a63] flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 py-4 text-[#013a63]">
                 <CreditCard className="h-4 w-4" /> Payment Breakdown
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              <div className="flex justify-between text-muted-foreground">
+              <div className="text-muted-foreground flex justify-between">
                 <span>Session Fee</span>
                 <span>₹{therapist.price}</span>
               </div>
               {discountAmount > 0 && (
-                <div className="flex justify-between text-emerald-600 font-medium">
+                <div className="flex justify-between font-medium text-emerald-600">
                   <span>Coupon Discount</span>
                   <span>-₹{discountAmount}</span>
                 </div>
@@ -379,7 +393,10 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
                 />
                 <Label htmlFor="terms" className="text-muted-foreground text-xs leading-relaxed">
                   I agree to the{' '}
-                  <span onClick={() => navigate('/terms')} className="cursor-pointer text-[#014f86] underline">
+                  <span
+                    onClick={() => navigate('/terms')}
+                    className="cursor-pointer text-[#014f86] underline"
+                  >
                     Terms & Conditions
                   </span>{' '}
                   and cancellation policy.
@@ -389,7 +406,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
             <CardFooter className="flex-col gap-3">
               <Button
                 size="lg"
-                className="bg-emerald-600 h-12 w-full font-bold text-white hover:bg-emerald-700"
+                className="h-12 w-full bg-emerald-600 font-bold text-white hover:bg-emerald-700"
                 disabled={!termsAccepted || isConfirming}
                 onClick={onComplete}
               >

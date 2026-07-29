@@ -94,7 +94,7 @@ export default function TherapistBookingDetailPage() {
 
   if (!booking) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8fbfa] gap-4">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f8fbfa]">
         <p className="font-medium text-gray-600">Booking not found.</p>
         <Button onClick={() => navigate('/therapist/my-bookings')} variant="outline">
           Back to Bookings

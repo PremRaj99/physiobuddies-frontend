@@ -54,8 +54,8 @@ const BookingPage = () => {
   if (therapistLoading || !slotDate || startHour === undefined) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <Skeleton className="h-12 w-64 mb-6" />
-        <Skeleton className="h-16 w-full mb-8 rounded-xl" />
+        <Skeleton className="mb-6 h-12 w-64" />
+        <Skeleton className="mb-8 h-16 w-full rounded-xl" />
         <Skeleton className="h-96 w-full rounded-2xl" />
       </div>
     );
@@ -78,9 +78,7 @@ const BookingPage = () => {
         </div>
 
         {/* Server-synced Hold Timer */}
-        {expiresAt && (
-          <HoldTimer expiresAt={expiresAt} onExpire={() => setSessionExpired(true)} />
-        )}
+        {expiresAt && <HoldTimer expiresAt={expiresAt} onExpire={() => setSessionExpired(true)} />}
 
         {/* Step Indicator */}
         <StepIndicator steps={BOOKING_STEPS} currentStep={step} />

@@ -112,9 +112,8 @@ export default function ActivityPage() {
       total: activities.length,
       unusual: unusualEvents,
       uniqueIps,
-      recent: activities.filter(
-        (act) => now - new Date(act.createdAt).getTime() < 86400000 * 2,
-      ).length,
+      recent: activities.filter((act) => now - new Date(act.createdAt).getTime() < 86400000 * 2)
+        .length,
     };
   }, [activities, now]);
 
@@ -274,8 +273,9 @@ export default function ActivityPage() {
                       <TableRow
                         key={act.id}
                         onClick={() => toggleRow(act.id)}
-                        className={`hover:bg-secondary/10 border-border cursor-pointer transition-colors ${isExpanded ? 'bg-secondary/5' : ''
-                          }`}
+                        className={`hover:bg-secondary/10 border-border cursor-pointer transition-colors ${
+                          isExpanded ? 'bg-secondary/5' : ''
+                        }`}
                       >
                         <TableCell className="text-center font-medium">
                           {hasDetails ? (
@@ -384,10 +384,11 @@ export default function ActivityPage() {
                                           return (
                                             <div
                                               key={key}
-                                              className={`flex flex-col gap-1 border-b border-emerald-50/50 py-1 last:border-0 sm:flex-row ${isChanged
-                                                ? '-mx-2 rounded bg-emerald-100/30 px-2 font-bold'
-                                                : ''
-                                                }`}
+                                              className={`flex flex-col gap-1 border-b border-emerald-50/50 py-1 last:border-0 sm:flex-row ${
+                                                isChanged
+                                                  ? '-mx-2 rounded bg-emerald-100/30 px-2 font-bold'
+                                                  : ''
+                                              }`}
                                             >
                                               <span className="font-bold text-emerald-800">
                                                 {key}:

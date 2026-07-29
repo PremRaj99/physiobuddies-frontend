@@ -264,7 +264,9 @@ export default function TherapistDashboard() {
                   <p className="text-muted-foreground mb-1 text-xs font-bold tracking-wider uppercase">
                     Monthly Net Revenue
                   </p>
-                  <h3 className="text-3xl font-bold text-[#012a4a]">₹{monthlyRevenue.toLocaleString()}</h3>
+                  <h3 className="text-3xl font-bold text-[#012a4a]">
+                    ₹{monthlyRevenue.toLocaleString()}
+                  </h3>
                   <p className="text-muted-foreground mt-2 text-xs">Net earnings</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
