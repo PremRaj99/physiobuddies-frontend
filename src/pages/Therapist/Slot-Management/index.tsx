@@ -1,5 +1,3 @@
-'use client';
-
 import { Save } from 'lucide-react';
 
 import PageHeader from '@/components/custom/page-header/page-header';

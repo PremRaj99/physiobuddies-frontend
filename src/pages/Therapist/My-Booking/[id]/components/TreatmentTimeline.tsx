@@ -1,4 +1,4 @@
-import { CalendarClock, CalendarDays, Clock, FilePlus, PlayCircle } from 'lucide-react';
+import { CalendarClock, CalendarDays, Clock, PlayCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,7 +32,6 @@ export const TreatmentTimeline = ({
   handleAccept,
   handleStartSessionOtp,
   handleEndSessionAction,
-  openAddDocsModal,
   openRescheduleModal,
 }: TreatmentTimelineProps) => {
   return (
