@@ -216,7 +216,9 @@ export default function TherapistList() {
               <h2 className="text-3xl font-bold tracking-tight text-[#012a4a]">Verified Clinics</h2>
             </div>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {clinicData.map((clinic, idx) => <ClinicCard key={idx} {...clinic} />)}
+              {clinicData.map((clinic, idx) => (
+                <ClinicCard key={idx} {...clinic} />
+              ))}
             </div>
           </section>
         </main>

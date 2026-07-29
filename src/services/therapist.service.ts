@@ -98,10 +98,9 @@ export const getTherapistReviews = async (
   id: string,
   params?: { page?: number; limit?: number },
 ): Promise<ApiResponse<TherapistReviewItem[]>> => {
-  const { data } = await axios.get<ApiResponse<TherapistReviewItem[]>>(
-    `/therapist/${id}/reviews`,
-    { params },
-  );
+  const { data } = await axios.get<ApiResponse<TherapistReviewItem[]>>(`/therapist/${id}/reviews`, {
+    params,
+  });
   return data;
 };
 
@@ -129,9 +128,7 @@ export const getTherapistFaqsById = async (
 export const getTherapistAvailability = async (
   id: string,
 ): Promise<ApiResponse<AvailabilityDay[]>> => {
-  const { data } = await axios.get<ApiResponse<AvailabilityDay[]>>(
-    `/therapist/${id}/availability`,
-  );
+  const { data } = await axios.get<ApiResponse<AvailabilityDay[]>>(`/therapist/${id}/availability`);
   return data;
 };
 
@@ -298,7 +295,9 @@ export const getTherapistBookings = async (): Promise<ApiResponse<TherapistBooki
   return data;
 };
 
-export const getTherapistBookingById = async (id: string): Promise<ApiResponse<TherapistBookingDetail>> => {
+export const getTherapistBookingById = async (
+  id: string,
+): Promise<ApiResponse<TherapistBookingDetail>> => {
   const { data } = await axios.get<ApiResponse<TherapistBookingDetail>>(
     `/therapist/sessions/my-bookings/${id}`,
   );

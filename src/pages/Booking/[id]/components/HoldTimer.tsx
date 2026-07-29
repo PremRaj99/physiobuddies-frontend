@@ -52,8 +52,8 @@ export const HoldTimer: React.FC<HoldTimerProps> = ({ expiresAt, onExpire }) => 
         <span>Your slot is held while you complete booking & payment.</span>
       </div>
       <div
-        className={`flex items-center gap-2 rounded-lg px-3 py-1.5 font-semibold text-sm transition-colors ${
-          isUrgent ? 'bg-red-50 text-red-600 animate-pulse' : 'bg-[#a9d6e5]/20 text-[#014f86]'
+        className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
+          isUrgent ? 'animate-pulse bg-red-50 text-red-600' : 'bg-[#a9d6e5]/20 text-[#014f86]'
         }`}
       >
         <Clock className="h-4 w-4" />

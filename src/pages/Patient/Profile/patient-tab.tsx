@@ -1,5 +1,16 @@
 import { motion } from 'framer-motion';
-import { Calendar, ChevronLeft, Edit2, Phone, Plus, Save, Trash2, User, Ruler, Weight } from 'lucide-react';
+import {
+  Calendar,
+  ChevronLeft,
+  Edit2,
+  Phone,
+  Plus,
+  Save,
+  Trash2,
+  User,
+  Ruler,
+  Weight,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -110,7 +121,10 @@ export const PatientsTab = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[#012a4a]">Height (cm) <span className="text-muted-foreground font-normal">(Optional)</span></Label>
+                  <Label className="text-[#012a4a]">
+                    Height (cm){' '}
+                    <span className="text-muted-foreground font-normal">(Optional)</span>
+                  </Label>
                   <Input
                     type="number"
                     placeholder="e.g. 175"
@@ -124,7 +138,10 @@ export const PatientsTab = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[#012a4a]">Weight (kg) <span className="text-muted-foreground font-normal">(Optional)</span></Label>
+                  <Label className="text-[#012a4a]">
+                    Weight (kg){' '}
+                    <span className="text-muted-foreground font-normal">(Optional)</span>
+                  </Label>
                   <Input
                     type="number"
                     placeholder="e.g. 70"

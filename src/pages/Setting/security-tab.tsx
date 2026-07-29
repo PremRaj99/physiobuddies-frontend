@@ -39,7 +39,7 @@ export const SecurityTab = () => {
         onSuccess: () => setStep('verify'),
         onError: (e: unknown) => {
           const err = e as { response?: { data?: { message?: string } } };
-          setError(err.response?.data?.message || 'Could not send the OTP. Please try again.')
+          setError(err.response?.data?.message || 'Could not send the OTP. Please try again.');
         },
       },
     );
@@ -105,11 +105,7 @@ export const SecurityTab = () => {
                     <Label className="text-[#012a4a]">Registered Email</Label>
                     <div className="relative">
                       <Mail className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
-                      <Input
-                        value={email}
-                        disabled
-                        className="border-gray-200 bg-gray-50 pl-9"
-                      />
+                      <Input value={email} disabled className="border-gray-200 bg-gray-50 pl-9" />
                     </div>
                   </div>
                   {error && <p className="text-destructive text-sm">{error}</p>}

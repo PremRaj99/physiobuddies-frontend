@@ -42,7 +42,8 @@ export const BookMoreModal = ({
         <DialogHeader>
           <DialogTitle className="text-[#012a4a]">Book Follow-Up Session</DialogTitle>
           <DialogDescription>
-            Add a follow-up session to your existing treatment plan according to clinical recommendations.
+            Add a follow-up session to your existing treatment plan according to clinical
+            recommendations.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">

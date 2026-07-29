@@ -101,10 +101,7 @@ export default function BookingDetailPage() {
 
             {/* Treatment Sessions Timeline */}
             <motion.div variants={itemVariants}>
-              <TreatmentSessionsList
-                sessions={data.sessions}
-                onCancelRequest={openCancelModal}
-              />
+              <TreatmentSessionsList sessions={data.sessions} onCancelRequest={openCancelModal} />
             </motion.div>
 
             {/* Documents & Assessments */}

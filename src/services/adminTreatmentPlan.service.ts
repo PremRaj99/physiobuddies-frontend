@@ -37,14 +37,19 @@ export interface AdminTreatmentPlanDetail {
   [key: string]: unknown;
 }
 
-export const getAdminTreatmentPlans = async (): Promise<ApiResponse<AdminTreatmentPlanListItem[]>> => {
-  const { data } = await axios.get<ApiResponse<AdminTreatmentPlanListItem[]>>('/admin/treatment-plan');
+export const getAdminTreatmentPlans = async (): Promise<
+  ApiResponse<AdminTreatmentPlanListItem[]>
+> => {
+  const { data } =
+    await axios.get<ApiResponse<AdminTreatmentPlanListItem[]>>('/admin/treatment-plan');
   return data;
 };
 
 export const getAdminTreatmentPlanById = async (
   id: string,
 ): Promise<ApiResponse<AdminTreatmentPlanDetail>> => {
-  const { data } = await axios.get<ApiResponse<AdminTreatmentPlanDetail>>(`/admin/treatment-plan/${id}`);
+  const { data } = await axios.get<ApiResponse<AdminTreatmentPlanDetail>>(
+    `/admin/treatment-plan/${id}`,
+  );
   return data;
 };

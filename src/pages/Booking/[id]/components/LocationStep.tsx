@@ -96,7 +96,7 @@ export const LocationStep: React.FC<LocationStepProps> = ({
   const [showNewForm, setShowNewForm] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number }>({
     lat: 28.6139,
-    lng: 77.2090, // Default to New Delhi, India
+    lng: 77.209, // Default to New Delhi, India
   });
   const createLocation = useCreatePatientLocation();
   const { register, handleSubmit, reset, formState } = useForm<NewLocationForm>({
@@ -131,13 +131,21 @@ export const LocationStep: React.FC<LocationStepProps> = ({
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+    >
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-[#012a4a]">Treatment Location</h2>
           <p className="text-muted-foreground">Where should the therapist visit?</p>
         </div>
-        <Button variant="outline" className="border-[#014f86] text-[#014f86]" onClick={() => setShowNewForm(!showNewForm)}>
+        <Button
+          variant="outline"
+          className="border-[#014f86] text-[#014f86]"
+          onClick={() => setShowNewForm(!showNewForm)}
+        >
           <Plus className="mr-2 h-4 w-4" /> New Location
         </Button>
       </div>
@@ -152,17 +160,29 @@ export const LocationStep: React.FC<LocationStepProps> = ({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="address">Street Address</Label>
-                  <Input id="address" placeholder="House/Flat No., Building, Street Name" {...register('address', { required: true })} />
+                  <Input
+                    id="address"
+                    placeholder="House/Flat No., Building, Street Name"
+                    {...register('address', { required: true })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="landmark">Landmark</Label>
-                  <Input id="landmark" placeholder="Near metro station, park, etc." {...register('landmark', { required: true })} />
+                  <Input
+                    id="landmark"
+                    placeholder="Near metro station, park, etc."
+                    {...register('landmark', { required: true })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
-                  <Input id="city" placeholder="e.g. New Delhi" {...register('city', { required: true })} />
+                  <Input
+                    id="city"
+                    placeholder="e.g. New Delhi"
+                    {...register('city', { required: true })}
+                  />
                 </div>
-                
+
                 {/* State Selection with 28 States & 8 Union Territories */}
                 <div className="space-y-2">
                   <Label htmlFor="state">State / Union Territory</Label>
@@ -183,7 +203,11 @@ export const LocationStep: React.FC<LocationStepProps> = ({
 
                 <div className="space-y-2">
                   <Label htmlFor="zip">Postal Code</Label>
-                  <Input id="zip" placeholder="e.g. 110001" {...register('postalCode', { required: true })} />
+                  <Input
+                    id="zip"
+                    placeholder="e.g. 110001"
+                    {...register('postalCode', { required: true })}
+                  />
                 </div>
 
                 {/* Country Selection */}
@@ -209,8 +233,14 @@ export const LocationStep: React.FC<LocationStepProps> = ({
               <LocationPickerMap coords={coords} onChange={setCoords} />
 
               <div className="mt-4 flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={() => setShowNewForm(false)}>Cancel</Button>
-                <Button type="submit" className="bg-[#014f86] hover:bg-[#013a63]" disabled={createLocation.isPending || !formState.isValid}>
+                <Button type="button" variant="ghost" onClick={() => setShowNewForm(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-[#014f86] hover:bg-[#013a63]"
+                  disabled={createLocation.isPending || !formState.isValid}
+                >
                   {createLocation.isPending ? 'Saving...' : 'Save Address'}
                 </Button>
               </div>
@@ -231,7 +261,12 @@ export const LocationStep: React.FC<LocationStepProps> = ({
           {locations.map((l) => (
             <Card
               key={l.id}
-              className={cn(`cursor-pointer py-0 transition-all`, selectedId === l.id ? 'border-[#014f86] bg-[#014f86]/5 ring-1 ring-[#014f86]' : 'hover:border-[#a9d6e5]')}
+              className={cn(
+                `cursor-pointer py-0 transition-all`,
+                selectedId === l.id
+                  ? 'border-[#014f86] bg-[#014f86]/5 ring-1 ring-[#014f86]'
+                  : 'hover:border-[#a9d6e5]',
+              )}
               onClick={() => onSelect(l.id)}
             >
               <CardContent className="flex items-start gap-4 p-4">
@@ -240,8 +275,12 @@ export const LocationStep: React.FC<LocationStepProps> = ({
                 </div>
                 <div>
                   <h4 className="font-bold text-[#012a4a]">{l.address}</h4>
-                  <p className="text-muted-foreground text-sm">{l.city}, {l.state} {l.postalCode}, {l.country}</p>
-                  {l.landmark && <p className="text-muted-foreground mt-1 text-xs">Landmark: {l.landmark}</p>}
+                  <p className="text-muted-foreground text-sm">
+                    {l.city}, {l.state} {l.postalCode}, {l.country}
+                  </p>
+                  {l.landmark && (
+                    <p className="text-muted-foreground mt-1 text-xs">Landmark: {l.landmark}</p>
+                  )}
                 </div>
                 {selectedId === l.id && <CheckCircle2 className="ml-auto h-5 w-5 text-[#014f86]" />}
               </CardContent>
@@ -254,11 +293,15 @@ export const LocationStep: React.FC<LocationStepProps> = ({
         <Button variant="outline" onClick={onBack}>
           <ChevronLeft className="mr-2 h-4 w-4" /> Back
         </Button>
-        <Button size="lg" className="bg-[#014f86] hover:bg-[#013a63]" disabled={!selectedId || showNewForm} onClick={onNext}>
+        <Button
+          size="lg"
+          className="bg-[#014f86] hover:bg-[#013a63]"
+          disabled={!selectedId || showNewForm}
+          onClick={onNext}
+        >
           Condition Details <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </motion.div>
   );
 };
-

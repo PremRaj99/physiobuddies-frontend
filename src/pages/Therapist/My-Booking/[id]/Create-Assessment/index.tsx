@@ -298,7 +298,9 @@ export default function CreateAssessmentPage() {
     } catch (err: unknown) {
       setIsSubmitting(false);
       const error = err as { response?: { data?: { message?: string } }; message?: string };
-      toast.error(error?.response?.data?.message || error?.message || 'Failed to submit assessment');
+      toast.error(
+        error?.response?.data?.message || error?.message || 'Failed to submit assessment',
+      );
     }
   };
 

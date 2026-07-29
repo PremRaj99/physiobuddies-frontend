@@ -58,18 +58,26 @@ export const PatientStep: React.FC<PatientStepProps> = ({
       setShowNewForm(false);
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || "Could not add patient.");
+      toast.error(err.response?.data?.message || 'Could not add patient.');
     }
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+    >
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-[#012a4a]">Select Patient</h2>
           <p className="text-muted-foreground">Who is this booking for?</p>
         </div>
-        <Button variant="outline" className="border-[#014f86] text-[#014f86]" onClick={() => setShowNewForm(!showNewForm)}>
+        <Button
+          variant="outline"
+          className="border-[#014f86] text-[#014f86]"
+          onClick={() => setShowNewForm(!showNewForm)}
+        >
           <Plus className="mr-2 h-4 w-4" /> New Patient
         </Button>
       </div>
@@ -84,7 +92,11 @@ export const PatientStep: React.FC<PatientStepProps> = ({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" placeholder="Enter patient name" {...register('name', { required: true, minLength: 3 })} />
+                  <Input
+                    id="name"
+                    placeholder="Enter patient name"
+                    {...register('name', { required: true, minLength: 3 })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="dob">Date of Birth</Label>
@@ -92,31 +104,63 @@ export const PatientStep: React.FC<PatientStepProps> = ({
                 </div>
                 <div className="space-y-2">
                   <Label>Gender</Label>
-                  <RadioGroup value={genderValue} onValueChange={(v) => setValue('gender', v as NewPatientForm['gender'])} className="flex gap-4">
+                  <RadioGroup
+                    value={genderValue}
+                    onValueChange={(v) => setValue('gender', v as NewPatientForm['gender'])}
+                    className="flex gap-4"
+                  >
                     {(['male', 'female', 'other'] as const).map((g) => (
                       <div key={g} className="flex items-center space-x-2">
                         <RadioGroupItem value={g} id={`r-${g}`} />
-                        <Label htmlFor={`r-${g}`} className="capitalize">{g}</Label>
+                        <Label htmlFor={`r-${g}`} className="capitalize">
+                          {g}
+                        </Label>
                       </div>
                     ))}
                   </RadioGroup>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" placeholder="10-digit number" {...register('phone', { required: true })} />
+                  <Input
+                    id="phone"
+                    placeholder="10-digit number"
+                    {...register('phone', { required: true })}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="heightCm">Height (cm) <span className="text-muted-foreground text-xs font-normal">(Optional)</span></Label>
-                  <Input id="heightCm" type="number" placeholder="e.g. 175" {...register('heightCm', { valueAsNumber: true })} />
+                  <Label htmlFor="heightCm">
+                    Height (cm){' '}
+                    <span className="text-muted-foreground text-xs font-normal">(Optional)</span>
+                  </Label>
+                  <Input
+                    id="heightCm"
+                    type="number"
+                    placeholder="e.g. 175"
+                    {...register('heightCm', { valueAsNumber: true })}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="weightKg">Weight (kg) <span className="text-muted-foreground text-xs font-normal">(Optional)</span></Label>
-                  <Input id="weightKg" type="number" placeholder="e.g. 70" {...register('weightKg', { valueAsNumber: true })} />
+                  <Label htmlFor="weightKg">
+                    Weight (kg){' '}
+                    <span className="text-muted-foreground text-xs font-normal">(Optional)</span>
+                  </Label>
+                  <Input
+                    id="weightKg"
+                    type="number"
+                    placeholder="e.g. 70"
+                    {...register('weightKg', { valueAsNumber: true })}
+                  />
                 </div>
               </div>
               <div className="mt-4 flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={() => setShowNewForm(false)}>Cancel</Button>
-                <Button type="submit" className="bg-[#014f86] hover:bg-[#013a63]" disabled={createPatient.isPending || !formState.isValid}>
+                <Button type="button" variant="ghost" onClick={() => setShowNewForm(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-[#014f86] hover:bg-[#013a63]"
+                  disabled={createPatient.isPending || !formState.isValid}
+                >
                   {createPatient.isPending ? 'Saving...' : 'Save Patient'}
                 </Button>
               </div>
@@ -137,7 +181,12 @@ export const PatientStep: React.FC<PatientStepProps> = ({
           {patients.map((p) => (
             <Card
               key={p.id}
-              className={cn(`cursor-pointer py-0 transition-all`, selectedId === p.id ? 'border-[#014f86] bg-[#014f86]/5 ring-1 ring-[#014f86]' : 'hover:border-[#a9d6e5]')}
+              className={cn(
+                `cursor-pointer py-0 transition-all`,
+                selectedId === p.id
+                  ? 'border-[#014f86] bg-[#014f86]/5 ring-1 ring-[#014f86]'
+                  : 'hover:border-[#a9d6e5]',
+              )}
               onClick={() => onSelect(p.id)}
             >
               <CardContent className="flex items-start gap-4 p-4">
@@ -165,7 +214,9 @@ export const PatientStep: React.FC<PatientStepProps> = ({
                   </div>
                   <p className="text-muted-foreground mt-1 text-sm">{p.phone}</p>
                 </div>
-                {selectedId === p.id && <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-[#014f86]" />}
+                {selectedId === p.id && (
+                  <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-[#014f86]" />
+                )}
               </CardContent>
             </Card>
           ))}
@@ -173,7 +224,12 @@ export const PatientStep: React.FC<PatientStepProps> = ({
       )}
 
       <div className="flex justify-end">
-        <Button size="lg" className="bg-[#014f86] hover:bg-[#013a63]" disabled={!selectedId || showNewForm} onClick={onNext}>
+        <Button
+          size="lg"
+          className="bg-[#014f86] hover:bg-[#013a63]"
+          disabled={!selectedId || showNewForm}
+          onClick={onNext}
+        >
           Continue to Location <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </div>

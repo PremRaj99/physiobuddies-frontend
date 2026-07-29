@@ -25,7 +25,11 @@ export const ConditionStep: React.FC<ConditionStepProps> = ({
   onBack,
   onNext,
 }) => (
-  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+  <motion.div
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -20 }}
+  >
     <h2 className="mb-2 text-2xl font-bold text-[#012a4a]">Your Condition</h2>
     <p className="text-muted-foreground mb-6">What are you seeking treatment for?</p>
 
@@ -36,7 +40,9 @@ export const ConditionStep: React.FC<ConditionStepProps> = ({
           onClick={() => onSelectCondition(c.id)}
           className={cn(
             'relative overflow-hidden rounded-2xl border-2 text-left transition-all',
-            selectedConditionId === c.id ? 'border-[#014f86] ring-2 ring-[#014f86]/30' : 'border-transparent hover:border-[#a9d6e5]',
+            selectedConditionId === c.id
+              ? 'border-[#014f86] ring-2 ring-[#014f86]/30'
+              : 'border-transparent hover:border-[#a9d6e5]',
           )}
         >
           <img src={c.image} alt={c.title} className="h-24 w-full object-cover" />
@@ -69,7 +75,12 @@ export const ConditionStep: React.FC<ConditionStepProps> = ({
       <Button variant="outline" onClick={onBack}>
         <ChevronLeft className="mr-2 h-4 w-4" /> Back
       </Button>
-      <Button size="lg" className="bg-[#014f86] hover:bg-[#013a63]" disabled={!selectedConditionId} onClick={onNext}>
+      <Button
+        size="lg"
+        className="bg-[#014f86] hover:bg-[#013a63]"
+        disabled={!selectedConditionId}
+        onClick={onNext}
+      >
         Review & Pay <ChevronRight className="ml-2 h-4 w-4" />
       </Button>
     </div>

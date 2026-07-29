@@ -107,17 +107,24 @@ export interface TreatmentSession {
   };
 }
 
-export const getTreatmentSession = async (sessionId: string): Promise<ApiResponse<TreatmentSession>> => {
-  const { data } = await axios.get<ApiResponse<TreatmentSession>>(`/treatment-session/${sessionId}`);
+export const getTreatmentSession = async (
+  sessionId: string,
+): Promise<ApiResponse<TreatmentSession>> => {
+  const { data } = await axios.get<ApiResponse<TreatmentSession>>(
+    `/treatment-session/${sessionId}`,
+  );
   return data;
 };
 
 export const confirmBookingSession = async (
   sessionId: string,
 ): Promise<ApiResponse<{ message: string }>> => {
-  const { data } = await axios.post<ApiResponse<{ message: string }>>('/treatment-session/confirm', {
-    sessionId,
-  });
+  const { data } = await axios.post<ApiResponse<{ message: string }>>(
+    '/treatment-session/confirm',
+    {
+      sessionId,
+    },
+  );
   return data;
 };
 

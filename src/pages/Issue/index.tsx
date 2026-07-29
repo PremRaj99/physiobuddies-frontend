@@ -196,7 +196,9 @@ export default function SupportIssuesPage() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="Billing Issue">Billing & Payments</SelectItem>
-                              <SelectItem value="Technical Support">App/Technical Support</SelectItem>
+                              <SelectItem value="Technical Support">
+                                App/Technical Support
+                              </SelectItem>
                               <SelectItem value="Therapist Feedback">Therapist Feedback</SelectItem>
                               <SelectItem value="Rescheduling">Booking & Rescheduling</SelectItem>
                               <SelectItem value="Other">Other</SelectItem>
@@ -346,10 +348,11 @@ export default function SupportIssuesPage() {
 
                           <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
                             <div
-                              className={`rounded-2xl p-4 ${isUser
+                              className={`rounded-2xl p-4 ${
+                                isUser
                                   ? 'rounded-tr-sm bg-[#014f86] text-white'
                                   : 'border-border rounded-tl-sm border bg-gray-100 text-[#012a4a]'
-                                }`}
+                              }`}
                             >
                               <p className="text-sm leading-relaxed whitespace-pre-wrap">
                                 {msg.message}

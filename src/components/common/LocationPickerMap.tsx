@@ -50,7 +50,8 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
 
       // OpenStreetMap Free Tile Layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
       }).addTo(map);
 
@@ -122,7 +123,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
         setIsLocating(false);
         toast.error(`Unable to retrieve location: ${error.message}`);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 10000 },
     );
   };
 
@@ -131,7 +132,9 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <MapPin className="h-5 w-5 text-[#014f86]" />
-          <span className="font-semibold text-sm text-[#012a4a]">Interactive Map Location Picker (Leaflet)</span>
+          <span className="text-sm font-semibold text-[#012a4a]">
+            Interactive Map Location Picker (Leaflet)
+          </span>
         </div>
         <Button
           type="button"
@@ -147,33 +150,37 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({ coords, on
       </div>
 
       <div className="relative h-64 w-full overflow-hidden rounded-md border border-gray-200 shadow-inner">
-        <div ref={mapContainerRef} className="h-full w-full z-0" />
-        <div className="absolute top-2 right-2 z-1000 rounded-md bg-white/90 px-3 py-1 text-xs font-mono shadow text-[#012a4a]">
+        <div ref={mapContainerRef} className="z-0 h-full w-full" />
+        <div className="absolute top-2 right-2 z-1000 rounded-md bg-white/90 px-3 py-1 font-mono text-xs text-[#012a4a] shadow">
           Click map or drag pin
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 pt-1">
         <div>
-          <Label htmlFor="lat-input" className="text-xs text-muted-foreground">Latitude</Label>
+          <Label htmlFor="lat-input" className="text-muted-foreground text-xs">
+            Latitude
+          </Label>
           <Input
             id="lat-input"
             type="number"
             step="any"
             value={coords.lat}
             onChange={(e) => onChange({ ...coords, lat: parseFloat(e.target.value) || 0 })}
-            className="h-8 text-xs font-mono"
+            className="h-8 font-mono text-xs"
           />
         </div>
         <div>
-          <Label htmlFor="lng-input" className="text-xs text-muted-foreground">Longitude</Label>
+          <Label htmlFor="lng-input" className="text-muted-foreground text-xs">
+            Longitude
+          </Label>
           <Input
             id="lng-input"
             type="number"
             step="any"
             value={coords.lng}
             onChange={(e) => onChange({ ...coords, lng: parseFloat(e.target.value) || 0 })}
-            className="h-8 text-xs font-mono"
+            className="h-8 font-mono text-xs"
           />
         </div>
       </div>

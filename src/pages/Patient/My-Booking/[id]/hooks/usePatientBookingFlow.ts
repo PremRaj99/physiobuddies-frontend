@@ -105,7 +105,10 @@ export const usePatientBookingFlow = () => {
     condition: { title: liveSession?.condition || 'Physiotherapy Treatment' },
     problemDescription: liveSession?.DescribedAs || 'No description provided.',
     location: {
-      address: liveSession?.reservation?.address || liveSession?.location?.address || 'Address not provided',
+      address:
+        liveSession?.reservation?.address ||
+        liveSession?.location?.address ||
+        'Address not provided',
       landmark: liveSession?.reservation?.landmark || liveSession?.location?.landmark || null,
       city: liveSession?.reservation?.city || liveSession?.location?.city || '',
       state: liveSession?.reservation?.state || liveSession?.location?.state || '',
@@ -118,38 +121,38 @@ export const usePatientBookingFlow = () => {
     },
     sessions: liveSession
       ? (() => {
-        const sessionDate = liveSession.date || liveSession.startAt;
-        return [
-          {
-            id: liveSession.id,
-            date: sessionDate
-              ? new Date(sessionDate).toLocaleDateString('en-US', {
-                month: 'short',
-                day: '2-digit',
-                year: 'numeric',
-              })
-              : 'N/A',
-            scheduledTime: `${liveSession.startHour || 10}:00 AM - ${(liveSession.startHour || 10) + 1}:00 AM`,
-            actualStartTime: liveSession.actualStartTime
-              ? new Date(liveSession.actualStartTime).toLocaleTimeString()
-              : undefined,
-            actualEndTime: liveSession.actualEndTime
-              ? new Date(liveSession.actualEndTime).toLocaleTimeString()
-              : undefined,
-            status: (liveSession.status?.toLowerCase() as SessionStatus) || 'pending',
-          },
-        ];
-      })()
+          const sessionDate = liveSession.date || liveSession.startAt;
+          return [
+            {
+              id: liveSession.id,
+              date: sessionDate
+                ? new Date(sessionDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric',
+                  })
+                : 'N/A',
+              scheduledTime: `${liveSession.startHour || 10}:00 AM - ${(liveSession.startHour || 10) + 1}:00 AM`,
+              actualStartTime: liveSession.actualStartTime
+                ? new Date(liveSession.actualStartTime).toLocaleTimeString()
+                : undefined,
+              actualEndTime: liveSession.actualEndTime
+                ? new Date(liveSession.actualEndTime).toLocaleTimeString()
+                : undefined,
+              status: (liveSession.status?.toLowerCase() as SessionStatus) || 'pending',
+            },
+          ];
+        })()
       : [],
     documents: liveSession?.treatmentPlan?.docRecords
       ? liveSession.treatmentPlan.docRecords.map(
-        (d: { id: string; name: string; fileType?: string; createdAt: string }) => ({
-          id: d.id,
-          title: d.name,
-          type: d.fileType || 'Medical Report',
-          date: new Date(d.createdAt).toLocaleDateString(),
-        })
-      )
+          (d: { id: string; name: string; fileType?: string; createdAt: string }) => ({
+            id: d.id,
+            title: d.name,
+            type: d.fileType || 'Medical Report',
+            date: new Date(d.createdAt).toLocaleDateString(),
+          }),
+        )
       : [],
   };
 

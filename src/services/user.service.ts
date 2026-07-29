@@ -60,9 +60,7 @@ export interface UpdateUserInfoPayload {
   mobile?: string;
 }
 
-export const updateUserInfo = async (
-  payload: UpdateUserInfoPayload,
-): Promise<ApiResponse> => {
+export const updateUserInfo = async (payload: UpdateUserInfoPayload): Promise<ApiResponse> => {
   const { data } = await axios.patch<ApiResponse>('/user', payload);
   return data;
 };

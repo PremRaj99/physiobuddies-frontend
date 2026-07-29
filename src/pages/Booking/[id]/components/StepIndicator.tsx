@@ -39,7 +39,12 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={cn('h-0.5 flex-1 transition-colors', done ? 'bg-[#014f86]' : 'bg-gray-200')} />
+              <div
+                className={cn(
+                  'h-0.5 flex-1 transition-colors',
+                  done ? 'bg-[#014f86]' : 'bg-gray-200',
+                )}
+              />
             )}
           </React.Fragment>
         );

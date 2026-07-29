@@ -17,7 +17,11 @@ const formatLastActive = (iso: string | null): string => {
   if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
   const days = Math.floor(hours / 24);
   if (days < 30) return `${days} day${days === 1 ? '' : 's'} ago`;
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 };
 
 interface ParsedAgent {

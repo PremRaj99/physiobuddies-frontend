@@ -226,7 +226,7 @@ export default function PatientBookingListPage() {
                   <motion.div key={booking.id} variants={itemVariants}>
                     <Card
                       onClick={() => navigate(`/patient/my-bookings/${booking.id}`)}
-                      className="border-border group overflow-hidden py-0 transition-all duration-300 hover:border-[#a9d6e5] hover:shadow-md cursor-pointer"
+                      className="border-border group cursor-pointer overflow-hidden py-0 transition-all duration-300 hover:border-[#a9d6e5] hover:shadow-md"
                     >
                       <CardContent className="p-0">
                         <div className="flex flex-col md:flex-row">
@@ -235,7 +235,9 @@ export default function PatientBookingListPage() {
                             <Avatar className="h-16 w-16 border-2 border-white shadow-sm">
                               <AvatarImage src={booking.therapistImage} className="object-cover" />
                               <AvatarFallback className="bg-[#a9d6e5] text-xl font-bold text-[#013a63]">
-                                {booking.therapistName ? booking.therapistName.replace('Dr. ', '').charAt(0) : 'T'}
+                                {booking.therapistName
+                                  ? booking.therapistName.replace('Dr. ', '').charAt(0)
+                                  : 'T'}
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -243,7 +245,10 @@ export default function PatientBookingListPage() {
                                 {booking.therapistName}
                               </h3>
                               <p className="text-muted-foreground mt-0.5 text-sm capitalize">
-                                {booking.therapistGender ? booking.therapistGender.toLowerCase() : 'male'} • Therapist
+                                {booking.therapistGender
+                                  ? booking.therapistGender.toLowerCase()
+                                  : 'male'}{' '}
+                                • Therapist
                               </p>
                             </div>
                           </div>

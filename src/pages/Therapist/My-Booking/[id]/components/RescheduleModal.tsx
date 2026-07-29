@@ -77,11 +77,7 @@ export const RescheduleModal = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button
-            onClick={onSubmit}
-            disabled={isRescheduling}
-            className="bg-[#014f86] text-white"
-          >
+          <Button onClick={onSubmit} disabled={isRescheduling} className="bg-[#014f86] text-white">
             {isRescheduling ? 'Rescheduling...' : 'Confirm Reschedule'}
           </Button>
         </DialogFooter>

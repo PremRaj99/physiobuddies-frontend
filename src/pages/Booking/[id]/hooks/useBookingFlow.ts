@@ -27,7 +27,11 @@ export const useBookingFlow = () => {
 
   const [manualExpired, setManualExpired] = useState(false);
 
-  const { data: sessionResponse, isLoading: sessionLoading, error: sessionError } = useBookingSession(sessionId);
+  const {
+    data: sessionResponse,
+    isLoading: sessionLoading,
+    error: sessionError,
+  } = useBookingSession(sessionId);
   const { data: patientDetails = [], isLoading: patientsLoading } = usePatientDetails();
   const { data: patientLocations = [], isLoading: locationsLoading } = usePatientLocations();
 
@@ -51,9 +55,11 @@ export const useBookingFlow = () => {
     restoredRef.current = true;
     queueMicrotask(() => {
       if (sessionData.step) setStepState(sessionData.step);
-      if (sessionData.formData?.patientDetailId) setSelectedPatientId(sessionData.formData.patientDetailId);
+      if (sessionData.formData?.patientDetailId)
+        setSelectedPatientId(sessionData.formData.patientDetailId);
       if (sessionData.formData?.locationId) setSelectedLocationId(sessionData.formData.locationId);
-      if (sessionData.formData?.conditionId) setSelectedConditionId(sessionData.formData.conditionId);
+      if (sessionData.formData?.conditionId)
+        setSelectedConditionId(sessionData.formData.conditionId);
       if (sessionData.formData?.problemDesc) setProblemDesc(sessionData.formData.problemDesc);
     });
   }, [sessionData, navigate]);
@@ -177,7 +183,8 @@ export const useBookingFlow = () => {
       navigate('/patient/my-bookings');
     } catch (e: unknown) {
       const err = e as { message?: string; response?: { data?: { message?: string } } };
-      const errorMessage = err.response?.data?.message || err.message || 'Payment failed. Please try again.';
+      const errorMessage =
+        err.response?.data?.message || err.message || 'Payment failed. Please try again.';
       toast.error(errorMessage);
     }
   };

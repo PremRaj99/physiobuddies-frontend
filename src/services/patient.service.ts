@@ -7,8 +7,8 @@ export interface PatientDetail {
   dob: string;
   gender: 'male' | 'female' | 'other';
   phone: string;
-  heightCm?: number
-  weightKg?: number
+  heightCm?: number;
+  weightKg?: number;
 }
 
 export interface CreatePatientDetailPayload {
@@ -16,8 +16,8 @@ export interface CreatePatientDetailPayload {
   dob: string; // ISO / yyyy-mm-dd
   gender: 'male' | 'female' | 'other';
   phone: string;
-  heightCm?: number
-  weightKg?: number
+  heightCm?: number;
+  weightKg?: number;
 }
 
 export interface PatientLocationItem {

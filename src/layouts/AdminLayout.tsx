@@ -99,8 +99,8 @@ function AdminShell() {
 
   return (
     <SidebarProvider>
-      <Sidebar variant="inset" collapsible="icon" className="border-r border-border bg-white">
-        <SidebarHeader className="border-b border-border px-4 py-4">
+      <Sidebar variant="inset" collapsible="icon" className="border-border border-r bg-white">
+        <SidebarHeader className="border-border border-b px-4 py-4">
           <NavLink to="/admin/dashboard" className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#014f86] text-white">
               <Stethoscope className="h-5 w-5" />
@@ -135,11 +135,11 @@ function AdminShell() {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="border-t border-border px-3 py-3">
+        <SidebarFooter className="border-border border-t px-3 py-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="hover:bg-[#a9d6e5]/40 flex w-full items-center gap-2.5 rounded-md p-2 text-left transition-colors group-data-[collapsible=icon]:justify-center">
-                <Avatar className="h-8 w-8 shrink-0 border border-border">
+              <button className="flex w-full items-center gap-2.5 rounded-md p-2 text-left transition-colors group-data-[collapsible=icon]:justify-center hover:bg-[#a9d6e5]/40">
+                <Avatar className="border-border h-8 w-8 shrink-0 border">
                   <AvatarFallback className="bg-[#014f86] text-xs font-semibold text-white">
                     {initials}
                   </AvatarFallback>
@@ -148,7 +148,7 @@ function AdminShell() {
                   <p className="truncate text-xs font-semibold text-[#012a4a]">
                     {user.name ?? 'Admin'}
                   </p>
-                  <p className="truncate text-[11px] text-muted-foreground">{user.email ?? ''}</p>
+                  <p className="text-muted-foreground truncate text-[11px]">{user.email ?? ''}</p>
                 </div>
               </button>
             </DropdownMenuTrigger>
@@ -156,7 +156,7 @@ function AdminShell() {
               <DropdownMenuLabel className="flex items-center gap-2">
                 <UserIcon className="h-4 w-4" /> {user.name ?? 'Admin'}
               </DropdownMenuLabel>
-              <p className="px-2 pb-1 text-xs text-muted-foreground">{user.email ?? ''}</p>
+              <p className="text-muted-foreground px-2 pb-1 text-xs">{user.email ?? ''}</p>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={handleLogout}
@@ -171,7 +171,7 @@ function AdminShell() {
       </Sidebar>
 
       <SidebarInset>
-        <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-border px-4 backdrop-blur md:px-6">
+        <header className="bg-background/95 supports-backdrop-filter:bg-background/60 border-border sticky top-0 z-40 flex h-16 items-center gap-3 border-b px-4 backdrop-blur md:px-6">
           <SidebarTrigger className="text-[#013a63]" />
           <h1 className="text-sm font-semibold text-[#012a4a] md:text-base">{pageTitle}</h1>
         </header>

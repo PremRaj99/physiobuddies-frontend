@@ -217,7 +217,9 @@ export const useTherapistBookingFlow = () => {
       await refetch();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } }; message?: string };
-      alert(error?.response?.data?.message || error?.message || 'Failed to submit improvement record');
+      alert(
+        error?.response?.data?.message || error?.message || 'Failed to submit improvement record',
+      );
     }
   };
 

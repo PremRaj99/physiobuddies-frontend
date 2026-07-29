@@ -222,7 +222,7 @@ export function useSlotManagement() {
 
   // Merge backend schedule with local user edits
   const schedule = useMemo(
-    () => ({ ...(backendSchedule), ...scheduleOverrides }),
+    () => ({ ...backendSchedule, ...scheduleOverrides }),
     [backendSchedule, scheduleOverrides],
   );
 

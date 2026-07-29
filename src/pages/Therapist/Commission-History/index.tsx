@@ -1,7 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Activity, CalendarDays, FileText, PieChart, Search, TrendingUp, Wallet } from 'lucide-react';
+import {
+  Activity,
+  CalendarDays,
+  FileText,
+  PieChart,
+  Search,
+  TrendingUp,
+  Wallet,
+} from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 import { Badge } from '@/components/ui/badge';
@@ -65,7 +73,9 @@ const CustomTooltip = ({
       <div className="border-border rounded-lg border bg-white p-3 shadow-lg">
         <p className="mb-2 font-bold text-[#012a4a]">Day {label}</p>
         <div className="space-y-1 text-sm">
-          <p className="font-semibold text-[#014f86]">Revenue: {formatCurrency(payload[0].value)}</p>
+          <p className="font-semibold text-[#014f86]">
+            Revenue: {formatCurrency(payload[0].value)}
+          </p>
           <p className="font-semibold text-[#a9d6e5] drop-shadow-sm">
             Commission: {formatCurrency(payload[1].value)}
           </p>
@@ -132,11 +142,7 @@ export default function CommissionHistoryPage() {
                     </SelectItem>
                   ) : (
                     months.map((m) => (
-                      <SelectItem
-                        key={m.key}
-                        value={m.key}
-                        className="font-medium text-[#012a4a]"
-                      >
+                      <SelectItem key={m.key} value={m.key} className="font-medium text-[#012a4a]">
                         {m.label}
                       </SelectItem>
                     ))
@@ -303,7 +309,10 @@ export default function CommissionHistoryPage() {
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <BarChart
+                      data={chartData}
+                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                       <XAxis
                         dataKey="day"
