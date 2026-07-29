@@ -168,7 +168,7 @@ export const CheckoutStep: React.FC<CheckoutStepProps> = ({
               {problemDesc && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Problem Description</span>
-                  <span className="font-medium max-w-[250px] truncate">{problemDesc}</span>
+                  <span className="font-medium max-w-62.5 truncate">{problemDesc}</span>
                 </div>
               )}
             </CardContent>

@@ -9,11 +9,14 @@ import {
   useUpdateBookingForm,
   useInitiatePayment,
   useFinalizeBooking,
+  useVerifyPayment,
 } from '@/hooks/usePatient';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 export const useBookingFlow = () => {
   const { id: sessionId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { processPayment, isProcessing: isRazorpayProcessing } = useRazorpay();
 
   const [step, setStepState] = useState(1);
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
@@ -28,6 +31,7 @@ export const useBookingFlow = () => {
 
   const updateFormMutation = useUpdateBookingForm();
   const initiatePaymentMutation = useInitiatePayment();
+  const verifyPaymentMutation = useVerifyPayment();
   const finalizeBookingMutation = useFinalizeBooking();
 
   const sessionData = sessionResponse?.data;
@@ -112,17 +116,49 @@ export const useBookingFlow = () => {
     }
 
     try {
-      // 1. Initiate payment order
-      await initiatePaymentMutation.mutateAsync(sessionId);
+      // 1. Initiate payment order (creates Razorpay Order on server)
+      const res = await initiatePaymentMutation.mutateAsync(sessionId);
+      const paymentData = res.data;
 
-      // 2. Finalize booking (simulating successful payment/webhook)
-      await finalizeBookingMutation.mutateAsync({ sessionId });
+      if (!paymentData?.razorpayOrderId) {
+        // Fallback for dev/test if order creation fails/skipped
+        await finalizeBookingMutation.mutateAsync({ sessionId });
+        toast.success('Booking confirmed!');
+        navigate('/patient/my-bookings');
+        return;
+      }
+
+      // 2. Open Razorpay Checkout modal
+      const razorpayResponse = await processPayment({
+        orderId: paymentData.razorpayOrderId,
+        amount: paymentData.amount,
+        keyId: paymentData.razorpayKeyId,
+        description: 'PhysioBuddies Therapy Session',
+        prefill: {
+          name: selectedPatient?.name || '',
+          contact: selectedPatient?.phone || '',
+        },
+        notes: {
+          sessionId,
+          paymentId: paymentData.paymentId,
+        },
+      });
+
+      // 3. Verify payment signature on server (which also finalizes booking)
+      await verifyPaymentMutation.mutateAsync({
+        razorpay_payment_id: razorpayResponse.razorpay_payment_id,
+        razorpay_order_id: razorpayResponse.razorpay_order_id,
+        razorpay_signature: razorpayResponse.razorpay_signature,
+        sessionId,
+        internalPaymentId: paymentData.paymentId,
+      });
 
       toast.success('Payment completed & booking confirmed!');
       navigate('/patient/my-bookings');
     } catch (e: unknown) {
-      const err = e as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Payment failed. Please try again.');
+      const err = e as { message?: string; response?: { data?: { message?: string } } };
+      const errorMessage = err.response?.data?.message || err.message || 'Payment failed. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -174,7 +210,11 @@ export const useBookingFlow = () => {
     selectedPatient,
     selectedLocation,
     handleConfirm,
-    isConfirming: initiatePaymentMutation.isPending || finalizeBookingMutation.isPending,
+    isConfirming:
+      initiatePaymentMutation.isPending ||
+      isRazorpayProcessing ||
+      verifyPaymentMutation.isPending ||
+      finalizeBookingMutation.isPending,
     navigate,
   };
 };

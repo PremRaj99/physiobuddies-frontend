@@ -170,14 +170,43 @@ export const useRemoveCoupon = () => {
   });
 };
 
+export interface InitiatePaymentResult {
+  paymentId: string;
+  invoiceId: string;
+  amount: number;
+  currency: string;
+  razorpayOrderId: string;
+  razorpayKeyId?: string;
+}
+
 export const useInitiatePayment = () =>
   useMutation({
     mutationFn: async (
       sessionId: string,
-    ): Promise<ApiResponse<{ paymentId: string; invoiceId: string; amount: number }>> => {
+    ): Promise<ApiResponse<InitiatePaymentResult>> => {
+      const { data } = await axios.post<ApiResponse<InitiatePaymentResult>>(
+        `/reservation/session/${sessionId}/initiate-payment`,
+      );
+      return data;
+    },
+  });
+
+export interface VerifyPaymentPayload {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+  sessionId?: string;
+  internalPaymentId?: string;
+}
+
+export const useVerifyPayment = () =>
+  useMutation({
+    mutationFn: async (
+      payload: VerifyPaymentPayload,
+    ): Promise<ApiResponse<{ verified: boolean; reservation?: any }>> => {
       const { data } = await axios.post<
-        ApiResponse<{ paymentId: string; invoiceId: string; amount: number }>
-      >(`/reservation/session/${sessionId}/initiate-payment`);
+        ApiResponse<{ verified: boolean; reservation?: any }>
+      >('/payment/confirm', payload);
       return data;
     },
   });
