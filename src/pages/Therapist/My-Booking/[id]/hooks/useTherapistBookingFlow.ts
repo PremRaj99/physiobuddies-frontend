@@ -13,7 +13,7 @@ import {
   useSubmitImprovementRecord,
 } from '@/hooks/useTreatmentSession';
 import { toast } from 'sonner';
-import { minutesToTime, type DayOption } from '@/utils/slots';
+import { minutesToTime, parseSlotDateToIso, type DayOption } from '@/utils/slots';
 
 import type { TreatmentMode, Gender, SessionStatus } from '@/types';
 
@@ -165,7 +165,7 @@ export const useTherapistBookingFlow = () => {
       await rescheduleMutation.mutateAsync({
         sessionId: activeSessionId || id || '',
         payload: {
-          date: new Date(rescheduleDate).toISOString(),
+          date: parseSlotDateToIso(rescheduleDate),
           startHour: Number(rescheduleHour),
           reason: rescheduleReason,
         },

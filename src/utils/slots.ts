@@ -143,3 +143,17 @@ export const parseSlotToHour = (slotStr: string): number => {
   if (ampm === 'AM' && hour === 12) hour = 0;
   return hour;
 };
+
+/** Safely parses DD-MM-YYYY or YYYY-MM-DD date strings into UTC ISO string (e.g. "07-08-2026" -> "2026-08-07T00:00:00.000Z") */
+export const parseSlotDateToIso = (dateStr: string): string => {
+  if (!dateStr) return new Date().toISOString();
+  if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+    const [dd, mm, yyyy] = dateStr.split('-');
+    return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}T00:00:00.000Z`;
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    return `${dateStr}T00:00:00.000Z`;
+  }
+  const d = new Date(dateStr);
+  return Number.isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+};

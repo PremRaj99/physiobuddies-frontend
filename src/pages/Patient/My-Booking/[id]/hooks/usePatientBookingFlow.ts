@@ -134,13 +134,10 @@ const formatTime = (value?: string) => {
   });
 };
 
-const toIsoDateString = (value: string) => {
-  if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
-    const [dd, mm, yyyy] = value.split('-');
-    return `${yyyy}-${mm}-${dd}T00:00:00.000Z`;
-  }
+import { parseSlotDateToIso } from '@/utils/slots';
 
-  return new Date(value).toISOString();
+const toIsoDateString = (value: string) => {
+  return parseSlotDateToIso(value);
 };
 
 export const usePatientBookingFlow = () => {
