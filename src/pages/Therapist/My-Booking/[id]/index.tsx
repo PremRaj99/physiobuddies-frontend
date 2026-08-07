@@ -78,7 +78,8 @@ export default function TherapistBookingDetailPage() {
     handleAddDocsSubmit,
     handleImprovementSubmit,
     handleCompletePlanSubmit,
-    // Pending states
+    availabilityDays,
+    // Mutations pending states
     isRescheduling,
     isAddingDocs,
     isSubmittingImprovement,
@@ -190,6 +191,7 @@ export default function TherapistBookingDetailPage() {
           setRescheduleHour={setRescheduleHour}
           rescheduleReason={rescheduleReason}
           setRescheduleReason={setRescheduleReason}
+          availabilityDays={availabilityDays}
           isRescheduling={isRescheduling}
           onSubmit={handleRescheduleSubmit}
         />

@@ -227,6 +227,11 @@ export type { ClinicalAssessmentRecord, SessionImprovementRecordItem, DocumentRe
 
 export interface TherapistBookingDetail {
   id: string;
+  therapistId?: string;
+  therapist?: {
+    id: string;
+    name?: string;
+  };
   mode: 'home_visit' | 'online' | 'clinic';
   overallStatus: string;
   status?: 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';

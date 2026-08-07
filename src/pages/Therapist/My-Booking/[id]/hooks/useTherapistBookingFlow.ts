@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { useTherapistBookingDetail } from '@/hooks/useTherapist';
+import { useTherapistBookingDetail, useTherapistAvailability } from '@/hooks/useTherapist';
 import {
   acceptBooking,
   generateSessionOtp,
@@ -13,6 +13,7 @@ import {
   useSubmitImprovementRecord,
 } from '@/hooks/useTreatmentSession';
 import { toast } from 'sonner';
+import { minutesToTime, type DayOption } from '@/utils/slots';
 
 import type { TreatmentMode, Gender, SessionStatus } from '@/types';
 
@@ -69,6 +70,23 @@ export const useTherapistBookingFlow = () => {
 
   const { data: bookingRes, isLoading, refetch } = useTherapistBookingDetail(id || '');
   const booking = bookingRes?.data;
+
+  const therapistIdForSlots = booking?.therapist?.id || booking?.therapistId || '';
+  const { data: availabilityRes } = useTherapistAvailability(therapistIdForSlots);
+
+  const availabilityDays: DayOption[] = useMemo(() => {
+    const raw = availabilityRes?.data || [];
+    return raw.map((day) => ({
+      date: day.date,
+      availableCount: day.timeSlots.filter((slot) => slot.status === 'open').length,
+      timeSlots: day.timeSlots.map((slot) => ({
+        startHour: slot.startHour,
+        timeLabel: `${minutesToTime(slot.startTime)} - ${minutesToTime(slot.endTime)}`,
+        category: slot.category,
+        available: slot.status === 'open',
+      })),
+    }));
+  }, [availabilityRes]);
 
   const handleAccept = async () => {
     if (!id) return;
@@ -299,6 +317,8 @@ export const useTherapistBookingFlow = () => {
     handleAddDocsSubmit,
     handleImprovementSubmit,
     handleCompletePlanSubmit,
+    // Availability Slots
+    availabilityDays,
     // Mutations pending states
     isRescheduling: rescheduleMutation.isPending,
     isAddingDocs: addDocsMutation.isPending,

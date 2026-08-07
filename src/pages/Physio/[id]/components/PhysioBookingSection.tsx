@@ -25,7 +25,7 @@ export function PhysioBookingSection({
   onSlotSelect,
 }: PhysioBookingSectionProps) {
   return (
-    <Card className="border-border mb-8 shadow-sm">
+    <Card className="border-border mb-8 py-0 shadow-sm">
       <CardContent className="p-6 sm:p-8">
         <div className="mb-6 flex items-center gap-2">
           <Clock className="text-primary h-6 w-6" />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SlotSelectorModal } from '@/components/my-booking';
+import { SlotSelectorModal, type DayOption } from '@/components/my-booking';
 
 interface RescheduleModalProps {
   isOpen: boolean;
@@ -10,6 +10,7 @@ interface RescheduleModalProps {
   setRescheduleHour: (hour: number) => void;
   rescheduleReason: string;
   setRescheduleReason: (reason: string) => void;
+  availabilityDays?: DayOption[];
   isRescheduling: boolean;
   onSubmit: () => void;
 }
@@ -23,6 +24,7 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
   setRescheduleHour,
   rescheduleReason,
   setRescheduleReason,
+  availabilityDays,
   isRescheduling,
   onSubmit,
 }) => {
@@ -39,6 +41,7 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
       reason={rescheduleReason}
       setReason={setRescheduleReason}
       showReasonInput={true}
+      availabilityDays={availabilityDays}
       isSubmitting={isRescheduling}
       submitButtonText="Confirm & Reschedule Session"
       submittingText="Rescheduling..."
