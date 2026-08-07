@@ -1,17 +1,15 @@
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-
+import React, { useMemo } from 'react';
+import { Sparkles } from 'lucide-react';
+import { SlotSelectorModal, type DayOption } from '@/components/my-booking';
+import { Badge } from '@/components/ui/badge';
 import type { ApiResponse } from '@/services';
 import type { SeeMoreSlotsResponse } from '@/services/treatmentSession.service';
+import { minutesToTime } from '@/utils/slots';
+
+const formatReadableText = (text?: string) => {
+  if (!text) return '';
+  return text.replace(/_/g, ' ');
+};
 
 interface BookMoreModalProps {
   isOpen: boolean;
@@ -22,10 +20,12 @@ interface BookMoreModalProps {
   setBookMoreHour: (hour: number) => void;
   seeMoreSlotsRes?: ApiResponse<SeeMoreSlotsResponse> | null;
   isBookingMore: boolean;
+  suggestedTreatmentDaysLeft: number;
+  visitFrequency: string;
   onSubmit: () => void;
 }
 
-export const BookMoreModal = ({
+export const BookMoreModal: React.FC<BookMoreModalProps> = ({
   isOpen,
   onOpenChange,
   bookMoreDate,
@@ -34,56 +34,55 @@ export const BookMoreModal = ({
   setBookMoreHour,
   seeMoreSlotsRes,
   isBookingMore,
+  suggestedTreatmentDaysLeft,
+  visitFrequency,
   onSubmit,
-}: BookMoreModalProps) => {
+}) => {
+  const availabilityDays: DayOption[] = useMemo(() => {
+    const raw = seeMoreSlotsRes?.data?.availableSlots || [];
+    return raw.map((day) => ({
+      date: day.date,
+      availableCount: day.timeSlots.filter((slot) => slot.status === 'open').length,
+      timeSlots: day.timeSlots.map((slot) => ({
+        startHour: slot.startHour,
+        timeLabel: `${minutesToTime(slot.startTime)} - ${minutesToTime(slot.endTime)}`,
+        category: slot.category,
+        available: slot.status === 'open',
+      })),
+    }));
+  }, [seeMoreSlotsRes]);
+
+  const badgeContent = (
+    <>
+      <Badge className="bg-[#014f86] px-3 py-1 font-semibold text-white hover:bg-[#014f86]">
+        Suggested: {suggestedTreatmentDaysLeft} Days Plan
+      </Badge>
+      <Badge
+        variant="outline"
+        className="border-emerald-300 bg-emerald-50 px-3 py-1 font-medium text-emerald-800"
+      >
+        <Sparkles className="mr-1 inline h-3 w-3 text-emerald-600" />
+        Frequency: {formatReadableText(visitFrequency)}
+      </Badge>
+    </>
+  );
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-[#012a4a]">Book Follow-Up Session</DialogTitle>
-          <DialogDescription>
-            Add a follow-up session to your existing treatment plan according to clinical
-            recommendations.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label>Session Date</Label>
-            <Input
-              type="date"
-              value={bookMoreDate}
-              onChange={(e) => setBookMoreDate(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Start Hour (6 to 21)</Label>
-            <Input
-              type="number"
-              min={6}
-              max={21}
-              value={bookMoreHour}
-              onChange={(e) => setBookMoreHour(Number(e.target.value))}
-            />
-          </div>
-          {seeMoreSlotsRes?.data?.visitFrequency && (
-            <div className="rounded-md bg-blue-50 p-3 text-xs text-blue-700">
-              Therapist recommendation: {seeMoreSlotsRes.data.visitFrequency}
-            </div>
-          )}
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={onSubmit}
-            disabled={isBookingMore}
-            className="bg-[#014f86] text-white hover:bg-[#013a63]"
-          >
-            {isBookingMore ? 'Booking...' : 'Book Follow-Up Session'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <SlotSelectorModal
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      title="Book Follow-Up Session"
+      description="Select an available date and time slot to schedule your follow-up therapy."
+      selectedDate={bookMoreDate}
+      setSelectedDate={setBookMoreDate}
+      selectedHour={bookMoreHour}
+      setSelectedHour={setBookMoreHour}
+      availabilityDays={availabilityDays}
+      isSubmitting={isBookingMore}
+      submitButtonText="Confirm & Book Follow-Up Session"
+      submittingText="Booking Follow-Up..."
+      badgeContent={badgeContent}
+      onSubmit={onSubmit}
+    />
   );
 };

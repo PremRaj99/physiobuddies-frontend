@@ -26,7 +26,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog, onReadMore }) => {
             alt={blog.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#012a4a] shadow-sm backdrop-blur-sm">
             <Eye className="h-3 w-3 text-[#014f86]" />
             {blog.views}

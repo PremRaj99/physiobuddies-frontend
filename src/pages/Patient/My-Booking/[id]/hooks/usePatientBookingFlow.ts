@@ -1,29 +1,29 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { usePatientBookingDetail } from '@/hooks/usePatient';
 import {
-  useTreatmentSession,
   useCancelTreatmentSession,
   useSeeMoreSlots,
   useBookMoreSession,
 } from '@/hooks/useTreatmentSession';
+import type {
+  TreatmentMode,
+  Gender,
+  SessionStatus,
+  ClinicalAssessmentRecord,
+  SessionImprovementRecordItem,
+} from '@/types';
 
-export type TreatmentMode = 'home_visit' | 'online' | 'clinic';
-export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
-export type SessionStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'active'
-  | 'completed'
-  | 'settled'
-  | 'cancelled'
-  | 'no_show';
+export type { TreatmentMode, Gender, SessionStatus };
 
 export interface Therapist {
   id: string;
+  therapistId?: string;
   name: string;
   image: string;
   gender: Gender;
   mode: TreatmentMode;
+  rating?: number;
 }
 
 export interface Patient {
@@ -57,6 +57,7 @@ export interface DocumentItem {
   title: string;
   type: string;
   date: string;
+  url?: string;
 }
 
 export interface BookingDetails {
@@ -69,98 +70,158 @@ export interface BookingDetails {
   condition: { title: string };
   problemDescription: string;
   documents: DocumentItem[];
+  clinicalAssessments?: ClinicalAssessmentRecord[];
+  improvementRecords?: SessionImprovementRecordItem[];
 }
+
+const getOverallStatus = (
+  status?: string,
+  overallStatus?: string,
+): BookingDetails['overallStatus'] => {
+  const normalized = (overallStatus || status || '').toUpperCase();
+
+  if (normalized === 'COMPLETED') return 'COMPLETED';
+  if (normalized === 'CANCELLED') return 'CANCELLED';
+
+  return 'IN_PROGRESS';
+};
+
+const getSessionStatus = (status?: string): SessionStatus => {
+  switch ((status || '').toUpperCase()) {
+    case 'CONFIRMED':
+      return 'confirmed';
+    case 'ACTIVE':
+    case 'IN_PROGRESS':
+      return 'active';
+    case 'COMPLETED':
+      return 'completed';
+    case 'SETTLED':
+      return 'settled';
+    case 'CANCELLED':
+      return 'cancelled';
+    case 'NO_SHOW':
+      return 'no_show';
+    case 'UPCOMING':
+      return 'confirmed';
+    case 'PENDING':
+    default:
+      return 'pending';
+  }
+};
+
+const formatDate = (value?: string) => {
+  if (!value) return 'N/A';
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return parsed.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  });
+};
+
+const formatTime = (value?: string) => {
+  if (!value) return undefined;
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return parsed.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const toIsoDateString = (value: string) => {
+  if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
+    const [dd, mm, yyyy] = value.split('-');
+    return `${yyyy}-${mm}-${dd}T00:00:00.000Z`;
+  }
+
+  return new Date(value).toISOString();
+};
 
 export const usePatientBookingFlow = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: sessionRes, refetch } = useTreatmentSession(id);
-  const liveSession = sessionRes?.data;
+  const { data: bookingRes, isLoading, refetch } = usePatientBookingDetail(id || '');
+  const booking = bookingRes?.data;
+  const treatmentPlanId = booking?.treatmentPlanId;
 
-  // Build merged data using live session data
-  const data: BookingDetails = {
-    bookingId: liveSession?.id || id || '',
-    overallStatus:
-      liveSession?.status === 'completed'
-        ? 'COMPLETED'
-        : liveSession?.status === 'cancelled'
-          ? 'CANCELLED'
-          : 'IN_PROGRESS',
-    therapist: {
-      id: liveSession?.treatmentPlan?.therapist?.id || '',
-      name: liveSession?.treatmentPlan?.therapist?.user?.name || 'Dr. Physical Therapist',
-      image:
-        liveSession?.treatmentPlan?.therapist?.user?.image ||
-        'https://images.unsplash.com/photo-1594824436998-d7037b52479e?auto=format&fit=crop&q=80&w=200',
-      gender: (liveSession?.treatmentPlan?.therapist?.user?.gender as Gender) || 'FEMALE',
-      mode: (liveSession?.treatmentPlan?.therapist?.mode as TreatmentMode) || 'home_visit',
-    },
-    patient: {
-      name: liveSession?.treatmentPlan?.patient?.user?.name || 'Patient',
-      dob: liveSession?.treatmentPlan?.patient?.dob || 'N/A',
-      gender: (liveSession?.treatmentPlan?.patient?.user?.gender as Gender) || 'MALE',
-      phone: liveSession?.treatmentPlan?.patient?.user?.phone || 'N/A',
-    },
-    condition: { title: liveSession?.condition || 'Physiotherapy Treatment' },
-    problemDescription: liveSession?.DescribedAs || 'No description provided.',
-    location: {
-      address:
-        liveSession?.reservation?.address ||
-        liveSession?.location?.address ||
-        'Address not provided',
-      landmark: liveSession?.reservation?.landmark || liveSession?.location?.landmark || null,
-      city: liveSession?.reservation?.city || liveSession?.location?.city || '',
-      state: liveSession?.reservation?.state || liveSession?.location?.state || '',
-      country: liveSession?.reservation?.country || liveSession?.location?.country || '',
-      postalCode: liveSession?.reservation?.postalCode || liveSession?.location?.postalCode || '',
-      coords: {
-        lat: liveSession?.reservation?.lat || liveSession?.location?.coords?.lat || 0,
-        lng: liveSession?.reservation?.lng || liveSession?.location?.coords?.lng || 0,
-      },
-    },
-    sessions: liveSession
-      ? (() => {
-          const sessionDate = liveSession.date || liveSession.startAt;
-          return [
-            {
-              id: liveSession.id,
-              date: sessionDate
-                ? new Date(sessionDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                  })
-                : 'N/A',
-              scheduledTime: `${liveSession.startHour || 10}:00 AM - ${(liveSession.startHour || 10) + 1}:00 AM`,
-              actualStartTime: liveSession.actualStartTime
-                ? new Date(liveSession.actualStartTime).toLocaleTimeString()
-                : undefined,
-              actualEndTime: liveSession.actualEndTime
-                ? new Date(liveSession.actualEndTime).toLocaleTimeString()
-                : undefined,
-              status: (liveSession.status?.toLowerCase() as SessionStatus) || 'pending',
-            },
-          ];
-        })()
-      : [],
-    documents: liveSession?.treatmentPlan?.docRecords
-      ? liveSession.treatmentPlan.docRecords.map(
-          (d: { id: string; name: string; fileType?: string; createdAt: string }) => ({
-            id: d.id,
-            title: d.name,
-            type: d.fileType || 'Medical Report',
-            date: new Date(d.createdAt).toLocaleDateString(),
-          }),
-        )
-      : [],
-  };
+  const data: BookingDetails | null = booking
+    ? {
+        bookingId: booking.id || id || '',
+        overallStatus: getOverallStatus(booking.status, booking.overallStatus),
+        therapist: {
+          id: booking.therapist?.id || '',
+          therapistId: booking.therapist?.therapistId || booking.therapist?.id || '',
+          name: booking.therapist?.name || 'Dr. Physical Therapist',
+          image:
+            booking.therapist?.image ||
+            'https://images.unsplash.com/photo-1594824436998-d7037b52479e?auto=format&fit=crop&q=80&w=200',
+          gender: booking.therapist?.gender || 'FEMALE',
+          mode: booking.mode || 'home_visit',
+          rating: booking.therapist?.rating ?? 4.8,
+        },
+        patient: {
+          name: booking.patient?.name || 'Patient',
+          dob: formatDate(booking.patient?.dob),
+          gender: booking.patient?.gender || 'MALE',
+          phone: booking.patient?.phone || 'N/A',
+        },
+        condition: booking.condition || { title: 'Physiotherapy Treatment' },
+        problemDescription: booking.problemDescription || 'No description provided.',
+        location: {
+          address: booking.location?.address || 'Address not provided',
+          landmark: booking.location?.landmark || null,
+          city: booking.location?.city || '',
+          state: booking.location?.state || '',
+          country: booking.location?.country || '',
+          postalCode: booking.location?.postalCode || '',
+          coords: {
+            lat: booking.location?.coords?.lat || 0,
+            lng: booking.location?.coords?.lng || 0,
+          },
+        },
+        sessions: (booking.sessions || []).map((session) => ({
+          id: session.id,
+          date: formatDate(session.date),
+          scheduledTime: session.scheduledTime || 'N/A',
+          actualStartTime: formatTime(session.actualStartTime),
+          actualEndTime: formatTime(session.actualEndTime),
+          status: getSessionStatus(session.status),
+        })),
+        documents: (booking.documents || []).map((document) => ({
+          id: document.id,
+          title: document.name,
+          type: document.fileType || 'Medical Report',
+          date: formatDate(document.createdAt),
+          url: document.url,
+        })),
+        clinicalAssessments: booking.clinicalAssessments || [],
+        improvementRecords: booking.improvementRecords || [],
+      }
+    : null;
 
   // Treatment Session Mutations & Hooks
   const cancelMutation = useCancelTreatmentSession();
   const bookMoreMutation = useBookMoreSession();
-  const treatmentPlanId = liveSession?.treatmentPlanId;
-  const { data: seeMoreSlotsRes } = useSeeMoreSlots(treatmentPlanId);
+  const { data: seeMoreSlotsRes, isLoading: isLoadingFollowUpSlots } =
+    useSeeMoreSlots(treatmentPlanId);
+  const followUpAvailability = seeMoreSlotsRes?.data?.availableSlots || [];
+  const followUpSlotCount = followUpAvailability.reduce(
+    (count, day) => count + day.timeSlots.filter((slot) => slot.status === 'open').length,
+    0,
+  );
+  const hasFollowUpSlots = followUpSlotCount > 0;
+
+  const visitFrequency = booking?.clinicalAssessments?.at?.(0)?.visitFrequency || '';
+  const suggestedTreatmentDaysLeft =
+    (booking?.clinicalAssessments?.at?.(0)?.suggestedTreatmentDays || 0) -
+    (booking?.sessions?.length || 0);
 
   // Cancellation Dialog State
   const [isCancelOpen, setIsCancelOpen] = useState(false);
@@ -173,7 +234,7 @@ export const usePatientBookingFlow = () => {
   const [bookMoreHour, setBookMoreHour] = useState(10);
 
   const handleCancelSubmit = async () => {
-    const sessionId = targetSessionId || id || '';
+    const sessionId = targetSessionId || booking?.sessions?.[0]?.id || '';
     if (!sessionId) return;
     try {
       await cancelMutation.mutateAsync({ sessionId, reason: cancelReason });
@@ -188,13 +249,13 @@ export const usePatientBookingFlow = () => {
 
   const handleBookMoreSubmit = async () => {
     if (!treatmentPlanId || !bookMoreDate) {
-      alert('Please select a date for the follow-up session');
+      alert('Please select an available follow-up slot');
       return;
     }
     try {
       await bookMoreMutation.mutateAsync({
         treatmentPlanId,
-        date: new Date(bookMoreDate).toISOString(),
+        date: toIsoDateString(bookMoreDate),
         startHour: Number(bookMoreHour),
       });
       setIsBookMoreOpen(false);
@@ -213,9 +274,16 @@ export const usePatientBookingFlow = () => {
   return {
     id,
     navigate,
+    booking,
+    isLoading,
     data,
     treatmentPlanId,
     seeMoreSlotsRes,
+    isLoadingFollowUpSlots,
+    hasFollowUpSlots,
+    followUpSlotCount,
+    visitFrequency,
+    suggestedTreatmentDaysLeft,
     // Modals
     isCancelOpen,
     setIsCancelOpen,

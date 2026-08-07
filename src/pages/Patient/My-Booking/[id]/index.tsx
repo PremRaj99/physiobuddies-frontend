@@ -17,8 +17,14 @@ export default function BookingDetailPage() {
   const {
     navigate,
     data,
+    isLoading,
     treatmentPlanId,
     seeMoreSlotsRes,
+    isLoadingFollowUpSlots,
+    hasFollowUpSlots,
+    followUpSlotCount,
+    visitFrequency,
+    suggestedTreatmentDaysLeft,
     // Modals
     isCancelOpen,
     setIsCancelOpen,
@@ -37,6 +43,25 @@ export default function BookingDetailPage() {
     isCancelling,
     isBookingMore,
   } = usePatientBookingFlow();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f8fbfa]">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[#014f86]"></div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f8fbfa]">
+        <p className="font-medium text-gray-600">Booking not found.</p>
+        <Button onClick={() => navigate('/patient/my-bookings')} variant="outline">
+          Back to Bookings
+        </Button>
+      </div>
+    );
+  }
 
   // Framer Motion Variants
   const containerVariants = {
@@ -75,14 +100,6 @@ export default function BookingDetailPage() {
               </Badge>
             </p>
           </div>
-          {treatmentPlanId && (
-            <Button
-              onClick={() => setIsBookMoreOpen(true)}
-              className="bg-[#014f86] font-bold text-white hover:bg-[#013a63]"
-            >
-              + Book Follow-Up Session
-            </Button>
-          )}
         </div>
       </div>
 
@@ -101,12 +118,24 @@ export default function BookingDetailPage() {
 
             {/* Treatment Sessions Timeline */}
             <motion.div variants={itemVariants}>
-              <TreatmentSessionsList sessions={data.sessions} onCancelRequest={openCancelModal} />
+              <TreatmentSessionsList
+                sessions={data.sessions}
+                onCancelRequest={openCancelModal}
+                suggestedTreatmentDaysLeft={suggestedTreatmentDaysLeft}
+                onBookMoreRequest={treatmentPlanId ? () => setIsBookMoreOpen(true) : undefined}
+                hasFollowUpSlots={hasFollowUpSlots}
+                isLoadingFollowUpSlots={isLoadingFollowUpSlots}
+                followUpSlotCount={followUpSlotCount}
+              />
             </motion.div>
 
             {/* Documents & Assessments */}
             <motion.div variants={itemVariants}>
-              <MedicalDocumentsList documents={data.documents} />
+              <MedicalDocumentsList
+                documents={data.documents}
+                clinicalAssessments={data.clinicalAssessments}
+                improvementRecords={data.improvementRecords}
+              />
             </motion.div>
           </motion.div>
 
@@ -163,6 +192,8 @@ export default function BookingDetailPage() {
         <BookMoreModal
           isOpen={isBookMoreOpen}
           onOpenChange={setIsBookMoreOpen}
+          visitFrequency={visitFrequency}
+          suggestedTreatmentDaysLeft={suggestedTreatmentDaysLeft}
           bookMoreDate={bookMoreDate}
           setBookMoreDate={setBookMoreDate}
           bookMoreHour={bookMoreHour}

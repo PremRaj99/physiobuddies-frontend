@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import type { TreatmentMode, TreatmentStatus } from '@/components/my-booking';
 import { useTherapistBookings } from '@/hooks/useTherapist';
 
-export type TreatmentMode = 'home_visit' | 'online' | 'clinic';
-export type TreatmentStatus = 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
+export type { TreatmentMode, TreatmentStatus };
 
 export function useTherapistBookingList() {
   const navigate = useNavigate();

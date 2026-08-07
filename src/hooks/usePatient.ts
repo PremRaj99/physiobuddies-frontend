@@ -5,6 +5,7 @@ import {
   getPatientLocations,
   createPatientLocation,
   getPatientMyBookings,
+  getPatientBookingById,
   type CreatePatientDetailPayload,
   type CreatePatientLocationPayload,
 } from '@/services/patient.service';
@@ -16,6 +17,13 @@ export const usePatientMyBookings = () =>
     queryKey: ['patient', 'my-bookings'],
     queryFn: getPatientMyBookings,
     select: (res) => res.data ?? [],
+  });
+
+export const usePatientBookingDetail = (id: string) =>
+  useQuery({
+    queryKey: ['patient', 'my-bookings', id],
+    queryFn: () => getPatientBookingById(id),
+    enabled: !!id,
   });
 
 export const usePatientDetails = () =>

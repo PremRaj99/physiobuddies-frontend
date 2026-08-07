@@ -2,14 +2,14 @@ import {
   Activity,
   BookOpen,
   Calendar,
-  CheckCircle2,
-  Dumbbell,
   ExternalLink,
+  FileDown,
   FilePlus,
   FileText,
   Plus,
   Stethoscope,
   TrendingDown,
+  Dumbbell,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -27,96 +27,269 @@ import type {
 interface MedicalRecordsSectionProps {
   bookingId: string;
   documents?: DocumentRecordItem[];
-  clinicalAssessment?: ClinicalAssessmentRecord | null;
   clinicalAssessments?: ClinicalAssessmentRecord[];
   improvementRecords?: SessionImprovementRecordItem[];
   openAddDocsModal: (sessionId: string) => void;
   activeSessionId?: string;
 }
 
+const formatEnumLabel = (val: unknown): string => {
+  if (val === null || val === undefined || val === '') return 'N/A';
+  if (typeof val !== 'string') return String(val);
+
+  const key = val.trim().toUpperCase();
+  const knownMap: Record<string, string> = {
+    LESS_THAN_ONE_WEEK: '< 1 Week',
+    ONE_TO_FOUR_WEEKS: '1 - 4 Weeks',
+    ONE_TO_THREE_MONTHS: '1 - 3 Months',
+    MORE_THAN_THREE_MONTHS: '> 3 Months',
+    ACUTE_LESS_THAN_2_WEEKS: 'Acute (< 2 Wks)',
+    SUBACUTE_2_TO_6_WEEKS: 'Subacute (2-6 Wks)',
+    CHRONIC_MORE_THAN_6_WEEKS: 'Chronic (> 6 Wks)',
+    DAILY: 'Daily',
+    TWICE_A_WEEK: '2x / Week',
+    THRICE_A_WEEK: '3x / Week',
+    WEEKLY: 'Weekly',
+    FORTNIGHTLY: 'Every 2 Weeks',
+    MONTHLY: 'Monthly',
+    POST_SURGICAL: 'Post-Surgical',
+    NEUROLOGICAL: 'Neurological',
+    NEURO: 'Neurological',
+    SPORTS: 'Sports Injury',
+    CARDIOPULMONARY: 'Cardiopulmonary',
+    ORTHOPEDIC: 'Orthopedic',
+    GENERAL: 'General Physical',
+    INITIAL: 'Initial Evaluation',
+    FOLLOW_UP: 'Follow-Up Evaluation',
+  };
+
+  if (knownMap[key]) return knownMap[key];
+
+  return val
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .replace(/\bOne\b/gi, '1')
+    .replace(/\bTwo\b/gi, '2')
+    .replace(/\bThree\b/gi, '3')
+    .replace(/\bFour\b/gi, '4')
+    .replace(/\bFive\b/gi, '5')
+    .replace(/\bSix\b/gi, '6');
+};
+
 export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
   bookingId,
   documents = [],
-  clinicalAssessment,
   clinicalAssessments = [],
   improvementRecords = [],
   openAddDocsModal,
   activeSessionId,
 }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('documents');
+  const [activeTab, setActiveTab] = useState('assessment');
 
-  // Combine clinicalAssessments list with single clinicalAssessment fallback
-  const assessmentList: ClinicalAssessmentRecord[] =
-    clinicalAssessments && clinicalAssessments.length > 0
-      ? clinicalAssessments
-      : clinicalAssessment
-        ? [clinicalAssessment]
-        : [];
+  const assessmentList: ClinicalAssessmentRecord[] = clinicalAssessments;
 
   return (
-    <Card className="border-border gap-0 overflow-hidden py-0 shadow-sm">
-      <CardHeader className="border-border flex flex-col items-start justify-between rounded-t-xl border-b bg-white pt-4 pb-4 sm:flex-row sm:items-center">
-        <div>
-          <CardTitle className="flex items-center gap-2 text-xl text-[#012a4a]">
-            <BookOpen className="h-5 w-5 text-[#014f86]" /> Medical Records & Documents
-          </CardTitle>
-          <p className="text-muted-foreground mt-1 text-sm">
-            View patient medical files, initial & follow-up assessment reports, and progress notes.
-          </p>
+    <Card className="gap-0 overflow-hidden rounded-2xl border-slate-200 py-0 shadow-sm">
+      {/* HEADER BAR WITH CLINICAL GRADIENT */}
+      <CardHeader className="flex flex-col items-start justify-between gap-4 rounded-t-2xl border-b border-slate-100 bg-linear-to-r from-[#012a4a] via-[#013a63] to-[#014f86] px-6 pt-5 pb-5 text-white sm:flex-row sm:items-center">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-cyan-300 backdrop-blur-md">
+            <BookOpen className="h-5 w-5" />
+          </div>
+          <div>
+            <CardTitle className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
+              Medical Records & Evaluation
+            </CardTitle>
+            <p className="mt-0.5 text-xs font-normal text-cyan-100/80 sm:text-sm">
+              Access clinical assessment records, printable evaluation PDFs, and medical
+              attachments.
+            </p>
+          </div>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => openAddDocsModal(activeSessionId || bookingId)}
-          className="hover:bg-secondary/20 mt-3 border-[#014f86] font-medium text-[#014f86] sm:mt-0"
-        >
-          <FilePlus className="mr-2 h-4 w-4" /> Add Document
-        </Button>
+        <div className="flex w-full items-center gap-2 sm:w-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => openAddDocsModal(activeSessionId || bookingId)}
+            className="border-white/20 bg-white/10 text-xs font-medium text-white shadow-2xs backdrop-blur-md transition-all hover:bg-white/20 hover:text-white"
+          >
+            <FilePlus className="mr-1.5 h-3.5 w-3.5 text-cyan-300" /> Upload File
+          </Button>
+
+          <Button
+            size="sm"
+            onClick={() => navigate(`/therapist/my-bookings/${bookingId}/create-assessment`)}
+            className="border border-cyan-300/40 bg-cyan-500 text-xs font-bold text-slate-950 shadow-md transition-all hover:bg-cyan-400"
+          >
+            <Plus className="mr-1.5 h-3.5 w-3.5" /> New Assessment
+          </Button>
+        </div>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-6">
+      <CardContent className="bg-slate-50/40 p-4 sm:p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-6 grid w-full grid-cols-3 rounded-lg bg-gray-100/80 p-1">
-            <TabsTrigger
-              value="documents"
-              className="text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#014f86] data-[state=active]:shadow-xs sm:text-sm"
-            >
-              <FileText className="mr-1.5 hidden h-4 w-4 sm:inline" />
-              Documents ({documents.length})
-            </TabsTrigger>
+          {/* TAB BAR NAVIGATION */}
+          <TabsList className="mb-6 grid w-full grid-cols-3 rounded-xl border border-slate-200 bg-slate-200/70 p-1.5">
             <TabsTrigger
               value="assessment"
-              className="text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#014f86] data-[state=active]:shadow-xs sm:text-sm"
+              className="rounded-lg py-2 text-xs font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-[#014f86] data-[state=active]:shadow-sm"
             >
-              <Stethoscope className="mr-1.5 hidden h-4 w-4 sm:inline" />
+              <Stethoscope className="mr-1.5 h-4 w-4 text-[#014f86]" />
               Assessments ({assessmentList.length})
             </TabsTrigger>
             <TabsTrigger
-              value="improvements"
-              className="text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#014f86] data-[state=active]:shadow-xs sm:text-sm"
+              value="documents"
+              className="rounded-lg py-2 text-xs font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-[#014f86] data-[state=active]:shadow-sm"
             >
-              <Activity className="mr-1.5 hidden h-4 w-4 sm:inline" />
+              <FileText className="mr-1.5 h-4 w-4 text-[#014f86]" />
+              Documents ({documents.length})
+            </TabsTrigger>
+            <TabsTrigger
+              value="improvements"
+              className="rounded-lg py-2 text-xs font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-[#014f86] data-[state=active]:shadow-sm"
+            >
+              <Activity className="mr-1.5 h-4 w-4 text-[#014f86]" />
               Progress Logs ({improvementRecords.length})
             </TabsTrigger>
           </TabsList>
 
-          {/* TAB 1: DOCUMENTS */}
+          {/* ==================================================================== */}
+          {/* TAB 1: CLINICAL ASSESSMENTS (SIMPLIFIED LIST WITH PDF PRINT ACTION) */}
+          {/* ==================================================================== */}
+          <TabsContent value="assessment" className="mt-0 space-y-4">
+            {assessmentList.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-white px-4 py-12 text-center shadow-2xs">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#014f86]">
+                  <Stethoscope className="h-7 w-7" />
+                </div>
+                <h3 className="text-base font-bold text-slate-800">
+                  No Clinical Assessment Logged Yet
+                </h3>
+                <p className="mt-1 mb-5 max-w-md text-xs leading-relaxed text-slate-500 sm:text-sm">
+                  Complete a physical assessment evaluation to record baseline metrics and generate
+                  a printable clinical report.
+                </p>
+                <Button
+                  onClick={() => navigate(`/therapist/my-bookings/${bookingId}/create-assessment`)}
+                  className="bg-[#014f86] px-5 text-xs font-semibold text-white shadow-md hover:bg-[#013a63]"
+                >
+                  <Plus className="mr-1.5 h-4 w-4" /> Create Clinical Assessment
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {assessmentList.map((item, idx) => {
+                  const isLatest = idx === 0;
+                  const isInitial = idx === assessmentList.length - 1;
+                  const reportNum = assessmentList.length - idx;
+                  const assessmentTitle =
+                    assessmentList.length === 1
+                      ? 'Initial Clinical Evaluation'
+                      : isLatest
+                        ? `Latest Assessment (#${reportNum})`
+                        : isInitial
+                          ? 'Initial Assessment (#1)'
+                          : `Follow-Up Assessment (#${reportNum})`;
+
+                  const targetId = item.id || idx;
+
+                  return (
+                    <div
+                      key={item.id || idx}
+                      className="flex flex-col items-start justify-between gap-4 rounded-xl border border-slate-200/90 bg-white p-4 transition-all hover:border-[#014f86] hover:shadow-sm sm:flex-row sm:items-center sm:p-5"
+                    >
+                      <div className="flex items-start gap-3.5 sm:items-center">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-[#014f86]">
+                          <Stethoscope className="h-5.5 w-5.5" />
+                        </div>
+
+                        <div className="space-y-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="text-sm font-bold text-slate-800">{assessmentTitle}</h4>
+                            <Badge
+                              variant="outline"
+                              className="border-blue-200 bg-blue-50/60 text-xs font-semibold text-[#014f86]"
+                            >
+                              {formatEnumLabel(item.assessmentType || 'GENERAL')}
+                            </Badge>
+                            {item.hepGiven && (
+                              <Badge
+                                variant="outline"
+                                className="border-emerald-200 bg-emerald-50 text-[11px] font-medium text-emerald-800"
+                              >
+                                HEP Assigned
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
+                            {item.createdAt && (
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3.5 w-3.5 text-[#014f86]" />
+                                Recorded{' '}
+                                {new Date(item.createdAt).toLocaleDateString(undefined, {
+                                  dateStyle: 'medium',
+                                })}
+                              </span>
+                            )}
+
+                            {item.painScore !== undefined && item.painScore !== null && (
+                              <span className="flex items-center gap-1 font-semibold text-slate-700">
+                                • Pain Score:{' '}
+                                <span className="text-[#014f86]">{item.painScore}/10</span>
+                              </span>
+                            )}
+
+                            {item.durationOfSymptoms && (
+                              <span className="hidden text-slate-400 sm:inline">
+                                • Duration: {formatEnumLabel(item.durationOfSymptoms)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex w-full shrink-0 items-center gap-2 border-t border-slate-100 pt-2 sm:w-auto sm:border-t-0 sm:pt-0">
+                        <Button
+                          onClick={() =>
+                            navigate(`/therapist/my-bookings/${bookingId}/assessment/${targetId}`)
+                          }
+                          className="w-full bg-[#014f86] px-4 text-xs font-semibold text-white shadow-2xs hover:bg-[#013a63] sm:w-auto"
+                        >
+                          <FileDown className="mr-1.5 h-4 w-4 text-cyan-300" /> View & Download PDF
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ==================================================================== */}
+          {/* TAB 2: DOCUMENTS */}
+          {/* ==================================================================== */}
           <TabsContent value="documents" className="mt-0">
             {documents.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-10 text-center">
-                <FileText className="mb-3 h-10 w-10 text-gray-400" />
-                <p className="font-semibold text-gray-700">No Medical Documents Attached</p>
-                <p className="mt-1 mb-4 max-w-sm text-sm text-gray-500">
-                  Upload patient prescription slips, X-ray scans, or test reports to attach them to
-                  this booking.
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-white px-4 py-12 text-center shadow-2xs">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#014f86]">
+                  <FileText className="h-7 w-7" />
+                </div>
+                <h3 className="text-base font-bold text-slate-800">
+                  No Medical Documents Attached
+                </h3>
+                <p className="mt-1 mb-5 max-w-md text-xs leading-relaxed text-slate-500 sm:text-sm">
+                  Upload patient prescription slips, X-ray scans, MRI reports, or lab work to store
+                  them securely.
                 </p>
                 <Button
                   onClick={() => openAddDocsModal(activeSessionId || bookingId)}
-                  className="bg-[#014f86] text-white hover:bg-[#013a63]"
+                  className="bg-[#014f86] px-5 text-xs font-semibold text-white shadow-md hover:bg-[#013a63]"
                 >
-                  <Plus className="mr-2 h-4 w-4" /> Upload First Document
+                  <Plus className="mr-1.5 h-4 w-4" /> Upload Medical File
                 </Button>
               </div>
             ) : (
@@ -124,7 +297,7 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                 {documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 transition-all hover:border-[#a9d6e5] hover:shadow-xs"
+                    className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 transition-all hover:border-[#a9d6e5] hover:shadow-sm"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#a9d6e5]/30 text-xs font-bold text-[#014f86] uppercase">
@@ -133,7 +306,7 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-[#012a4a]">{doc.name}</p>
                         {doc.createdAt && (
-                          <p className="text-muted-foreground mt-0.5 text-xs">
+                          <p className="mt-0.5 text-xs text-slate-400">
                             Uploaded {new Date(doc.createdAt).toLocaleDateString()}
                           </p>
                         )}
@@ -145,7 +318,7 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                         href={doc.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="ml-2 inline-flex h-8 shrink-0 items-center justify-center rounded-md bg-[#014f86]/10 px-3 text-xs font-semibold text-[#014f86] hover:bg-[#014f86]/20"
+                        className="ml-2 inline-flex h-8 shrink-0 items-center justify-center rounded-lg bg-[#014f86]/10 px-3 text-xs font-semibold text-[#014f86] transition-all hover:bg-[#014f86]/20"
                       >
                         View <ExternalLink className="ml-1 h-3 w-3" />
                       </a>
@@ -160,185 +333,19 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
             )}
           </TabsContent>
 
-          {/* TAB 2: CLINICAL ASSESSMENTS */}
-          <TabsContent value="assessment" className="mt-0 space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold tracking-wider text-[#014f86] uppercase">
-                Clinical Evaluation Reports ({assessmentList.length})
-              </span>
-
-              <Button
-                onClick={() => navigate(`/therapist/my-booking/${bookingId}/create-assessment`)}
-                className="bg-[#014f86] text-white hover:bg-[#013a63]"
-                size="sm"
-              >
-                <Plus className="mr-1.5 h-4 w-4" /> Add Assessment
-              </Button>
-            </div>
-
-            {assessmentList.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-10 text-center">
-                <Stethoscope className="mb-3 h-10 w-10 text-gray-400" />
-                <p className="font-semibold text-gray-700">No Clinical Assessment Logged Yet</p>
-                <p className="mt-1 mb-4 max-w-sm text-sm text-gray-500">
-                  Complete a physical assessment form to evaluate baseline metrics, diagnosis, and
-                  treatment goals.
-                </p>
-                <Button
-                  onClick={() => navigate(`/therapist/my-booking/${bookingId}/create-assessment`)}
-                  className="bg-[#014f86] text-white hover:bg-[#013a63]"
-                >
-                  <Stethoscope className="mr-2 h-4 w-4" /> Create First Assessment
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {assessmentList.map((item, idx) => (
-                  <div
-                    key={item.id || idx}
-                    className="space-y-5 rounded-xl border border-blue-100 bg-linear-to-br from-white to-blue-50/20 p-6 shadow-xs"
-                  >
-                    <div className="flex flex-col justify-between gap-3 border-b border-gray-200 pb-3 sm:flex-row sm:items-center">
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-[#014f86] text-white hover:bg-[#014f86]">
-                          {idx === assessmentList.length - 1
-                            ? 'INITIAL ASSESSMENT'
-                            : `ASSESSMENT #${assessmentList.length - idx}`}
-                        </Badge>
-                        <Badge variant="outline" className="border-blue-200 text-[#014f86]">
-                          {item.assessmentType?.replace('_', ' ') || 'GENERAL'}
-                        </Badge>
-                      </div>
-
-                      {item.createdAt && (
-                        <span className="text-muted-foreground flex items-center gap-1 text-xs">
-                          <Calendar className="h-3.5 w-3.5" />
-                          Recorded {new Date(item.createdAt).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Key Metrics Grid */}
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-2xs">
-                        <span className="text-muted-foreground block text-xs font-medium">
-                          Pain Score
-                        </span>
-                        <span className="mt-0.5 block text-lg font-bold text-[#012a4a]">
-                          {item.painScore ?? 'N/A'}/10
-                        </span>
-                      </div>
-
-                      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-2xs">
-                        <span className="text-muted-foreground block text-xs font-medium">
-                          Duration
-                        </span>
-                        <span className="mt-1 block truncate text-xs font-bold text-[#012a4a]">
-                          {item.durationOfSymptoms?.replace('_', ' ') || 'N/A'}
-                        </span>
-                      </div>
-
-                      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-2xs">
-                        <span className="text-muted-foreground block text-xs font-medium">
-                          Range of Motion
-                        </span>
-                        <span className="mt-1 block truncate text-xs font-bold text-[#012a4a]">
-                          {item.rom?.replace('_', ' ') || 'N/A'}
-                        </span>
-                      </div>
-
-                      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-2xs">
-                        <span className="text-muted-foreground block text-xs font-medium">
-                          Muscle Strength
-                        </span>
-                        <span className="mt-1 block truncate text-xs font-bold text-[#012a4a]">
-                          {item.muscleStrength?.replace('_', ' ') || 'N/A'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Detailed Categorization */}
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      {item.chiefComplaint && item.chiefComplaint.length > 0 && (
-                        <div>
-                          <h4 className="mb-1.5 text-xs font-bold tracking-wider text-[#014f86] uppercase">
-                            Chief Complaints
-                          </h4>
-                          <div className="flex flex-wrap gap-1">
-                            {item.chiefComplaint.map((c) => (
-                              <Badge
-                                key={c}
-                                variant="outline"
-                                className="border-blue-200 bg-white text-xs text-[#013a63]"
-                              >
-                                {c}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {item.problemsIdentified && item.problemsIdentified.length > 0 && (
-                        <div>
-                          <h4 className="mb-1.5 text-xs font-bold tracking-wider text-[#014f86] uppercase">
-                            Problems Identified
-                          </h4>
-                          <div className="flex flex-wrap gap-1">
-                            {item.problemsIdentified.map((p) => (
-                              <Badge
-                                key={p}
-                                variant="outline"
-                                className="border-amber-200 bg-white text-xs text-amber-900"
-                              >
-                                {p}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {item.treatmentPlanItems && item.treatmentPlanItems.length > 0 && (
-                      <div>
-                        <h4 className="mb-1.5 text-xs font-bold tracking-wider text-[#014f86] uppercase">
-                          Planned Interventions
-                        </h4>
-                        <div className="flex flex-wrap gap-1">
-                          {item.treatmentPlanItems.map((t) => (
-                            <Badge
-                              key={t}
-                              className="border border-emerald-200 bg-emerald-50 text-xs text-emerald-800 hover:bg-emerald-50"
-                            >
-                              <CheckCircle2 className="mr-1 inline h-3 w-3 text-emerald-600" /> {t}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {item.therapistNotes && (
-                      <div className="rounded-lg border border-gray-200 bg-white p-3">
-                        <span className="mb-1 block text-xs font-bold tracking-wider text-[#014f86] uppercase">
-                          Clinical Notes
-                        </span>
-                        <p className="text-xs text-gray-700 italic">"{item.therapistNotes}"</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
+          {/* ==================================================================== */}
           {/* TAB 3: IMPROVEMENT LOGS */}
+          {/* ==================================================================== */}
           <TabsContent value="improvements" className="mt-0">
             {improvementRecords.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 py-10 text-center">
-                <Activity className="mb-3 h-10 w-10 text-gray-400" />
-                <p className="font-semibold text-gray-700">No Session Progress Logs Yet</p>
-                <p className="mt-1 max-w-md text-sm text-gray-500">
-                  Progress logs are generated when ending subsequent sessions (Session 2 onwards) to
-                  measure pain score reduction and exercises assigned.
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-white px-4 py-12 text-center shadow-2xs">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#014f86]">
+                  <Activity className="h-7 w-7" />
+                </div>
+                <h3 className="text-base font-bold text-slate-800">No Session Progress Logs Yet</h3>
+                <p className="mt-1 max-w-md text-xs leading-relaxed text-slate-500 sm:text-sm">
+                  Progress logs track session pain score reduction and home exercises assigned
+                  across therapy sessions.
                 </p>
               </div>
             ) : (
@@ -346,9 +353,9 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                 {improvementRecords.map((rec, idx) => (
                   <div
                     key={rec.id || idx}
-                    className="space-y-3 rounded-xl border border-gray-200 bg-white p-4 sm:p-5"
+                    className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-2xs transition-all hover:shadow-xs sm:p-5"
                   >
-                    <div className="flex flex-col justify-between gap-2 border-b border-gray-100 pb-3 sm:flex-row sm:items-center">
+                    <div className="flex flex-col justify-between gap-2 border-b border-slate-100 pb-3 sm:flex-row sm:items-center">
                       <div className="flex items-center gap-2">
                         <Badge
                           variant="outline"
@@ -357,7 +364,7 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                           Session {idx + 2} Log
                         </Badge>
                         {rec.createdAt && (
-                          <span className="text-muted-foreground flex items-center gap-1 text-xs">
+                          <span className="flex items-center gap-1 text-xs text-slate-400">
                             <Calendar className="h-3.5 w-3.5" />
                             {new Date(rec.createdAt).toLocaleDateString()}
                           </span>
@@ -365,11 +372,9 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className="text-muted-foreground text-xs font-medium">
-                          Pain Change:
-                        </span>
+                        <span className="text-xs font-medium text-slate-500">Pain Change:</span>
                         <div className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1">
-                          <span className="text-xs text-gray-400 line-through">
+                          <span className="text-xs text-slate-400 line-through">
                             {rec.painScoreBefore ?? '?'}
                           </span>
                           <span className="text-xs font-bold text-emerald-700">
@@ -380,11 +385,11 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                       </div>
                     </div>
 
-                    <div className="text-sm font-medium text-gray-700">
+                    <div className="text-sm font-medium text-slate-700">
                       <span className="mb-1 block text-xs font-bold tracking-wider text-[#014f86] uppercase">
                         Therapist Notes & Progress
                       </span>
-                      <p className="text-gray-800">{rec.improvementNotes}</p>
+                      <p className="text-slate-800">{rec.improvementNotes}</p>
                     </div>
 
                     {rec.exercisesGiven && rec.exercisesGiven.length > 0 && (
@@ -397,7 +402,7 @@ export const MedicalRecordsSection: React.FC<MedicalRecordsSectionProps> = ({
                             <Badge
                               key={eIdx}
                               variant="secondary"
-                              className="bg-gray-100 text-gray-700"
+                              className="bg-slate-100 font-medium text-slate-700"
                             >
                               <Dumbbell className="mr-1 inline h-3 w-3 text-[#014f86]" /> {ex}
                             </Badge>

@@ -1,4 +1,11 @@
-import { Moon, Sun, Sunset } from 'lucide-react';
+import {
+  TIME_PERIODS,
+  SLOT_DURATION,
+  generateSlotsForPeriod,
+  parseSlotToHour,
+} from '@/utils/slots';
+
+export { TIME_PERIODS, SLOT_DURATION, generateSlotsForPeriod, parseSlotToHour };
 
 export const DAYS_OF_WEEK = [
   'Monday',
@@ -10,17 +17,9 @@ export const DAYS_OF_WEEK = [
   'Sunday',
 ];
 
-export const TIME_PERIODS = [
-  { id: 'morning', label: 'Morning', icon: Sun, range: [6, 11] },
-  { id: 'evening', label: 'Evening', icon: Sunset, range: [12, 17] },
-  { id: 'night', label: 'Night', icon: Moon, range: [18, 23] },
-];
-
-export const SLOT_DURATION = 40; // minutes
-
 export interface DaySchedule {
   isOff: boolean;
-  disabledSlots: string[]; // List of specific slots that are disabled
+  disabledSlots: string[];
 }
 
 export interface DateOverride {
@@ -40,28 +39,6 @@ export interface BackendDaySchedule {
   shifts: string[];
   disabledHours: number[];
 }
-
-export const generateSlotsForPeriod = (startHour: number, endHour: number) => {
-  const slots = [];
-  for (let h = startHour; h <= endHour; h++) {
-    const isPM = h >= 12;
-    const displayH = h % 12 === 0 ? 12 : h % 12;
-    const ampm = isPM ? 'PM' : 'AM';
-    const displayHStr = String(displayH).padStart(2, '0');
-    slots.push(`${displayHStr}:00 ${ampm} - ${displayHStr}:40 ${ampm}`);
-  }
-  return slots;
-};
-
-export const parseSlotToHour = (slotStr: string): number => {
-  const timePart = slotStr.split(' ')[0]; // "09:00"
-  const ampm = slotStr.split(' ')[1]; // "AM"
-  if (!timePart || !ampm) return 6;
-  let hour = parseInt(timePart.split(':')[0], 10);
-  if (ampm === 'PM' && hour !== 12) hour += 12;
-  if (ampm === 'AM' && hour === 12) hour = 0;
-  return hour;
-};
 
 export const getWeekdayName = (dateStr: string): string => {
   if (!dateStr) return '';

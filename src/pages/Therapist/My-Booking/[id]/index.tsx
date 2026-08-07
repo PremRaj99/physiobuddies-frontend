@@ -121,9 +121,6 @@ export default function TherapistBookingDetailPage() {
               Appointment Details
             </h1>
             <p className="mt-2 flex items-center gap-2 font-medium text-[#013a63]">
-              <span className="rounded bg-white/50 px-2 py-0.5 font-mono text-sm tracking-wide">
-                {booking.id}
-              </span>
               <Badge className="bg-[#014f86] text-white hover:bg-[#014f86]">
                 {(booking.overallStatus || 'IN_PROGRESS').replace('_', ' ')}
               </Badge>
@@ -159,7 +156,7 @@ export default function TherapistBookingDetailPage() {
             <MedicalRecordsSection
               bookingId={booking.id}
               documents={booking.documents}
-              clinicalAssessment={booking.clinicalAssessment}
+              clinicalAssessments={booking.clinicalAssessments || []}
               improvementRecords={booking.improvementRecords}
               openAddDocsModal={openAddDocsModal}
             />

@@ -81,3 +81,67 @@ export const getPatientMyBookings = async (): Promise<ApiResponse<PatientBooking
   const { data } = await axios.get<ApiResponse<PatientBookingRecord[]>>('/patient/my-bookings');
   return data;
 };
+
+import type { ClinicalAssessmentRecord, SessionImprovementRecordItem } from '@/types';
+
+export type { ClinicalAssessmentRecord, SessionImprovementRecordItem };
+
+export interface PatientBookingDetail {
+  id: string;
+  mode: 'home_visit' | 'online' | 'clinic';
+  overallStatus: string;
+  status?: 'UPCOMING' | 'COMPLETED' | 'CANCELLED' | 'PENDING';
+  therapist: {
+    id: string;
+    therapistId?: string;
+    name: string;
+    image: string;
+    gender: 'MALE' | 'FEMALE' | 'OTHER';
+    rating?: number;
+  };
+  patient: {
+    id: string;
+    name: string;
+    dob: string;
+    gender: 'MALE' | 'FEMALE' | 'OTHER';
+    phone: string;
+  };
+  condition?: {
+    title: string;
+  };
+  problemDescription?: string;
+  location?: {
+    address?: string;
+    landmark?: string | null;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+    coords?: { lat: number; lng: number };
+  };
+  sessions?: Array<{
+    id: string;
+    date: string;
+    scheduledTime: string;
+    actualStartTime?: string;
+    actualEndTime?: string;
+    status: string;
+  }>;
+  documents?: Array<{
+    id: string;
+    name: string;
+    fileType?: string;
+    url?: string;
+    createdAt?: string;
+  }>;
+  clinicalAssessments?: ClinicalAssessmentRecord[];
+  improvementRecords?: SessionImprovementRecordItem[];
+  treatmentPlanId?: string;
+}
+
+export const getPatientBookingById = async (
+  id: string,
+): Promise<ApiResponse<PatientBookingDetail>> => {
+  const { data } = await axios.get<ApiResponse<PatientBookingDetail>>(`/patient/my-bookings/${id}`);
+  return data;
+};

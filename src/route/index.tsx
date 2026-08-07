@@ -5,40 +5,41 @@ import ProtectedLayout from '@/layouts/ProtectedLayout';
 import RootLayout from '@/layouts/rootLayout';
 import TherapistLayout from '@/layouts/TherapistLayout';
 import About from '@/pages/About';
+import Activity from '@/pages/Activity';
 import Blog from '@/pages/Blog';
 import BlogDetail from '@/pages/Blog/[slug]';
 import BookingDetails from '@/pages/Booking/[id]';
 import ClinicNetwork from '@/pages/Clinic-Network';
 import Contact from '@/pages/Contact';
 import ForgotPassword from '@/pages/Forgot-Password';
+import Guide from '@/pages/Guide';
 import Home from '@/pages/Home';
 import HomeVisitNetwork from '@/pages/Home-Network';
+import Issue from '@/pages/Issue';
 import Login from '@/pages/Login';
 import NotFound from '@/pages/Not-Found';
 import OnlineNetwork from '@/pages/Online-Network';
-import PhysioDetail from '@/pages/Physio/[id]';
-import SearchPhysio from '@/pages/Search-Physio';
-import Signup from '@/pages/Signup';
-import PatientProfilePage from '@/pages/Patient/Profile';
 import PatientMyBookings from '@/pages/Patient/My-Booking';
-import TherapistProfile from '@/pages/Therapist/Profile';
-import TherapistMyBookings from '@/pages/Therapist/My-Booking';
 import PatientBookingDetail from '@/pages/Patient/My-Booking/[id]';
-import SettingsPage from '@/pages/Setting';
-import RefundPolicy from '@/pages/Refund-Policy';
+import PatientProfilePage from '@/pages/Patient/Profile';
+import PhysioDetail from '@/pages/Physio/[id]';
 import PrivacyPolicy from '@/pages/Privacy-Policy';
+import RefundPolicy from '@/pages/Refund-Policy';
+import SearchPhysio from '@/pages/Search-Physio';
+import SettingsPage from '@/pages/Setting';
+import Signup from '@/pages/Signup';
 import TermsConditions from '@/pages/Terms';
-import Issue from '@/pages/Issue';
-import TherapistBookingDetailPage from '@/pages/Therapist/My-Booking/[id]';
-import SlotManagement from '@/pages/Therapist/Slot-Management';
 import CommissionHistory from '@/pages/Therapist/Commission-History';
-import TherapistOnboardingPage from '@/pages/Therapist/Onboarding';
-import TherapistFinalOnboarding from '@/pages/Therapist/FinalOnboarding';
-import Subscription from '@/pages/Therapist/Subscription';
-import CreateAssessment from '@/pages/Therapist/My-Booking/[id]/Create-Assessment';
 import TherapistDashboard from '@/pages/Therapist/Dashboard';
-import Activity from '@/pages/Activity';
-import Guide from '@/pages/Guide';
+import TherapistFinalOnboarding from '@/pages/Therapist/FinalOnboarding';
+import TherapistMyBookings from '@/pages/Therapist/My-Booking';
+import TherapistBookingDetailPage from '@/pages/Therapist/My-Booking/[id]';
+import CreateAssessment from '@/pages/Therapist/My-Booking/[id]/Create-Assessment';
+import PrintAssessmentPage from '@/pages/Therapist/My-Booking/[id]/Print-Assessment';
+import TherapistOnboardingPage from '@/pages/Therapist/Onboarding';
+import TherapistProfile from '@/pages/Therapist/Profile';
+import SlotManagement from '@/pages/Therapist/Slot-Management';
+import Subscription from '@/pages/Therapist/Subscription';
 
 export const router = createBrowserRouter([
   {
@@ -73,8 +74,11 @@ export const router = createBrowserRouter([
               { path: '/booking/:id', element: <BookingDetails /> },
               { path: '/patient/profile', element: <PatientProfilePage /> },
               { path: '/patient/my-bookings', element: <PatientMyBookings /> },
-              { path: '/patient/my-booking/:id', element: <PatientBookingDetail /> },
               { path: '/patient/my-bookings/:id', element: <PatientBookingDetail /> },
+              {
+                path: '/patient/my-bookings/:id/assessment/:assessmentId',
+                element: <PrintAssessmentPage />,
+              },
             ],
           },
           {
@@ -85,15 +89,14 @@ export const router = createBrowserRouter([
               { path: '/therapist/profile', element: <TherapistProfile /> },
               { path: '/therapist/dashboard', element: <TherapistDashboard /> },
               { path: '/therapist/my-bookings', element: <TherapistMyBookings /> },
-              { path: '/therapist/my-booking/:id', element: <TherapistBookingDetailPage /> },
               { path: '/therapist/my-bookings/:id', element: <TherapistBookingDetailPage /> },
-              {
-                path: '/therapist/my-booking/:id/create-assessment',
-                element: <CreateAssessment />,
-              },
               {
                 path: '/therapist/my-bookings/:id/create-assessment',
                 element: <CreateAssessment />,
+              },
+              {
+                path: '/therapist/my-bookings/:id/assessment/:assessmentId',
+                element: <PrintAssessmentPage />,
               },
               { path: '/therapist/slot-management', element: <SlotManagement /> },
               { path: '/therapist/subscriptions', element: <Subscription /> },

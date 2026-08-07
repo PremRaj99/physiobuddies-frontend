@@ -114,6 +114,7 @@ export const PhysiotherapyAssessmentSchema = z
     problemsIdentified: z.array(z.string()).min(1, 'Select at least one identified problem'),
     treatmentPlan: z.array(z.string()).min(1, 'Select at least one treatment plan item'),
     visitFrequency: VisitFrequencyEnum,
+    suggestedTreatmentDays: optionalNumber,
     hepGiven: z.boolean(),
     therapistNotes: z.string().optional(),
     documentUrls: z.array(z.string().url()).optional(),
@@ -359,7 +360,7 @@ export default function CreateAssessmentPage() {
               The clinical assessment has been securely logged in the patient's records and
               treatment plan updated.
             </p>
-            <Button onClick={() => navigate(`/therapist/my-booking/${bookingId}`)}>
+            <Button onClick={() => navigate(`/therapist/my-bookings/${bookingId}`)}>
               Return to Dashboard
             </Button>
           </Card>
@@ -811,7 +812,20 @@ export default function CreateAssessmentPage() {
                         )}
                       </div>
 
-                      <div className="flex flex-col justify-center space-y-2">
+                      <div className="space-y-2">
+                        <Label className="font-bold text-[#012a4a]">Suggested Treatment Days</Label>
+                        <Input
+                          type="number"
+                          placeholder="e.g. 10"
+                          {...register('suggestedTreatmentDays')}
+                          className="focus-visible:ring-[#014f86]"
+                        />
+                        <p className="text-muted-foreground text-xs">
+                          Suggested total number of days for this treatment plan.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col justify-center space-y-2 md:col-span-2">
                         <Label className="mb-3 font-bold text-[#012a4a]">
                           Home Exercise Program (HEP) Given?
                         </Label>
@@ -908,6 +922,14 @@ export default function CreateAssessmentPage() {
                           <span className="text-muted-foreground mb-1 block">Frequency</span>{' '}
                           <span className="font-bold text-[#012a4a]">
                             {getValues('visitFrequency')}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground mb-1 block">Suggested Days</span>{' '}
+                          <span className="font-bold text-[#012a4a]">
+                            {getValues('suggestedTreatmentDays')
+                              ? `${getValues('suggestedTreatmentDays')} Days`
+                              : 'Not specified'}
                           </span>
                         </div>
                         <div>

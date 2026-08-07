@@ -1,6 +1,7 @@
 import { axios } from '@/utils/axios';
 import type { ApiResponse } from './index';
 import type { BackendDaySchedule } from '@/pages/Therapist/Slot-Management/utils';
+import type { SlotCategory } from '@/utils/slots';
 
 export interface SearchTherapistItem {
   id: string;
@@ -75,7 +76,7 @@ export interface AvailabilitySlot {
   startHour: number;
   startTime: number; // minutes from midnight
   endTime: number; // minutes from midnight
-  category: 'morning' | 'evening' | 'night';
+  category: SlotCategory;
   status: string; // "open" | "booked" | "hold" | "blocked" | ...
 }
 
@@ -216,42 +217,13 @@ export interface TherapistBookingRecord {
   lastSessionTime: string;
 }
 
-export interface DocumentRecordItem {
-  id: string;
-  name: string;
-  fileType?: string;
-  url?: string;
-  createdAt?: string;
-}
+import type {
+  ClinicalAssessmentRecord,
+  SessionImprovementRecordItem,
+  DocumentRecordItem,
+} from '@/types';
 
-export interface ClinicalAssessmentRecord {
-  id?: string;
-  assessmentType?: string;
-  chiefComplaint?: string[];
-  durationOfSymptoms?: string;
-  painScore?: number;
-  rom?: string;
-  muscleStrength?: string;
-  problemsIdentified?: string[];
-  treatmentPlanItems?: string[];
-  visitFrequency?: string;
-  hepGiven?: boolean;
-  therapistNotes?: string | null;
-  documentUrls?: string[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface SessionImprovementRecordItem {
-  id: string;
-  sessionId: string;
-  sessionDate?: string;
-  painScoreBefore?: number | null;
-  painScoreAfter: number;
-  improvementNotes: string;
-  exercisesGiven?: string[];
-  createdAt?: string;
-}
+export type { ClinicalAssessmentRecord, SessionImprovementRecordItem, DocumentRecordItem };
 
 export interface TherapistBookingDetail {
   id: string;
@@ -284,7 +256,7 @@ export interface TherapistBookingDetail {
     status: string;
   }>;
   documents?: DocumentRecordItem[];
-  clinicalAssessment?: ClinicalAssessmentRecord | null;
+  clinicalAssessments?: ClinicalAssessmentRecord[];
   improvementRecords?: SessionImprovementRecordItem[];
 }
 

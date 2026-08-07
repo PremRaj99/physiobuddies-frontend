@@ -14,16 +14,9 @@ import {
 } from '@/hooks/useTreatmentSession';
 import { toast } from 'sonner';
 
-export type TreatmentMode = 'home_visit' | 'online' | 'clinic';
-export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
-export type SessionStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'active'
-  | 'completed'
-  | 'settled'
-  | 'cancelled'
-  | 'no_show';
+import type { TreatmentMode, Gender, SessionStatus } from '@/types';
+
+export type { TreatmentMode, Gender, SessionStatus };
 
 export const useTherapistBookingFlow = () => {
   const { id } = useParams<{ id: string }>();
@@ -129,7 +122,7 @@ export const useTherapistBookingFlow = () => {
   const handleEndSessionAction = (sessionId: string, sessionIndex: number = 0) => {
     setActiveSessionId(sessionId);
     if (sessionIndex === 0) {
-      navigate(`/therapist/my-booking/${id}/create-assessment`);
+      navigate(`/therapist/my-bookings/${id}/create-assessment`);
     } else {
       setIsImprovementOpen(true);
     }

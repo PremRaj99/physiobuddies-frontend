@@ -1,25 +1,15 @@
 import React from 'react';
-import { Building2, ChevronRight, Clock, Home, Video } from 'lucide-react';
+import { ChevronRight, Clock } from 'lucide-react';
+import { getModeIcon } from '@/components/my-booking';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { SessionRecord, SessionStatus, TreatmentMode } from '../hooks/useTherapistDashboard';
+import type { SessionRecord, SessionStatus } from '../hooks/useTherapistDashboard';
 
 interface UpcomingSessionsProps {
   sessions: SessionRecord[];
   onNavigate: (path: string) => void;
 }
-
-const getModeIcon = (mode: TreatmentMode) => {
-  switch (mode) {
-    case 'home_visit':
-      return <Home className="h-4 w-4" />;
-    case 'online':
-      return <Video className="h-4 w-4" />;
-    case 'clinic':
-      return <Building2 className="h-4 w-4" />;
-  }
-};
 
 const getStatusBadge = (status: SessionStatus) => {
   switch (status) {

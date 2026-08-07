@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { CalendarDays } from 'lucide-react';
 import { useState } from 'react';
+import { TIME_PERIODS } from '@/utils/slots';
 import type { PeriodData, PeriodKey, TimeSlot } from '../types';
 
 interface TimeSlotsUIProps {
@@ -12,16 +13,10 @@ interface TimeSlotsUIProps {
 export function TimeSlotsUI({ timeSlots, selectedTime, onSlotSelect }: TimeSlotsUIProps) {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>('morning');
 
-  const periods: { id: PeriodKey; label: string; icon: string }[] = [
-    { id: 'morning', label: 'Morning', icon: '🌅' },
-    { id: 'evening', label: 'Evening', icon: '🌇' },
-    { id: 'night', label: 'Night', icon: '🌃' },
-  ];
-
   return (
     <div className="space-y-6">
       <div className="bg-secondary flex w-fit gap-2 rounded-xl p-1">
-        {periods.map((period) => (
+        {TIME_PERIODS.map((period) => (
           <button
             key={period.id}
             onClick={() => setSelectedPeriod(period.id)}
@@ -39,7 +34,7 @@ export function TimeSlotsUI({ timeSlots, selectedTime, onSlotSelect }: TimeSlots
               />
             )}
             <span className="flex items-center gap-2">
-              <span>{period.icon}</span>
+              <span>{period.emoji}</span>
               {period.label}
             </span>
           </button>

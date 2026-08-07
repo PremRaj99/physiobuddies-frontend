@@ -1,5 +1,6 @@
 import { axios } from '@/utils/axios';
 import type { ApiResponse } from './index';
+import type { AvailabilityDay } from './therapist.service';
 
 export interface RescheduleSlotPayload {
   date: string; // ISO string
@@ -33,7 +34,7 @@ export interface SeeMoreSlotsResponse {
   recommendationRule: string | null;
   visitFrequency: string | null;
   suggestedTreatmentDays: number | null;
-  availableSlots: unknown[];
+  availableSlots: AvailabilityDay[];
 }
 
 export interface TreatmentSessionDocRecord {
